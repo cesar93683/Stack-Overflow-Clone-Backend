@@ -4,6 +4,8 @@
     <title>Reddit Clone</title>
 </head>
 <body>
-<p th:text="'Hello World'" />
+<div th:each="post: ${posts}">
+    <div th:text="${post.content}"/>
+</div>
 </body>
 </html>
