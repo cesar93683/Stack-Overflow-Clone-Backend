@@ -15,4 +15,9 @@ public class PostServiceImpl implements PostService {
         posts.add(new Post("this is post 2"));
         return posts;
     }
+
+    @Override
+    public Post getPost(String id) {
+        return new Post("this is post " + id);
+    }
 }
