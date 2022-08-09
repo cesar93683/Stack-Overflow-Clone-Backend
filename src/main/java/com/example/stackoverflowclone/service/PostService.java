@@ -1,6 +1,6 @@
-package com.example.redditclone.service;
+package com.example.stackoverflowclone.service;
 
-import com.example.redditclone.entity.Post;
+import com.example.stackoverflowclone.entity.Post;
 
 import java.util.List;
 

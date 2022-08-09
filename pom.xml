@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>reddit-clone</artifactId>
+	<artifactId>stack-overflow-clone</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>reddit-clone</name>
+	<name>stack-overflow-clone</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>18</java.version>

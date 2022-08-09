@@ -1,4 +1,4 @@
-package com.example.redditclone.entity;
+package com.example.stackoverflowclone.entity;
 
 public class Post {
 
