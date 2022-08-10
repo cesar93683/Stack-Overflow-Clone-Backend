@@ -1,10 +1,11 @@
 package com.example.stackoverflowclone.service;
 
 import com.example.stackoverflowclone.entity.Post;
+import com.example.stackoverflowclone.exceptions.PostException;
 
 import java.util.List;
 
 public interface PostService {
-    public List<Post> getPosts();
-    public Post getPost(String id);
+    List<Post> getPosts();
+    Post getPost(int id) throws PostException;
 }

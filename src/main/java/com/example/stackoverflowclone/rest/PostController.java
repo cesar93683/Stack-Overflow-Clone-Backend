@@ -1,16 +1,19 @@
 package com.example.stackoverflowclone.rest;
 
 import com.example.stackoverflowclone.entity.Post;
+import com.example.stackoverflowclone.exceptions.PostException;
 import com.example.stackoverflowclone.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-public class StackOverflowCloneController {
+@RequestMapping("/api/posts")
+public class PostController {
 
     @Autowired
     private PostService postService;
@@ -20,9 +23,13 @@ public class StackOverflowCloneController {
         return postService.getPosts();
     }
 
-    @GetMapping("/post/{id}")
+    @GetMapping("/{id}")
     public Post getPost(@PathVariable String id) {
-        return postService.getPost(id);
+        try {
+            return postService.getPost(Integer.parseInt(id));
+        } catch (PostException e) {
+            return null;
+        }
     }
 
 }

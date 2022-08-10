@@ -1,23 +1,27 @@
 package com.example.stackoverflowclone.service;
 
 import com.example.stackoverflowclone.entity.Post;
+import com.example.stackoverflowclone.exceptions.PostException;
+import com.example.stackoverflowclone.repository.PostRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class PostServiceImpl implements PostService {
+
+    @Autowired
+    private PostRepository postRepository;
+
     @Override
     public List<Post> getPosts() {
-        List<Post> posts = new ArrayList<>();
-        posts.add(new Post("this is post 1"));
-        posts.add(new Post("this is post 2"));
-        return posts;
+        return postRepository.findAll();
     }
 
     @Override
-    public Post getPost(String id) {
-        return new Post("this is post " + id);
+    public Post getPost(int id) throws PostException {
+        return postRepository.findById(id)
+                .orElseThrow(() -> new PostException("Post not found with id: " + id));
     }
 }
