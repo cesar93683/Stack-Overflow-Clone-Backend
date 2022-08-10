@@ -1,6 +1,6 @@
 package com.example.stackoverflowclone.rest;
 
-import com.example.stackoverflowclone.entity.User;
+import com.example.stackoverflowclone.dto.UserDTO;
 import com.example.stackoverflowclone.exceptions.UserException;
 import com.example.stackoverflowclone.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable String id) {
+    public UserDTO getUserById(@PathVariable String id) {
         try {
             return userService.getUserById(Integer.parseInt(id));
         } catch (UserException e) {

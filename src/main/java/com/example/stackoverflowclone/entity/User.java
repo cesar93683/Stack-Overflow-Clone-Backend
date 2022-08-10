@@ -27,7 +27,7 @@ public class User {
     @JsonIgnoreProperties("user")
     private List<Post> posts;
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 

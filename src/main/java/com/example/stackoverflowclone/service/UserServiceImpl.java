@@ -1,6 +1,6 @@
 package com.example.stackoverflowclone.service;
 
-import com.example.stackoverflowclone.entity.User;
+import com.example.stackoverflowclone.dto.UserDTO;
 import com.example.stackoverflowclone.exceptions.UserException;
 import com.example.stackoverflowclone.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +13,8 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public User getUserById(int id) throws UserException {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new UserException("User not found with id: " + id));
+    public UserDTO getUserById(int id) throws UserException {
+        return new UserDTO(userRepository.findById(id)
+                .orElseThrow(() -> new UserException("User not found with id: " + id)));
     }
 }

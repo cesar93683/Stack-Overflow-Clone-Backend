@@ -1,6 +1,6 @@
 package com.example.stackoverflowclone.rest;
 
-import com.example.stackoverflowclone.entity.Post;
+import com.example.stackoverflowclone.dto.PostDTO;
 import com.example.stackoverflowclone.exceptions.PostException;
 import com.example.stackoverflowclone.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +19,12 @@ public class PostController {
     private PostService postService;
 
     @GetMapping("/")
-    public List<Post> getPosts() {
+    public List<PostDTO> getPosts() {
         return postService.getPosts();
     }
 
     @GetMapping("/{id}")
-    public Post getPost(@PathVariable String id) {
+    public PostDTO getPost(@PathVariable String id) {
         try {
             return postService.getPost(Integer.parseInt(id));
         } catch (PostException e) {
