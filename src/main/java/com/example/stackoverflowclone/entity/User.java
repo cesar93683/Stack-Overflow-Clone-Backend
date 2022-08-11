@@ -3,6 +3,8 @@ package com.example.stackoverflowclone.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -15,16 +17,21 @@ public class User {
     private int id;
 
     @Column(name = "email")
+    @NotBlank
+    @Size(max = 50)
     private String email;
 
     @Column(name = "username")
+    @NotBlank
+    @Size(max = 20)
     private String username;
 
     @Column(name = "password")
+    @NotBlank
+    @Size(max = 120)
     private String password;
 
     @OneToMany(mappedBy = "user")
-    @JsonIgnoreProperties("user")
     private List<Post> posts;
 
     public int getId() {

@@ -18,7 +18,6 @@ public class Post {
 
     @ManyToOne
     @JoinColumn(name="user_id")
-    @JsonIgnoreProperties("posts")
     private User user;
 
     public int getId() {
