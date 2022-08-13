@@ -2,6 +2,7 @@ package com.example.stackoverflowclone.rest;
 
 import com.example.stackoverflowclone.dto.PostDTO;
 import com.example.stackoverflowclone.payload.post.CreatePostRequest;
+import com.example.stackoverflowclone.payload.post.CreatePostResponse;
 import com.example.stackoverflowclone.security.services.UserDetailsImpl;
 import com.example.stackoverflowclone.service.PostService;
 import org.apache.logging.log4j.LogManager;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+
+import static com.example.stackoverflowclone.utils.Constants.ERROR_MESSAGE;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -54,10 +57,10 @@ public class PostController {
                 return ResponseEntity.badRequest().body(-1);
             }
             int postId = postService.createPost(userId, createPostRequest);
-            return ResponseEntity.ok(postId);
+            return ResponseEntity.ok(new CreatePostResponse(0, "Success", postId));
         } catch (Exception e) {
             LOGGER.error(e);
-            return null;
+            return ResponseEntity.ok(new CreatePostResponse(1, ERROR_MESSAGE, -1));
         }
     }
 
