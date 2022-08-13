@@ -1,10 +1,11 @@
-package com.example.stackoverflowclone.payload.request;
+package com.example.stackoverflowclone.payload.auth.request;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 public class SignUpRequest {
+
     @NotBlank
     @Size(min = 3, max = 20)
     private String username;

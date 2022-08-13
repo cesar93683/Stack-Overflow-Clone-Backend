@@ -1,9 +1,9 @@
 package com.example.stackoverflowclone.rest;
 
 import com.example.stackoverflowclone.entity.User;
-import com.example.stackoverflowclone.payload.request.LoginRequest;
-import com.example.stackoverflowclone.payload.request.SignUpRequest;
-import com.example.stackoverflowclone.payload.response.AuthResponse;
+import com.example.stackoverflowclone.payload.auth.request.LoginRequest;
+import com.example.stackoverflowclone.payload.auth.request.SignUpRequest;
+import com.example.stackoverflowclone.payload.auth.response.AuthResponse;
 import com.example.stackoverflowclone.security.jwt.JwtUtils;
 import com.example.stackoverflowclone.security.services.UserDetailsImpl;
 import com.example.stackoverflowclone.service.UserService;

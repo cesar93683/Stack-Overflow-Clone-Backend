@@ -1,4 +1,4 @@
-package com.example.stackoverflowclone.payload.response;
+package com.example.stackoverflowclone.payload.auth.response;
 
 public class AuthResponse {
     private String message;

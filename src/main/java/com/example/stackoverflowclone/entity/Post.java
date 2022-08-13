@@ -1,6 +1,6 @@
 package com.example.stackoverflowclone.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.example.stackoverflowclone.payload.post.CreatePostRequest;
 
 import javax.persistence.*;
 
@@ -13,12 +13,25 @@ public class Post {
     @Column(name = "id")
     private int id;
 
-    @Column(name="content")
+    @Column(name = "content")
     private String content;
 
+    @Column(name = "title")
+    private String title;
+
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id")
     private User user;
+
+    public Post() {
+    }
+
+    public Post(CreatePostRequest createPostRequest, User user) {
+        this.id = 0;
+        this.title = createPostRequest.getTitle();
+        this.content = createPostRequest.getContent();
+        this.user = user;
+    }
 
     public int getId() {
         return id;
@@ -42,5 +55,13 @@ public class Post {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

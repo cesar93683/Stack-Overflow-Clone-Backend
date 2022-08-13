@@ -8,6 +8,7 @@ public class PostDTO {
 
     private int id;
     private String content;
+    private String title;
     private UserDTO user;
 
     public PostDTO() {
@@ -16,6 +17,7 @@ public class PostDTO {
     public PostDTO(Post post) {
         this.id = post.getId();
         this.content = post.getContent();
+        this.title = post.getTitle();
         user = new UserDTO();
         user.setUsername(post.getUser().getUsername());
         user.setId(post.getUser().getId());
@@ -35,6 +37,14 @@ public class PostDTO {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public UserDTO getUser() {
