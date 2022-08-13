@@ -1,8 +1,11 @@
 package com.example.stackoverflowclone.entity;
 
 import com.example.stackoverflowclone.payload.post.CreatePostRequest;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "post")
@@ -13,15 +16,23 @@ public class Post {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "content")
-    private String content;
-
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     private String title;
 
+    @Column(name = "content", nullable = false)
+    private String content;
+
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false, updatable = false)
     private User user;
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Date createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private Date updatedAt;
 
     public Post() {
     }
@@ -31,6 +42,7 @@ public class Post {
         this.title = createPostRequest.getTitle();
         this.content = createPostRequest.getContent();
         this.user = user;
+        createdAt = new Date();
     }
 
     public int getId() {
@@ -39,6 +51,14 @@ public class Post {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getContent() {
@@ -57,11 +77,19 @@ public class Post {
         this.user = user;
     }
 
-    public String getTitle() {
-        return title;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
