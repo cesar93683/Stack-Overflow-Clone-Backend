@@ -53,13 +53,13 @@ public class PostController {
         try {
             int userId = getUserId();
             if (userId == -1) {
-                return ResponseEntity.badRequest().body(1);
+                return ResponseEntity.badRequest().body(new GenericResponse(1));
             }
             int postId = postService.createPost(userId, createPostRequest);
             return ResponseEntity.ok(new CreatePostResponse(0, postId));
         } catch (Exception e) {
             LOGGER.error(e);
-            return ResponseEntity.badRequest().body(1);
+            return ResponseEntity.badRequest().body(new GenericResponse(1));
         }
     }
 
@@ -68,13 +68,13 @@ public class PostController {
         try {
             int userId = getUserId();
             if (userId == -1) {
-                return ResponseEntity.badRequest().body(1);
+                return ResponseEntity.badRequest().body(new GenericResponse(1));
             }
             postService.updatePost(Integer.parseInt(id), updatePostRequest, userId);
             return ResponseEntity.ok(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);
-            return ResponseEntity.badRequest().body(1);
+            return ResponseEntity.badRequest().body(new GenericResponse(1));
         }
     }
 
