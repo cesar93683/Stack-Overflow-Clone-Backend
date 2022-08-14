@@ -5,11 +5,13 @@ import com.example.stackoverflowclone.entity.Post;
 import com.example.stackoverflowclone.entity.User;
 import com.example.stackoverflowclone.exceptions.PostException;
 import com.example.stackoverflowclone.payload.post.CreatePostRequest;
+import com.example.stackoverflowclone.payload.post.UpdatePostRequest;
 import com.example.stackoverflowclone.repository.PostRepository;
 import com.example.stackoverflowclone.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,5 +43,17 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new PostException("User not found with id: " + userId));
         Post post = new Post(createPostRequest, user);
         return postRepository.save(post).getId();
+    }
+
+    @Override
+    public void updatePost(int postId, UpdatePostRequest updatePostRequest, int userId) throws PostException {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostException("Post not found with id: " + postId));
+        if (post.getUser().getId() != userId) {
+            throw new PostException("User with id: " + userId + " did not create post with id: " + postId);
+        }
+        post.setContent(updatePostRequest.getContent());
+        post.setUpdatedAt(new Date());
+        postRepository.save(post);
     }
 }

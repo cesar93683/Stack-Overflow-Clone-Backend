@@ -1,8 +1,10 @@
 package com.example.stackoverflowclone.rest;
 
 import com.example.stackoverflowclone.dto.PostDTO;
+import com.example.stackoverflowclone.payload.GenericResponse;
 import com.example.stackoverflowclone.payload.post.CreatePostRequest;
 import com.example.stackoverflowclone.payload.post.CreatePostResponse;
+import com.example.stackoverflowclone.payload.post.UpdatePostRequest;
 import com.example.stackoverflowclone.security.services.UserDetailsImpl;
 import com.example.stackoverflowclone.service.PostService;
 import org.apache.logging.log4j.LogManager;
@@ -49,8 +51,7 @@ public class PostController {
     @PostMapping("/")
     public ResponseEntity<?> createPost(@Valid @RequestBody CreatePostRequest createPostRequest) {
         try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            int userId = getUserId(authentication);
+            int userId = getUserId();
             if (userId == -1) {
                 return ResponseEntity.badRequest().body(1);
             }
@@ -62,7 +63,23 @@ public class PostController {
         }
     }
 
-    private int getUserId(Authentication authentication) {
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updatePost(@Valid @RequestBody UpdatePostRequest updatePostRequest, @PathVariable String id) {
+        try {
+            int userId = getUserId();
+            if (userId == -1) {
+                return ResponseEntity.badRequest().body(1);
+            }
+            postService.updatePost(Integer.parseInt(id), updatePostRequest, userId);
+            return ResponseEntity.ok(new GenericResponse(0));
+        } catch (Exception e) {
+            LOGGER.error(e);
+            return ResponseEntity.badRequest().body(1);
+        }
+    }
+
+    private int getUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
             return userDetails.getId();
         }
