@@ -29,10 +29,10 @@ public class PostController {
     @Autowired
     private PostService postService;
 
-    @GetMapping("/")
-    public List<PostDTO> getPosts() {
+    @GetMapping(value = "/by")
+    public List<PostDTO> getPosts(@RequestParam(required = false) String page) {
         try {
-            return postService.getPosts();
+            return postService.getPosts(page != null ? Integer.parseInt(page) : 0);
         } catch (Exception e) {
             LOGGER.error(e);
             return null;

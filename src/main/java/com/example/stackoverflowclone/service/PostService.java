@@ -8,7 +8,7 @@ import com.example.stackoverflowclone.payload.post.UpdatePostRequest;
 import java.util.List;
 
 public interface PostService {
-    List<PostDTO> getPosts();
+    List<PostDTO> getPosts(int page);
     PostDTO getPost(int id) throws PostException;
     int createPost(CreatePostRequest createPostRequest, int userId) throws PostException;
     void updatePost(int postId, UpdatePostRequest updatePostRequest, int userId) throws PostException;

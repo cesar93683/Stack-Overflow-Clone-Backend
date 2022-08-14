@@ -9,6 +9,9 @@ import com.example.stackoverflowclone.payload.post.UpdatePostRequest;
 import com.example.stackoverflowclone.repository.PostRepository;
 import com.example.stackoverflowclone.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,8 +26,9 @@ public class PostServiceImpl implements PostService {
     private UserRepository userRepository;
 
     @Override
-    public List<PostDTO> getPosts() {
-        return postRepository.findAll()
+    public List<PostDTO> getPosts(int page) {
+        Pageable sortedById = PageRequest.of(page, 10, Sort.by("id").descending());
+        return postRepository.findAll(sortedById)
                 .stream()
                 .map(PostDTO::new)
                 .collect(Collectors.toList());
