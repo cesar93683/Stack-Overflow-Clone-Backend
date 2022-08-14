@@ -10,6 +10,6 @@ import java.util.List;
 public interface PostService {
     List<PostDTO> getPosts();
     PostDTO getPost(int id) throws PostException;
-    int createPost(int userId, CreatePostRequest createPostRequest) throws PostException;
+    int createPost(CreatePostRequest createPostRequest, int userId) throws PostException;
     void updatePost(int postId, UpdatePostRequest updatePostRequest, int userId) throws PostException;
 }

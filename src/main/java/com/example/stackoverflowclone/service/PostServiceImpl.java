@@ -37,7 +37,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public int createPost(int userId, CreatePostRequest createPostRequest) throws PostException {
+    public int createPost(CreatePostRequest createPostRequest, int userId) throws PostException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new PostException("User not found with id: " + userId));
         Post post = new Post(createPostRequest, user);

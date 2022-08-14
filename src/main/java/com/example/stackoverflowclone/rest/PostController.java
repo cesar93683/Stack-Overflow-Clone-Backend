@@ -1,6 +1,7 @@
 package com.example.stackoverflowclone.rest;
 
 import com.example.stackoverflowclone.dto.PostDTO;
+import com.example.stackoverflowclone.exceptions.UserException;
 import com.example.stackoverflowclone.payload.GenericResponse;
 import com.example.stackoverflowclone.payload.post.CreatePostRequest;
 import com.example.stackoverflowclone.payload.post.CreatePostResponse;
@@ -51,11 +52,7 @@ public class PostController {
     @PostMapping("/")
     public ResponseEntity<?> createPost(@Valid @RequestBody CreatePostRequest createPostRequest) {
         try {
-            int userId = getUserId();
-            if (userId == -1) {
-                return ResponseEntity.badRequest().body(new GenericResponse(1));
-            }
-            int postId = postService.createPost(userId, createPostRequest);
+            int postId = postService.createPost(createPostRequest, getUserId());
             return ResponseEntity.ok(new CreatePostResponse(0, postId));
         } catch (Exception e) {
             LOGGER.error(e);
@@ -66,11 +63,7 @@ public class PostController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updatePost(@Valid @RequestBody UpdatePostRequest updatePostRequest, @PathVariable String id) {
         try {
-            int userId = getUserId();
-            if (userId == -1) {
-                return ResponseEntity.badRequest().body(new GenericResponse(1));
-            }
-            postService.updatePost(Integer.parseInt(id), updatePostRequest, userId);
+            postService.updatePost(Integer.parseInt(id), updatePostRequest, getUserId());
             return ResponseEntity.ok(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);
@@ -78,12 +71,12 @@ public class PostController {
         }
     }
 
-    private int getUserId() {
+    private int getUserId() throws UserException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
             return userDetails.getId();
         }
-        return -1;
+        throw new UserException("User id not found");
     }
 
 }
