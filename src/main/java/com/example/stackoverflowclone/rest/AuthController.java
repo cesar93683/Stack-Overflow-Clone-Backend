@@ -62,7 +62,7 @@ public class AuthController {
                 return ResponseEntity.badRequest().body(new GenericResponse(ERROR_CODE_USERNAME_ALREADY_TAKEN));
             }
             if (userService.existsByEmail(signUpRequest.getEmail())) {
-                return ResponseEntity.badRequest().body(new GenericResponse(ERROR_EMAIL_USERNAME_ALREADY_TAKEN));
+                return ResponseEntity.badRequest().body(new GenericResponse(ERROR_CODE_EMAIL_ALREADY_TAKEN));
             }
             // Create new user's account
             User user = new User();
