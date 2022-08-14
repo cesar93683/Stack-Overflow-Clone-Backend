@@ -6,8 +6,8 @@ public class CreatePostResponse extends GenericResponse {
 
     int postId;
 
-    public CreatePostResponse(int code, String message, int postId) {
-        super(code, message);
+    public CreatePostResponse(int code, int postId) {
+        super(code);
         this.postId = postId;
     }
 

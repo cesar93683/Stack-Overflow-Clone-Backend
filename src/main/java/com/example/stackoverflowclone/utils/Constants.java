@@ -2,6 +2,7 @@ package com.example.stackoverflowclone.utils;
 
 public interface Constants {
 
-    String ERROR_MESSAGE = "An error occurred";
+    int ERROR_CODE_USERNAME_ALREADY_TAKEN = 100;
+    int ERROR_EMAIL_USERNAME_ALREADY_TAKEN = 101;
 
 }

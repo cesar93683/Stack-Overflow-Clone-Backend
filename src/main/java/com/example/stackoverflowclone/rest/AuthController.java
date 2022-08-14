@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.example.stackoverflowclone.utils.Constants.ERROR_MESSAGE;
+import static com.example.stackoverflowclone.utils.Constants.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -48,10 +48,10 @@ public class AuthController {
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
             ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
             return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-                    .body(new GenericResponse(0, "You've been logged in"));
+                    .body(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1, ERROR_MESSAGE));
+            return ResponseEntity.badRequest().body(new GenericResponse(1));
         }
     }
 
@@ -59,10 +59,10 @@ public class AuthController {
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
         try {
             if (userService.existsByUsername(signUpRequest.getUsername())) {
-                return ResponseEntity.badRequest().body(new GenericResponse(1, "Error: Username is already taken!"));
+                return ResponseEntity.badRequest().body(new GenericResponse(ERROR_CODE_USERNAME_ALREADY_TAKEN));
             }
             if (userService.existsByEmail(signUpRequest.getEmail())) {
-                return ResponseEntity.badRequest().body(new GenericResponse(1, "Error: Email is already in use!"));
+                return ResponseEntity.badRequest().body(new GenericResponse(ERROR_EMAIL_USERNAME_ALREADY_TAKEN));
             }
             // Create new user's account
             User user = new User();
@@ -70,10 +70,10 @@ public class AuthController {
             user.setEmail(signUpRequest.getEmail());
             user.setPassword(encoder.encode(signUpRequest.getPassword()));
             userService.register(user);
-            return ResponseEntity.ok(new GenericResponse(0, "User registered successfully!"));
+            return ResponseEntity.ok(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1, ERROR_MESSAGE));
+            return ResponseEntity.badRequest().body(new GenericResponse(1));
         }
     }
 
@@ -82,10 +82,10 @@ public class AuthController {
         try {
             ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
             return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
-                    .body(new GenericResponse(0, "You've been signed out!"));
+                    .body(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1, ERROR_MESSAGE));
+            return ResponseEntity.badRequest().body(new GenericResponse(1));
         }
     }
 }

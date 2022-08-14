@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-import static com.example.stackoverflowclone.utils.Constants.ERROR_MESSAGE;
-
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/posts")
@@ -54,13 +52,13 @@ public class PostController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             int userId = getUserId(authentication);
             if (userId == -1) {
-                return ResponseEntity.badRequest().body(-1);
+                return ResponseEntity.badRequest().body(1);
             }
             int postId = postService.createPost(userId, createPostRequest);
-            return ResponseEntity.ok(new CreatePostResponse(0, "Success", postId));
+            return ResponseEntity.ok(new CreatePostResponse(0, postId));
         } catch (Exception e) {
             LOGGER.error(e);
-            return ResponseEntity.ok(new CreatePostResponse(1, ERROR_MESSAGE, -1));
+            return ResponseEntity.badRequest().body(1);
         }
     }
 
