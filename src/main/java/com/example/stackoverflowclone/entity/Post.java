@@ -3,12 +3,14 @@ package com.example.stackoverflowclone.entity;
 import com.example.stackoverflowclone.payload.post.CreatePostRequest;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "post")
+@EntityListeners(AuditingEntityListener.class)
 public class Post {
 
     @Id
@@ -42,7 +44,6 @@ public class Post {
         this.title = createPostRequest.getTitle();
         this.content = createPostRequest.getContent();
         this.user = user;
-        createdAt = new Date();
     }
 
     public int getId() {
