@@ -24,6 +24,9 @@ public class Post {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @Column(name = "votes", nullable = false)
+    private int votes;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
     private User user;
@@ -36,6 +39,7 @@ public class Post {
     @Column(name = "updated_at")
     private Date updatedAt;
 
+    @SuppressWarnings("unused")
     public Post() {
     }
 
@@ -43,6 +47,7 @@ public class Post {
         this.id = 0;
         this.title = createPostRequest.getTitle();
         this.content = createPostRequest.getContent();
+        this.votes = 0;
         this.user = user;
     }
 
@@ -68,6 +73,14 @@ public class Post {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public int getVotes() {
+        return votes;
+    }
+
+    public void setVotes(int votes) {
+        this.votes = votes;
     }
 
     public User getUser() {

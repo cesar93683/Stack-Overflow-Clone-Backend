@@ -11,6 +11,8 @@ public class PostDTO {
     private int id;
     private String title;
     private String content;
+
+    private int votes;
     private UserDTO user;
     private Date createdAt;
     private Date updatedAt;
@@ -19,6 +21,7 @@ public class PostDTO {
         id = post.getId();
         title = post.getTitle();
         content = post.getContent();
+        votes = post.getVotes();
         user = new UserDTO();
         user.setUsername(post.getUser().getUsername());
         user.setId(post.getUser().getId());
@@ -48,6 +51,14 @@ public class PostDTO {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public int getVotes() {
+        return votes;
+    }
+
+    public void setVotes(int votes) {
+        this.votes = votes;
     }
 
     public UserDTO getUser() {
