@@ -15,9 +15,6 @@ public class PostDTO {
     private Date createdAt;
     private Date updatedAt;
 
-    public PostDTO() {
-    }
-
     public PostDTO(Post post) {
         id = post.getId();
         title = post.getTitle();
