@@ -1,6 +1,5 @@
 package com.example.stackoverflowclone.rest;
 
-import com.example.stackoverflowclone.dto.PostDTO;
 import com.example.stackoverflowclone.exceptions.UserException;
 import com.example.stackoverflowclone.payload.GenericResponse;
 import com.example.stackoverflowclone.payload.post.CreatePostRequest;
@@ -17,7 +16,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -30,32 +28,33 @@ public class PostController {
     private PostService postService;
 
     @GetMapping("/by")
-    public List<PostDTO> getPosts(@RequestParam(required = false) String page) {
+    public ResponseEntity<?> getPosts(@RequestParam(required = false) String page) {
         try {
-            return postService.getPosts(page != null ? Integer.parseInt(page) : 0);
+            return ResponseEntity.ok(postService.getPosts(page != null ? Integer.parseInt(page) : 0));
         } catch (Exception e) {
             LOGGER.error(e);
-            return null;
+            return ResponseEntity.badRequest().body(new GenericResponse(1));
         }
     }
 
     @GetMapping("/users/{userId}")
-    public List<PostDTO> getPostsByUserId(@PathVariable String userId, @RequestParam(required = false) String page) {
+    public ResponseEntity<?> getPostsByUserId(@PathVariable String userId, @RequestParam(required = false) String page) {
         try {
-            return postService.getPostsByUserId(Integer.parseInt(userId), page != null ? Integer.parseInt(page) : 0);
+            return ResponseEntity.ok(postService.getPostsByUserId(Integer.parseInt(userId),
+                    page != null ? Integer.parseInt(page) : 0));
         } catch (Exception e) {
             LOGGER.error(e);
-            return null;
+            return ResponseEntity.badRequest().body(new GenericResponse(1));
         }
     }
 
     @GetMapping("/{id}")
-    public PostDTO getPost(@PathVariable String id) {
+    public ResponseEntity<?> getPost(@PathVariable String id) {
         try {
-            return postService.getPost(Integer.parseInt(id));
+            return ResponseEntity.ok(postService.getPost(Integer.parseInt(id)));
         } catch (Exception e) {
             LOGGER.error(e);
-            return null;
+            return ResponseEntity.badRequest().body(new GenericResponse(1));
         }
     }
 

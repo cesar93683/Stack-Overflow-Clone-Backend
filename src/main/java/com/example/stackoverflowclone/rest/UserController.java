@@ -1,10 +1,11 @@
 package com.example.stackoverflowclone.rest;
 
-import com.example.stackoverflowclone.dto.UserDTO;
+import com.example.stackoverflowclone.payload.GenericResponse;
 import com.example.stackoverflowclone.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,12 +21,12 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/{id}")
-    public UserDTO getUserById(@PathVariable String id) {
+    public ResponseEntity<?> getUserById(@PathVariable String id) {
         try {
-            return userService.getUserById(Integer.parseInt(id));
+            return ResponseEntity.ok(userService.getUserById(Integer.parseInt(id)));
         } catch (Exception e) {
             LOGGER.error(e);
-            return null;
+            return ResponseEntity.badRequest().body(new GenericResponse(1));
         }
     }
 
