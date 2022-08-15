@@ -35,6 +35,15 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public List<PostDTO> getPostsByUserId(int userId, int page) {
+        Pageable sortedById = PageRequest.of(page, 10, Sort.by("id").descending());
+        return postRepository.findAllByUserId(userId, sortedById)
+                .stream()
+                .map(PostDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public PostDTO getPost(int id) throws PostException {
         return new PostDTO(postRepository.findById(id)
                 .orElseThrow(() -> new PostException("Post not found with id: " + id)));
