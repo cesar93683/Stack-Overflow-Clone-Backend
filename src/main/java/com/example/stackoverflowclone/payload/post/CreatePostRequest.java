@@ -1,16 +1,13 @@
 package com.example.stackoverflowclone.payload.post;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 public class CreatePostRequest {
 
-    @NotBlank
-    @Size(max = 50)
+    @Size(min = 1, max = 50)
     private String title;
 
-    @NotBlank
-    @Size(max = 500)
+    @Size(min = 1, max = 500)
     private String content;
 
     public String getTitle() {

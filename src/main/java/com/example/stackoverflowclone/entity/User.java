@@ -1,7 +1,6 @@
 package com.example.stackoverflowclone.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -14,18 +13,15 @@ public class User {
     private int id;
 
     @Column(name = "email")
-    @NotBlank
-    @Size(max = 50)
+    @Size(min = 1, max = 50)
     private String email;
 
     @Column(name = "username")
-    @NotBlank
-    @Size(max = 20)
+    @Size(min = 1, max = 20)
     private String username;
 
     @Column(name = "password")
-    @NotBlank
-    @Size(max = 120)
+    @Size(min = 1, max = 120)
     private String password;
 
     public int getId() {

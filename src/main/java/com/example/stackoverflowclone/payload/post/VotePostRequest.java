@@ -1,13 +1,13 @@
 package com.example.stackoverflowclone.payload.post;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 public class VotePostRequest {
 
-    @NotBlank
+    @Size(min = 1, max = 9)
     private String action;
 
-    @NotBlank
+    @Size(min = 1, max = 10)
     private String postId;
 
     public String getAction() {

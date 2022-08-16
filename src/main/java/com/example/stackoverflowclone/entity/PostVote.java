@@ -1,7 +1,6 @@
 package com.example.stackoverflowclone.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "post_vote")
@@ -13,7 +12,6 @@ public class PostVote {
     private int id;
 
     @Column(name = "vote", nullable = false)
-    @Size(max = 9)
     private String vote;
 
     @Column(name = "user_id", nullable = false, updatable = false)
