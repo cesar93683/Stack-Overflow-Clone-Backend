@@ -14,4 +14,5 @@ public interface PostService {
     int createPost(CreatePostRequest createPostRequest, int userId) throws PostException;
     void updatePost(int postId, UpdatePostRequest updatePostRequest, int userId) throws PostException;
     void deletePost(int postId, int userId) throws PostException;
+    void votePost(int userId, int postId, String vote) throws PostException;
 }

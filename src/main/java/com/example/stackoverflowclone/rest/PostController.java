@@ -1,10 +1,12 @@
 package com.example.stackoverflowclone.rest;
 
+import com.example.stackoverflowclone.exceptions.PostException;
 import com.example.stackoverflowclone.exceptions.UserException;
 import com.example.stackoverflowclone.payload.GenericResponse;
 import com.example.stackoverflowclone.payload.post.CreatePostRequest;
 import com.example.stackoverflowclone.payload.post.CreatePostResponse;
 import com.example.stackoverflowclone.payload.post.UpdatePostRequest;
+import com.example.stackoverflowclone.payload.post.VotePostRequest;
 import com.example.stackoverflowclone.security.services.UserDetailsImpl;
 import com.example.stackoverflowclone.service.PostService;
 import org.apache.logging.log4j.LogManager;
@@ -16,6 +18,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import static com.example.stackoverflowclone.utils.Constants.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -84,6 +88,22 @@ public class PostController {
     public ResponseEntity<?> deletePost(@PathVariable String id) {
         try {
             postService.deletePost(Integer.parseInt(id), getUserId());
+            return ResponseEntity.ok(new GenericResponse(0));
+        } catch (Exception e) {
+            LOGGER.error(e);
+            return ResponseEntity.badRequest().body(new GenericResponse(1));
+        }
+    }
+
+    @PostMapping("/vote")
+    public ResponseEntity<?> votePost(@Valid @RequestBody VotePostRequest votePostRequest) {
+        try {
+            if (!UP_VOTE.equals(votePostRequest.getAction()) &&
+                    !DOWN_VOTE.equals(votePostRequest.getAction()) &&
+                    !NEUTRAL.equals(votePostRequest.getAction())) {
+                throw new PostException("Invalid vote action");
+            }
+            postService.votePost(getUserId(), Integer.parseInt(votePostRequest.getPostId()), votePostRequest.getAction());
             return ResponseEntity.ok(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);

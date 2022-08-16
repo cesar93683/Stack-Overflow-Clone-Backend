@@ -1,6 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `user_tracker`;
-USE `user_tracker`;
-
 DROP TABLE IF EXISTS `post`;
 
 CREATE TABLE `post` (
@@ -8,6 +5,7 @@ CREATE TABLE `post` (
   `user_id` int NOT NULL,
   `title` varchar(50) NOT NULL,
   `content` varchar(500) NOT NULL,
+  `votes` int NOT NULL,
   `created_at` DATETIME NOT NULL,
   `updated_at` DATETIME,
   PRIMARY KEY (`id`)
