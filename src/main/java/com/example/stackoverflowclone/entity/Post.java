@@ -1,6 +1,5 @@
 package com.example.stackoverflowclone.entity;
 
-import com.example.stackoverflowclone.payload.post.CreatePostRequest;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -28,7 +27,7 @@ public class Post {
     @Column(name = "votes", nullable = false)
     private int votes;
 
-    @OneToMany(fetch=FetchType.LAZY, mappedBy="post")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
     private List<PostResponse> postResponses;
 
     @ManyToOne
@@ -47,10 +46,10 @@ public class Post {
     public Post() {
     }
 
-    public Post(CreatePostRequest createPostRequest, User user) {
+    public Post(String title, String content, User user) {
         this.id = 0;
-        this.title = createPostRequest.getTitle();
-        this.content = createPostRequest.getContent();
+        this.title = title;
+        this.content = content;
         this.votes = 0;
         this.user = user;
     }

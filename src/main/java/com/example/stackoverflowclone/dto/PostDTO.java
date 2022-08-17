@@ -70,16 +70,16 @@ public class PostDTO {
         return user;
     }
 
+    public void setUser(UserDTO user) {
+        this.user = user;
+    }
+
     public List<PostResponseDTO> getPostResponseDTOs() {
         return postResponseDTOs;
     }
 
     public void setPostResponseDTOs(List<PostResponseDTO> postResponseDTOs) {
         this.postResponseDTOs = postResponseDTOs;
-    }
-
-    public void setUser(UserDTO user) {
-        this.user = user;
     }
 
     public Date getCreatedAt() {

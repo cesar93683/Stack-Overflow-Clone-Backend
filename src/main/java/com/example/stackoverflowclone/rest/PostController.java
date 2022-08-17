@@ -62,7 +62,8 @@ public class PostController {
     @PostMapping("/")
     public ResponseEntity<?> createPost(@Valid @RequestBody CreatePostRequest createPostRequest) {
         try {
-            int postId = postService.createPost(createPostRequest, getUserId());
+            int postId = postService.createPost(createPostRequest.getTitle(),
+                    createPostRequest.getContent(), getUserId());
             return ResponseEntity.ok(new CreatePostResponse(0, postId));
         } catch (Exception e) {
             LOGGER.error(e);
@@ -73,7 +74,7 @@ public class PostController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updatePost(@Valid @RequestBody UpdatePostRequest updatePostRequest, @PathVariable String id) {
         try {
-            postService.updatePost(Integer.parseInt(id), updatePostRequest, getUserId());
+            postService.updatePost(Integer.parseInt(id), updatePostRequest.getContent(), getUserId());
             return ResponseEntity.ok(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);

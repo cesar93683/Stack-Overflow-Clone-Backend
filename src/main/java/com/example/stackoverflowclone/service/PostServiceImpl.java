@@ -6,8 +6,6 @@ import com.example.stackoverflowclone.entity.PostResponse;
 import com.example.stackoverflowclone.entity.PostVote;
 import com.example.stackoverflowclone.entity.User;
 import com.example.stackoverflowclone.exceptions.PostException;
-import com.example.stackoverflowclone.payload.post.CreatePostRequest;
-import com.example.stackoverflowclone.payload.post.UpdatePostRequest;
 import com.example.stackoverflowclone.repository.PostRepository;
 import com.example.stackoverflowclone.repository.PostResponseRepository;
 import com.example.stackoverflowclone.repository.PostVoteRepository;
@@ -61,21 +59,21 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public int createPost(CreatePostRequest createPostRequest, int userId) throws PostException {
+    public int createPost(String title, String content, int userId) throws PostException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new PostException("User not found with id: " + userId));
-        Post post = new Post(createPostRequest, user);
+        Post post = new Post(title, content, user);
         return postRepository.save(post).getId();
     }
 
     @Override
-    public void updatePost(int postId, UpdatePostRequest updatePostRequest, int userId) throws PostException {
+    public void updatePost(int postId, String content, int userId) throws PostException {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException("Post not found with id: " + postId));
         if (post.getUser().getId() != userId) {
             throw new PostException("User with id: " + userId + " did not create post with id: " + postId);
         }
-        post.setContent(updatePostRequest.getContent());
+        post.setContent(content);
         postRepository.save(post);
     }
 

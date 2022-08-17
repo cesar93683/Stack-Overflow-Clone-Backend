@@ -5,9 +5,9 @@ import com.example.stackoverflowclone.entity.PostResponse;
 public class PostResponseDTO {
 
     private String content;
-
     private int votes;
     private UserDTO user;
+
     public PostResponseDTO(PostResponse postResponse) {
         content = postResponse.getContent();
         votes = postResponse.getVotes();
