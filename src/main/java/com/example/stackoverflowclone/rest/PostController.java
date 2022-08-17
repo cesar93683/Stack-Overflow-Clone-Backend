@@ -124,7 +124,7 @@ public class PostController {
     @PutMapping("/postResponse/{id}")
     public ResponseEntity<?> updatePostResponse(@Valid @RequestBody UpdatePostResponseRequest updatePostResponseRequest, @PathVariable String id) {
         try {
-//            postService.updatePostResponse(Integer.parseInt(id), updatePostResponseRequest, getUserId());
+            postService.updatePostResponse(Integer.parseInt(id), updatePostResponseRequest.getContent(), getUserId());
             return ResponseEntity.ok(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);

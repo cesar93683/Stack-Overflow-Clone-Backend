@@ -21,4 +21,6 @@ public interface PostService {
     void votePost(int userId, int postId, String vote) throws PostException;
 
     void createPostResponse(String content, int postId, int userId) throws PostException;
+
+    void updatePostResponse(int parseInt, String content, int userId) throws PostException;
 }

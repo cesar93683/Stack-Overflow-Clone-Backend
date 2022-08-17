@@ -136,4 +136,15 @@ public class PostServiceImpl implements PostService {
         PostResponse postResponse = new PostResponse(content, user, post);
         postResponseRepository.save(postResponse);
     }
+
+    @Override
+    public void updatePostResponse(int postResponseId, String content, int userId) throws PostException {
+        PostResponse postResponse = postResponseRepository.findById(postResponseId)
+                .orElseThrow(() -> new PostException("PostResponse not found with id: " + postResponseId));
+        if (postResponse.getUser().getId() != userId) {
+            throw new PostException("User with id: " + userId + " did not create postResponse with id: " + postResponseId);
+        }
+        postResponse.setContent(content);
+        postResponseRepository.save(postResponse);
+    }
 }
