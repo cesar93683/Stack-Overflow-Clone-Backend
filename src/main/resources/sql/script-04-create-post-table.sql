@@ -1,3 +1,5 @@
+USE `user_tracker`;
+
 DROP TABLE IF EXISTS `post`;
 
 CREATE TABLE `post` (

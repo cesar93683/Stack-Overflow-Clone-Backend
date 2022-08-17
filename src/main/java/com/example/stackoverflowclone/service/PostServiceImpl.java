@@ -2,12 +2,14 @@ package com.example.stackoverflowclone.service;
 
 import com.example.stackoverflowclone.dto.PostDTO;
 import com.example.stackoverflowclone.entity.Post;
+import com.example.stackoverflowclone.entity.PostResponse;
 import com.example.stackoverflowclone.entity.PostVote;
 import com.example.stackoverflowclone.entity.User;
 import com.example.stackoverflowclone.exceptions.PostException;
 import com.example.stackoverflowclone.payload.post.CreatePostRequest;
 import com.example.stackoverflowclone.payload.post.UpdatePostRequest;
 import com.example.stackoverflowclone.repository.PostRepository;
+import com.example.stackoverflowclone.repository.PostResponseRepository;
 import com.example.stackoverflowclone.repository.PostVoteRepository;
 import com.example.stackoverflowclone.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.example.stackoverflowclone.utils.Constants.*;
+import static com.example.stackoverflowclone.utils.Constants.DOWN_VOTE;
+import static com.example.stackoverflowclone.utils.Constants.NEUTRAL;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -30,6 +33,8 @@ public class PostServiceImpl implements PostService {
     private UserRepository userRepository;
     @Autowired
     private PostVoteRepository postVoteRepository;
+    @Autowired
+    private PostResponseRepository postResponseRepository;
 
     @Override
     public List<PostDTO> getPosts(int page) {
@@ -122,5 +127,15 @@ public class PostServiceImpl implements PostService {
                 return 1;
             }
         }
+    }
+
+    @Override
+    public void createPostResponse(String content, int postId, int userId) throws PostException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new PostException("User not found with id: " + userId));
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostException("Post not found with id: " + postId));
+        PostResponse postResponse = new PostResponse(content, user, post);
+        postResponseRepository.save(postResponse);
     }
 }
