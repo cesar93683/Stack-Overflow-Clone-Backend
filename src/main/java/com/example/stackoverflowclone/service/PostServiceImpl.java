@@ -147,4 +147,14 @@ public class PostServiceImpl implements PostService {
         postResponse.setContent(content);
         postResponseRepository.save(postResponse);
     }
+
+    @Override
+    public void deletePostResponse(int postResponseId, int userId) throws PostException {
+        PostResponse postResponse = postResponseRepository.findById(postResponseId)
+                .orElseThrow(() -> new PostException("PostResponse not found with id: " + postResponseId));
+        if (postResponse.getUser().getId() != userId) {
+            throw new PostException("User with id: " + userId + " did not create post with id: " + postResponseId);
+        }
+        postResponseRepository.delete(postResponse);
+    }
 }

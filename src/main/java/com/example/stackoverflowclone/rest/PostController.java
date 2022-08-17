@@ -132,6 +132,17 @@ public class PostController {
         }
     }
 
+    @DeleteMapping("/postResponse/{id}")
+    public ResponseEntity<?> deletePostResponse(@PathVariable String id) {
+        try {
+            postService.deletePostResponse(Integer.parseInt(id), getUserId());
+            return ResponseEntity.ok(new GenericResponse(0));
+        } catch (Exception e) {
+            LOGGER.error(e);
+            return ResponseEntity.badRequest().body(new GenericResponse(1));
+        }
+    }
+
     private int getUserId() throws UserException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {

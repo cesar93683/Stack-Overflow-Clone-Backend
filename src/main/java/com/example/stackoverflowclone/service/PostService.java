@@ -23,4 +23,6 @@ public interface PostService {
     void createPostResponse(String content, int postId, int userId) throws PostException;
 
     void updatePostResponse(int parseInt, String content, int userId) throws PostException;
+
+    void deletePostResponse(int parseInt, int userId) throws PostException;
 }
