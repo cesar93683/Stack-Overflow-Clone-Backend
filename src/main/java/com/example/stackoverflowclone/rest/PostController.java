@@ -94,14 +94,14 @@ public class PostController {
     }
 
     @PostMapping("/vote")
-    public ResponseEntity<?> votePost(@Valid @RequestBody VotePostRequest votePostRequest) {
+    public ResponseEntity<?> votePost(@Valid @RequestBody PostVoteRequest postVoteRequest) {
         try {
-            if (!UP_VOTE.equals(votePostRequest.getAction()) &&
-                    !DOWN_VOTE.equals(votePostRequest.getAction()) &&
-                    !NEUTRAL.equals(votePostRequest.getAction())) {
+            if (!UP_VOTE.equals(postVoteRequest.getAction()) &&
+                    !DOWN_VOTE.equals(postVoteRequest.getAction()) &&
+                    !NEUTRAL.equals(postVoteRequest.getAction())) {
                 throw new PostException("Invalid vote action");
             }
-            postService.votePost(getUserId(), Integer.parseInt(votePostRequest.getPostId()), votePostRequest.getAction());
+            postService.votePost(getUserId(), Integer.parseInt(postVoteRequest.getPostId()), postVoteRequest.getAction());
             return ResponseEntity.ok(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);
@@ -136,6 +136,23 @@ public class PostController {
     public ResponseEntity<?> deletePostResponse(@PathVariable String id) {
         try {
             postService.deletePostResponse(Integer.parseInt(id), getUserId());
+            return ResponseEntity.ok(new GenericResponse(0));
+        } catch (Exception e) {
+            LOGGER.error(e);
+            return ResponseEntity.badRequest().body(new GenericResponse(1));
+        }
+    }
+
+    @PostMapping("/postResponseVote")
+    public ResponseEntity<?> postResponseVote(@Valid @RequestBody PostResponseVoteRequest postResponseVoteRequest) {
+        try {
+            if (!UP_VOTE.equals(postResponseVoteRequest.getAction()) &&
+                    !DOWN_VOTE.equals(postResponseVoteRequest.getAction()) &&
+                    !NEUTRAL.equals(postResponseVoteRequest.getAction())) {
+                throw new PostException("Invalid vote action");
+            }
+            postService.votePostResponse(getUserId(), Integer.parseInt(postResponseVoteRequest.getPostResponseId()),
+                    postResponseVoteRequest.getAction());
             return ResponseEntity.ok(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);

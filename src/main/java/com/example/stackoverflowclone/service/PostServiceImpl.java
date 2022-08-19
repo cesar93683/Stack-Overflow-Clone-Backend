@@ -1,15 +1,9 @@
 package com.example.stackoverflowclone.service;
 
 import com.example.stackoverflowclone.dto.PostDTO;
-import com.example.stackoverflowclone.entity.Post;
-import com.example.stackoverflowclone.entity.PostResponse;
-import com.example.stackoverflowclone.entity.PostVote;
-import com.example.stackoverflowclone.entity.User;
+import com.example.stackoverflowclone.entity.*;
 import com.example.stackoverflowclone.exceptions.PostException;
-import com.example.stackoverflowclone.repository.PostRepository;
-import com.example.stackoverflowclone.repository.PostResponseRepository;
-import com.example.stackoverflowclone.repository.PostVoteRepository;
-import com.example.stackoverflowclone.repository.UserRepository;
+import com.example.stackoverflowclone.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +27,8 @@ public class PostServiceImpl implements PostService {
     private PostVoteRepository postVoteRepository;
     @Autowired
     private PostResponseRepository postResponseRepository;
+    @Autowired
+    private PostResponseVoteRepository postResponseVoteRepository;
 
     @Override
     public List<PostDTO> getPosts(int page) {
@@ -156,5 +152,21 @@ public class PostServiceImpl implements PostService {
             throw new PostException("User with id: " + userId + " did not create post with id: " + postResponseId);
         }
         postResponseRepository.delete(postResponse);
+    }
+
+    @Override
+    public void votePostResponse(int userId, int postResponseId, String vote) throws PostException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new PostException("User not found with id: " + userId));
+        PostResponse postResponse = postResponseRepository.findById(postResponseId)
+                .orElseThrow(() -> new PostException("PostResponse not found with id: " + postResponseId));
+        PostResponseVote postResponseVote = postResponseVoteRepository.findByUserIdAndPostResponseId(
+                user.getId(), postResponseId)
+                .orElse(new PostResponseVote(userId, postResponseId, NEUTRAL));
+
+        postResponse.setVotes(postResponse.getVotes() + getVoteDiff(postResponseVote.getVote(), vote));
+        postResponseRepository.save(postResponse);
+        postResponseVote.setVote(vote);
+        postResponseVoteRepository.save(postResponseVote);
     }
 }

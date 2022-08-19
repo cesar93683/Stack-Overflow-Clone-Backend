@@ -2,7 +2,7 @@ package com.example.stackoverflowclone.payload.post;
 
 import javax.validation.constraints.Size;
 
-public class VotePostRequest {
+public class PostVoteRequest {
 
     @Size(min = 1, max = 9)
     private String action;
