@@ -12,19 +12,11 @@ public interface PostService {
 
     PostDTO getPost(int id) throws PostException;
 
-    int createPost(String title, String content, int userId) throws PostException;
+    int createPost(String title, String content, int postResponseId, int userId) throws PostException;
 
     void updatePost(int postId, String content, int userId) throws PostException;
 
     void deletePost(int postId, int userId) throws PostException;
 
     void votePost(int userId, int postId, String vote) throws PostException;
-
-    void createPostResponse(String content, int postId, int userId) throws PostException;
-
-    void updatePostResponse(int parseInt, String content, int userId) throws PostException;
-
-    void deletePostResponse(int parseInt, int userId) throws PostException;
-
-    void votePostResponse(int userId, int parseInt, String action) throws PostException;
 }

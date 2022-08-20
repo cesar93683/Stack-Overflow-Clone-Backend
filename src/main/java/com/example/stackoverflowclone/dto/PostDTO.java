@@ -1,7 +1,6 @@
 package com.example.stackoverflowclone.dto;
 
 import com.example.stackoverflowclone.entity.Post;
-import com.example.stackoverflowclone.entity.PostResponse;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.ArrayList;
@@ -15,21 +14,23 @@ public class PostDTO {
     private String title;
     private String content;
     private int votes;
+    private List<PostDTO> postResponses;
     private UserDTO user;
-    private List<PostResponseDTO> postResponseDTOs;
     private Date createdAt;
     private Date updatedAt;
 
-    public PostDTO(Post post) {
+    public PostDTO(Post post, List<Post> postResponses) {
         id = post.getId();
         title = post.getTitle();
         content = post.getContent();
         votes = post.getVotes();
-        user = new UserDTO(post.getUser());
-        postResponseDTOs = new ArrayList<>();
-        for (PostResponse postResponse : post.getPostResponses()) {
-            postResponseDTOs.add(new PostResponseDTO(postResponse));
+        if (postResponses != null && !postResponses.isEmpty()) {
+            this.postResponses = new ArrayList<>();
+            for (Post postResponse : postResponses) {
+                this.postResponses.add(new PostDTO(postResponse, null));
+            }
         }
+        user = new UserDTO(post.getUser());
         createdAt = post.getCreatedAt();
         updatedAt = post.getUpdatedAt();
     }
@@ -74,12 +75,12 @@ public class PostDTO {
         this.user = user;
     }
 
-    public List<PostResponseDTO> getPostResponseDTOs() {
-        return postResponseDTOs;
+    public List<PostDTO> getPostResponses() {
+        return postResponses;
     }
 
-    public void setPostResponseDTOs(List<PostResponseDTO> postResponseDTOs) {
-        this.postResponseDTOs = postResponseDTOs;
+    public void setPostResponses(List<PostDTO> postResponses) {
+        this.postResponses = postResponses;
     }
 
     public Date getCreatedAt() {

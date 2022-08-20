@@ -4,11 +4,12 @@ import javax.validation.constraints.Size;
 
 public class CreatePostRequest {
 
-    @Size(min = 1, max = 50)
     private String title;
 
     @Size(min = 1, max = 500)
     private String content;
+
+    private String postResponseId;
 
     public String getTitle() {
         return title;
@@ -24,6 +25,14 @@ public class CreatePostRequest {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getPostResponseId() {
+        return postResponseId;
+    }
+
+    public void setPostResponseId(String postResponseId) {
+        this.postResponseId = postResponseId;
     }
 
 }

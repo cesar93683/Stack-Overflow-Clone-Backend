@@ -6,7 +6,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "post")
@@ -18,7 +17,7 @@ public class Post {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "title", nullable = false)
+    @Column(name = "title")
     private String title;
 
     @Column(name = "content", nullable = false)
@@ -27,8 +26,8 @@ public class Post {
     @Column(name = "votes", nullable = false)
     private int votes;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
-    private List<PostResponse> postResponses;
+    @Column(name = "post_response_id")
+    private int postResponseId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
@@ -46,11 +45,12 @@ public class Post {
     public Post() {
     }
 
-    public Post(String title, String content, User user) {
+    public Post(String title, String content, User user, int postResponseId) {
         this.id = 0;
         this.title = title;
         this.content = content;
         this.votes = 0;
+        this.postResponseId = postResponseId;
         this.user = user;
     }
 
@@ -86,12 +86,12 @@ public class Post {
         this.votes = votes;
     }
 
-    public List<PostResponse> getPostResponses() {
-        return postResponses;
+    public int getPostResponseId() {
+        return postResponseId;
     }
 
-    public void setPostResponses(List<PostResponse> postResponses) {
-        this.postResponses = postResponses;
+    public void setPostResponseId(int postResponseId) {
+        this.postResponseId = postResponseId;
     }
 
     public User getUser() {

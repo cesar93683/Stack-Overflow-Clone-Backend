@@ -1,17 +1,21 @@
 package com.example.stackoverflowclone.service;
 
 import com.example.stackoverflowclone.dto.PostDTO;
-import com.example.stackoverflowclone.entity.*;
+import com.example.stackoverflowclone.entity.Post;
+import com.example.stackoverflowclone.entity.PostVote;
+import com.example.stackoverflowclone.entity.User;
 import com.example.stackoverflowclone.exceptions.PostException;
-import com.example.stackoverflowclone.repository.*;
+import com.example.stackoverflowclone.repository.PostRepository;
+import com.example.stackoverflowclone.repository.PostVoteRepository;
+import com.example.stackoverflowclone.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.example.stackoverflowclone.utils.Constants.DOWN_VOTE;
 import static com.example.stackoverflowclone.utils.Constants.NEUTRAL;
@@ -25,40 +29,45 @@ public class PostServiceImpl implements PostService {
     private UserRepository userRepository;
     @Autowired
     private PostVoteRepository postVoteRepository;
-    @Autowired
-    private PostResponseRepository postResponseRepository;
-    @Autowired
-    private PostResponseVoteRepository postResponseVoteRepository;
 
     @Override
     public List<PostDTO> getPosts(int page) {
         Pageable sortedById = PageRequest.of(page, 10, Sort.by("id").descending());
-        return postRepository.findAll(sortedById)
-                .stream()
-                .map(PostDTO::new)
-                .collect(Collectors.toList());
+        List<Post> posts = postRepository.findAllByPostResponseId(-1, sortedById);
+        List<PostDTO> postDTOS = new ArrayList<>();
+        for (Post post : posts) {
+            postDTOS.add(new PostDTO(post, null));
+        }
+        return postDTOS;
     }
 
     @Override
     public List<PostDTO> getPostsByUserId(int userId, int page) {
         Pageable sortedById = PageRequest.of(page, 10, Sort.by("id").descending());
-        return postRepository.findAllByUserId(userId, sortedById)
-                .stream()
-                .map(PostDTO::new)
-                .collect(Collectors.toList());
+        List<Post> posts = postRepository.findAllByUserIdAndPostResponseId(userId, -1, sortedById);
+        List<PostDTO> postDTOS = new ArrayList<>();
+        for (Post post : posts) {
+            postDTOS.add(new PostDTO(post, null));
+        }
+        return postDTOS;
     }
 
     @Override
     public PostDTO getPost(int id) throws PostException {
-        return new PostDTO(postRepository.findById(id)
-                .orElseThrow(() -> new PostException("Post not found with id: " + id)));
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new PostException("Post not found with id: " + id));
+        if (post.getPostResponseId() != -1) {
+            throw new PostException("Post is a post response");
+        }
+        List<Post> postResponses = postRepository.findAllByPostResponseId(post.getId());
+        return new PostDTO(post, postResponses);
     }
 
     @Override
-    public int createPost(String title, String content, int userId) throws PostException {
+    public int createPost(String title, String content, int postResponseId, int userId) throws PostException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new PostException("User not found with id: " + userId));
-        Post post = new Post(title, content, user);
+        Post post = new Post(title, content, user, postResponseId);
         return postRepository.save(post).getId();
     }
 
@@ -121,52 +130,5 @@ public class PostServiceImpl implements PostService {
                 return 1;
             }
         }
-    }
-
-    @Override
-    public void createPostResponse(String content, int postId, int userId) throws PostException {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new PostException("User not found with id: " + userId));
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new PostException("Post not found with id: " + postId));
-        PostResponse postResponse = new PostResponse(content, user, post);
-        postResponseRepository.save(postResponse);
-    }
-
-    @Override
-    public void updatePostResponse(int postResponseId, String content, int userId) throws PostException {
-        PostResponse postResponse = postResponseRepository.findById(postResponseId)
-                .orElseThrow(() -> new PostException("PostResponse not found with id: " + postResponseId));
-        if (postResponse.getUser().getId() != userId) {
-            throw new PostException("User with id: " + userId + " did not create postResponse with id: " + postResponseId);
-        }
-        postResponse.setContent(content);
-        postResponseRepository.save(postResponse);
-    }
-
-    @Override
-    public void deletePostResponse(int postResponseId, int userId) throws PostException {
-        PostResponse postResponse = postResponseRepository.findById(postResponseId)
-                .orElseThrow(() -> new PostException("PostResponse not found with id: " + postResponseId));
-        if (postResponse.getUser().getId() != userId) {
-            throw new PostException("User with id: " + userId + " did not create post with id: " + postResponseId);
-        }
-        postResponseRepository.delete(postResponse);
-    }
-
-    @Override
-    public void votePostResponse(int userId, int postResponseId, String vote) throws PostException {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new PostException("User not found with id: " + userId));
-        PostResponse postResponse = postResponseRepository.findById(postResponseId)
-                .orElseThrow(() -> new PostException("PostResponse not found with id: " + postResponseId));
-        PostResponseVote postResponseVote = postResponseVoteRepository.findByUserIdAndPostResponseId(
-                user.getId(), postResponseId)
-                .orElse(new PostResponseVote(userId, postResponseId, NEUTRAL));
-
-        postResponse.setVotes(postResponse.getVotes() + getVoteDiff(postResponseVote.getVote(), vote));
-        postResponseRepository.save(postResponse);
-        postResponseVote.setVote(vote);
-        postResponseVoteRepository.save(postResponseVote);
     }
 }

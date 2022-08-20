@@ -3,7 +3,10 @@ package com.example.stackoverflowclone.rest;
 import com.example.stackoverflowclone.exceptions.PostException;
 import com.example.stackoverflowclone.exceptions.UserException;
 import com.example.stackoverflowclone.payload.GenericResponse;
-import com.example.stackoverflowclone.payload.post.*;
+import com.example.stackoverflowclone.payload.post.CreatePostRequest;
+import com.example.stackoverflowclone.payload.post.CreatePostResponse;
+import com.example.stackoverflowclone.payload.post.PostVoteRequest;
+import com.example.stackoverflowclone.payload.post.UpdatePostRequest;
 import com.example.stackoverflowclone.security.services.UserDetailsImpl;
 import com.example.stackoverflowclone.service.PostService;
 import org.apache.logging.log4j.LogManager;
@@ -62,8 +65,15 @@ public class PostController {
     @PostMapping("/")
     public ResponseEntity<?> createPost(@Valid @RequestBody CreatePostRequest createPostRequest) {
         try {
-            int postId = postService.createPost(createPostRequest.getTitle(),
-                    createPostRequest.getContent(), getUserId());
+            String title = createPostRequest.getTitle();
+            String content = createPostRequest.getContent();
+            String postResponseId = createPostRequest.getPostResponseId();
+            if (!((title != null && content != null && postResponseId == null) ||
+                    ((title == null && content != null && postResponseId != null)))) {
+                throw new PostException("Invalid content passed in");
+            }
+            int postId = postService.createPost(title, content,
+                    postResponseId != null ? Integer.parseInt(postResponseId) : -1, getUserId());
             return ResponseEntity.ok(new CreatePostResponse(0, postId));
         } catch (Exception e) {
             LOGGER.error(e);
@@ -102,57 +112,6 @@ public class PostController {
                 throw new PostException("Invalid vote action");
             }
             postService.votePost(getUserId(), Integer.parseInt(postVoteRequest.getPostId()), postVoteRequest.getAction());
-            return ResponseEntity.ok(new GenericResponse(0));
-        } catch (Exception e) {
-            LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1));
-        }
-    }
-
-    @PostMapping("/postResponse")
-    public ResponseEntity<?> createPostResponse(@Valid @RequestBody CreatePostResponseRequest createPostResponseRequest) {
-        try {
-            postService.createPostResponse(createPostResponseRequest.getContent(), Integer.parseInt(createPostResponseRequest.getPostId()),
-                    getUserId());
-            return ResponseEntity.ok(new GenericResponse(0));
-        } catch (Exception e) {
-            LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1));
-        }
-    }
-
-    @PutMapping("/postResponse/{id}")
-    public ResponseEntity<?> updatePostResponse(@Valid @RequestBody UpdatePostResponseRequest updatePostResponseRequest, @PathVariable String id) {
-        try {
-            postService.updatePostResponse(Integer.parseInt(id), updatePostResponseRequest.getContent(), getUserId());
-            return ResponseEntity.ok(new GenericResponse(0));
-        } catch (Exception e) {
-            LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1));
-        }
-    }
-
-    @DeleteMapping("/postResponse/{id}")
-    public ResponseEntity<?> deletePostResponse(@PathVariable String id) {
-        try {
-            postService.deletePostResponse(Integer.parseInt(id), getUserId());
-            return ResponseEntity.ok(new GenericResponse(0));
-        } catch (Exception e) {
-            LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1));
-        }
-    }
-
-    @PostMapping("/postResponseVote")
-    public ResponseEntity<?> postResponseVote(@Valid @RequestBody PostResponseVoteRequest postResponseVoteRequest) {
-        try {
-            if (!UP_VOTE.equals(postResponseVoteRequest.getAction()) &&
-                    !DOWN_VOTE.equals(postResponseVoteRequest.getAction()) &&
-                    !NEUTRAL.equals(postResponseVoteRequest.getAction())) {
-                throw new PostException("Invalid vote action");
-            }
-            postService.votePostResponse(getUserId(), Integer.parseInt(postResponseVoteRequest.getPostResponseId()),
-                    postResponseVoteRequest.getAction());
             return ResponseEntity.ok(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);
