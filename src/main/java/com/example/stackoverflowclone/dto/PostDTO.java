@@ -3,9 +3,7 @@ package com.example.stackoverflowclone.dto;
 import com.example.stackoverflowclone.entity.Post;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PostDTO {
@@ -14,22 +12,15 @@ public class PostDTO {
     private String title;
     private String content;
     private int votes;
-    private List<PostDTO> postResponses;
     private UserDTO user;
     private Date createdAt;
     private Date updatedAt;
 
-    public PostDTO(Post post, List<Post> postResponses) {
+    public PostDTO(Post post) {
         id = post.getId();
         title = post.getTitle();
         content = post.getContent();
         votes = post.getVotes();
-        if (postResponses != null && !postResponses.isEmpty()) {
-            this.postResponses = new ArrayList<>();
-            for (Post postResponse : postResponses) {
-                this.postResponses.add(new PostDTO(postResponse, null));
-            }
-        }
         user = new UserDTO(post.getUser());
         createdAt = post.getCreatedAt();
         updatedAt = post.getUpdatedAt();
@@ -73,14 +64,6 @@ public class PostDTO {
 
     public void setUser(UserDTO user) {
         this.user = user;
-    }
-
-    public List<PostDTO> getPostResponses() {
-        return postResponses;
-    }
-
-    public void setPostResponses(List<PostDTO> postResponses) {
-        this.postResponses = postResponses;
     }
 
     public Date getCreatedAt() {

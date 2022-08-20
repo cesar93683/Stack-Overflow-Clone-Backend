@@ -12,6 +12,8 @@ public interface PostService {
 
     PostDTO getPost(int id) throws PostException;
 
+    List<PostDTO> getPostResponses(int postId, int page, boolean sortedByVotes);
+
     int createPost(String title, String content, int postResponseId, int userId) throws PostException;
 
     void updatePost(int postId, String content, int userId) throws PostException;

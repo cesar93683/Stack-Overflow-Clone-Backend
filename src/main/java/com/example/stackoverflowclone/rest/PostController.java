@@ -62,6 +62,18 @@ public class PostController {
         }
     }
 
+    @GetMapping("/responses/{postId}")
+    public ResponseEntity<?> getPostResponses(@PathVariable String postId, @RequestParam(required = false) String page,
+                                              @RequestParam(required = false) String sortedByVotes) {
+        try {
+            return ResponseEntity.ok(postService.getPostResponses(Integer.parseInt(postId), page != null ? Integer.parseInt(page) : 0,
+                    Boolean.parseBoolean(sortedByVotes)));
+        } catch (Exception e) {
+            LOGGER.error(e);
+            return ResponseEntity.badRequest().body(new GenericResponse(1));
+        }
+    }
+
     @PostMapping("/")
     public ResponseEntity<?> createPost(@Valid @RequestBody CreatePostRequest createPostRequest) {
         try {

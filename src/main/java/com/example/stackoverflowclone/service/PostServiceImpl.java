@@ -14,8 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.example.stackoverflowclone.utils.Constants.DOWN_VOTE;
 import static com.example.stackoverflowclone.utils.Constants.NEUTRAL;
@@ -33,23 +33,19 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostDTO> getPosts(int page) {
         Pageable sortedById = PageRequest.of(page, 10, Sort.by("id").descending());
-        List<Post> posts = postRepository.findAllByPostResponseId(-1, sortedById);
-        List<PostDTO> postDTOS = new ArrayList<>();
-        for (Post post : posts) {
-            postDTOS.add(new PostDTO(post, null));
-        }
-        return postDTOS;
+        return postRepository.findAllByPostResponseId(-1, sortedById)
+                .stream()
+                .map(PostDTO::new)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<PostDTO> getPostsByUserId(int userId, int page) {
         Pageable sortedById = PageRequest.of(page, 10, Sort.by("id").descending());
-        List<Post> posts = postRepository.findAllByUserIdAndPostResponseId(userId, -1, sortedById);
-        List<PostDTO> postDTOS = new ArrayList<>();
-        for (Post post : posts) {
-            postDTOS.add(new PostDTO(post, null));
-        }
-        return postDTOS;
+        return postRepository.findAllByUserIdAndPostResponseId(userId, -1, sortedById)
+                .stream()
+                .map(PostDTO::new)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -59,8 +55,16 @@ public class PostServiceImpl implements PostService {
         if (post.getPostResponseId() != -1) {
             throw new PostException("Post is a post response");
         }
-        List<Post> postResponses = postRepository.findAllByPostResponseId(post.getId());
-        return new PostDTO(post, postResponses);
+        return new PostDTO(post);
+    }
+
+    @Override
+    public List<PostDTO> getPostResponses(int postId, int page, boolean sortedByVotes) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(sortedByVotes ? "votes" : "id").descending());
+        return postRepository.findAllByPostResponseId(postId, pageable)
+                .stream()
+                .map(PostDTO::new)
+                .collect(Collectors.toList());
     }
 
     @Override
