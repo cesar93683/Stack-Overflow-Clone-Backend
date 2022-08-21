@@ -3,8 +3,8 @@ package com.example.stackoverflowclone.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "post_vote")
-public class PostVote {
+@Table(name = "vote")
+public class Vote {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,7 +12,7 @@ public class PostVote {
     private int id;
 
     @Column(name = "vote", nullable = false)
-    private String vote;
+    private String voteType;
 
     @Column(name = "user_id", nullable = false, updatable = false)
     private int userId;
@@ -20,14 +20,18 @@ public class PostVote {
     @Column(name = "post_id", nullable = false, updatable = false)
     private int postId;
 
+    @Column(name = "comment_id", nullable = false, updatable = false)
+    private int commentId;
+
     @SuppressWarnings("unused")
-    public PostVote() {
+    public Vote() {
     }
 
-    public PostVote(int userId, int postId, String vote) {
+    public Vote(int userId, int postId, int commentId, String voteType) {
         this.userId = userId;
+        this.commentId = commentId;
         this.postId = postId;
-        this.vote = vote;
+        this.voteType = voteType;
     }
 
     public int getId() {
@@ -38,12 +42,12 @@ public class PostVote {
         this.id = id;
     }
 
-    public String getVote() {
-        return vote;
+    public String getVoteType() {
+        return voteType;
     }
 
-    public void setVote(String vote) {
-        this.vote = vote;
+    public void setVoteType(String voteType) {
+        this.voteType = voteType;
     }
 
     public int getUserId() {
@@ -60,5 +64,13 @@ public class PostVote {
 
     public void setPostId(int postId) {
         this.postId = postId;
+    }
+
+    public int getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(int commentId) {
+        this.commentId = commentId;
     }
 }

@@ -2,11 +2,11 @@ package com.example.stackoverflowclone.service;
 
 import com.example.stackoverflowclone.dto.PostDTO;
 import com.example.stackoverflowclone.entity.Post;
-import com.example.stackoverflowclone.entity.PostVote;
+import com.example.stackoverflowclone.entity.Vote;
 import com.example.stackoverflowclone.entity.User;
 import com.example.stackoverflowclone.exceptions.PostException;
 import com.example.stackoverflowclone.repository.PostRepository;
-import com.example.stackoverflowclone.repository.PostVoteRepository;
+import com.example.stackoverflowclone.repository.VoteRepository;
 import com.example.stackoverflowclone.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -28,7 +28,7 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private PostVoteRepository postVoteRepository;
+    private VoteRepository voteRepository;
 
     @Override
     public List<PostDTO> getPosts(int page) {
@@ -97,38 +97,38 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void votePost(int userId, int postId, String vote) throws PostException {
+    public void votePost(int userId, int postId, String voteType) throws PostException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new PostException("User not found with id: " + userId));
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException("Post not found with id: " + postId));
-        PostVote postVote = postVoteRepository.findByUserIdAndPostId(user.getId(), postId)
-                .orElse(new PostVote(userId, postId, NEUTRAL));
+        Vote vote = voteRepository.findByUserIdAndPostId(user.getId(), postId)
+                .orElse(new Vote(userId, postId, -1, NEUTRAL));
 
-        post.setVotes(post.getVotes() + getVoteDiff(postVote.getVote(), vote));
+        post.setVotes(post.getVotes() + getVoteDiff(vote.getVoteType(), voteType));
         postRepository.save(post);
-        postVote.setVote(vote);
-        postVoteRepository.save(postVote);
+        vote.setVoteType(voteType);
+        voteRepository.save(vote);
     }
 
-    private int getVoteDiff(String oldVote, String newVote) {
-        if (oldVote.equals(newVote)) {
+    private int getVoteDiff(String oldVoteType, String newVoteType) {
+        if (oldVoteType.equals(newVoteType)) {
             return 0;
         }
-        if (newVote.equals(DOWN_VOTE)) {
-            if (oldVote.equals(NEUTRAL)) {
+        if (newVoteType.equals(DOWN_VOTE)) {
+            if (oldVoteType.equals(NEUTRAL)) {
                 return -1;
             } else { // UP_VOTE
                 return -2;
             }
-        } else if (newVote.equals(NEUTRAL)) {
-            if (oldVote.equals(DOWN_VOTE)) {
+        } else if (newVoteType.equals(NEUTRAL)) {
+            if (oldVoteType.equals(DOWN_VOTE)) {
                 return 1;
             } else { // UP_VOTE
                 return -1;
             }
         } else { // UP_VOTE
-            if (oldVote.equals(DOWN_VOTE)) {
+            if (oldVoteType.equals(DOWN_VOTE)) {
                 return 2;
             } else { // NEUTRAL
                 return 1;
