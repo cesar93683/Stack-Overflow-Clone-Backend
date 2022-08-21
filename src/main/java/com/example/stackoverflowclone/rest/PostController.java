@@ -32,9 +32,11 @@ public class PostController {
     private PostService postService;
 
     @GetMapping("/by")
-    public ResponseEntity<?> getPosts(@RequestParam(required = false) String page) {
+    public ResponseEntity<?> getPosts(@RequestParam(required = false) String page,
+                                      @RequestParam(required = false) String sortedByVotes) {
         try {
-            return ResponseEntity.ok(postService.getPosts(page != null ? Integer.parseInt(page) : 0));
+            return ResponseEntity.ok(postService.getPosts(page != null ? Integer.parseInt(page) : 0,
+                    Boolean.parseBoolean(sortedByVotes)));
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(1));

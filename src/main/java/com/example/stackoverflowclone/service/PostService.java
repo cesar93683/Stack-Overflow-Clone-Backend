@@ -6,7 +6,7 @@ import com.example.stackoverflowclone.exceptions.PostException;
 import java.util.List;
 
 public interface PostService {
-    List<PostDTO> getPosts(int page);
+    List<PostDTO> getPosts(int page, boolean sortByVotes);
 
     List<PostDTO> getPostsByUserId(int userId, int page);
 
