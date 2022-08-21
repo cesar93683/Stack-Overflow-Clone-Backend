@@ -67,7 +67,7 @@ public class PostServiceImpl implements PostService {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sortedByVotes ? "votes" : "id").descending());
         return postRepository.findAllByPostResponseId(postId, pageable)
                 .stream()
-                .map((Post post) -> new PostDTO(post, false))
+                .map((Post post) -> new PostDTO(post, true))
                 .collect(Collectors.toList());
     }
 
