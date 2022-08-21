@@ -21,4 +21,12 @@ public interface PostService {
     void deletePost(int postId, int userId) throws PostException;
 
     void votePost(int userId, int postId, String vote) throws PostException;
+
+    int createComment(String content, int postId, int userId) throws PostException;
+
+    void updateComment(int commentId, String content, int userId) throws PostException;
+
+    void deleteComment(int commentId, int userId) throws PostException;
+
+    void voteComment(int userId, int commentId, String vote) throws PostException;
 }

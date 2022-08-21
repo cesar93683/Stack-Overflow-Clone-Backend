@@ -6,20 +6,16 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @Entity
-@Table(name = "post")
+@Table(name = "comment")
 @EntityListeners(AuditingEntityListener.class)
-public class Post {
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
-
-    @Column(name = "title")
-    private String title;
 
     @Column(name = "content", nullable = false)
     private String content;
@@ -27,11 +23,9 @@ public class Post {
     @Column(name = "votes", nullable = false)
     private int votes;
 
-    @Column(name = "post_response_id")
-    private int postResponseId;
-
-    @OneToMany(mappedBy = "post")
-    private List<Comment> comments;
+    @ManyToOne
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
@@ -46,15 +40,14 @@ public class Post {
     private Date updatedAt;
 
     @SuppressWarnings("unused")
-    public Post() {
+    public Comment() {
     }
 
-    public Post(String title, String content, User user, int postResponseId) {
+    public Comment(String content, User user, Post post) {
         this.id = 0;
-        this.title = title;
         this.content = content;
         this.votes = 0;
-        this.postResponseId = postResponseId;
+        this.post = post;
         this.user = user;
     }
 
@@ -64,14 +57,6 @@ public class Post {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getContent() {
@@ -90,20 +75,12 @@ public class Post {
         this.votes = votes;
     }
 
-    public int getPostResponseId() {
-        return postResponseId;
+    public Post getPost() {
+        return post;
     }
 
-    public void setPostResponseId(int postResponseId) {
-        this.postResponseId = postResponseId;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
+    public void setPost(Post postId) {
+        this.post = postId;
     }
 
     public User getUser() {

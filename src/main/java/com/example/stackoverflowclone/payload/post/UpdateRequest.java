@@ -2,7 +2,7 @@ package com.example.stackoverflowclone.payload.post;
 
 import javax.validation.constraints.Size;
 
-public class UpdatePostRequest {
+public class UpdateRequest {
 
     @Size(min = 1, max = 500)
     private String content;
