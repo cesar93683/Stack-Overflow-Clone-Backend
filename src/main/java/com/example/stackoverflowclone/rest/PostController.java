@@ -28,7 +28,7 @@ public class PostController {
     @Autowired
     private PostService postService;
 
-    @GetMapping("/by")
+    @GetMapping("/all")
     public ResponseEntity<?> getPosts(@RequestParam(required = false) String page,
                                       @RequestParam(required = false) String sortedByVotes) {
         try {
