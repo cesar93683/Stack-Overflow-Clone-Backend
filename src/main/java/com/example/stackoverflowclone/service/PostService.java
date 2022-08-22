@@ -8,7 +8,7 @@ import java.util.List;
 public interface PostService {
     List<PostDTO> getPosts(int page, boolean sortByVotes);
 
-    List<PostDTO> getPostsByUserId(int userId, int page);
+    List<PostDTO> getPostsByUserId(int userId, int page, boolean sortedByVotes);
 
     PostDTO getPost(int id) throws PostException;
 

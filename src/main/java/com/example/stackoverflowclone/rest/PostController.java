@@ -41,10 +41,11 @@ public class PostController {
     }
 
     @GetMapping("/users/{userId}")
-    public ResponseEntity<?> getPostsByUserId(@PathVariable String userId, @RequestParam(required = false) String page) {
+    public ResponseEntity<?> getPostsByUserId(@PathVariable String userId, @RequestParam(required = false) String page,
+                                              @RequestParam(required = false) String sortedByVotes) {
         try {
             return ResponseEntity.ok(postService.getPostsByUserId(Integer.parseInt(userId),
-                    page != null ? Integer.parseInt(page) : 0));
+                    page != null ? Integer.parseInt(page) : 0, Boolean.parseBoolean(sortedByVotes)));
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(1));
@@ -65,7 +66,8 @@ public class PostController {
     public ResponseEntity<?> getPostResponses(@PathVariable String postId, @RequestParam(required = false) String page,
                                               @RequestParam(required = false) String sortedByVotes) {
         try {
-            return ResponseEntity.ok(postService.getPostResponses(Integer.parseInt(postId), page != null ? Integer.parseInt(page) : 0,
+            return ResponseEntity.ok(postService.getPostResponses(Integer.parseInt(postId),
+                    page != null ? Integer.parseInt(page) : 0,
                     Boolean.parseBoolean(sortedByVotes)));
         } catch (Exception e) {
             LOGGER.error(e);

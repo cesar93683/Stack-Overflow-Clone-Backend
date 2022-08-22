@@ -44,9 +44,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDTO> getPostsByUserId(int userId, int page) {
-        Pageable sortedById = PageRequest.of(page, 10, Sort.by("id").descending());
-        return postRepository.findAllByUserIdAndPostResponseId(userId, -1, sortedById)
+    public List<PostDTO> getPostsByUserId(int userId, int page, boolean sortedByVotes) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(sortedByVotes ? "votes" : "id").descending());
+        return postRepository.findAllByUserIdAndPostResponseId(userId, -1, pageable)
                 .stream()
                 .map((Post post) -> new PostDTO(post, false))
                 .collect(Collectors.toList());
