@@ -6,6 +6,7 @@
 	<modules>
 		<module>controller</module>
 		<module>dao</module>
+		<module>common</module>
 	</modules>
 	<groupId>com.example</groupId>
 	<artifactId>stack-overflow-clone</artifactId>
