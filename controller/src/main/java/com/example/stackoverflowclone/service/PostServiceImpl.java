@@ -153,7 +153,7 @@ public class PostServiceImpl implements PostService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new PostException("Comment not found with id: " + commentId));
         Vote vote = voteRepository.findByUserIdAndCommentId(user.getId(), commentId)
-                .orElse(new Vote(userId, commentId, -1, NEUTRAL));
+                .orElse(new Vote(userId, -1, commentId, NEUTRAL));
 
         comment.setVotes(comment.getVotes() + getVoteDiff(vote.getVoteType(), voteType));
         commentRepository.save(comment);
