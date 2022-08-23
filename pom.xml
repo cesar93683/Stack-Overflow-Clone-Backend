@@ -5,6 +5,7 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>controller</module>
+		<module>dao</module>
 	</modules>
 	<groupId>com.example</groupId>
 	<artifactId>stack-overflow-clone</artifactId>

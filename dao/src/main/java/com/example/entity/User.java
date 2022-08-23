@@ -1,7 +1,6 @@
 package com.example.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "user")
@@ -12,16 +11,13 @@ public class User {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "email")
-    @Size(min = 1, max = 50)
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "username")
-    @Size(min = 1, max = 20)
+    @Column(name = "username", nullable = false, updatable = false)
     private String username;
 
-    @Column(name = "password")
-    @Size(min = 1, max = 120)
+    @Column(name = "password", nullable = false)
     private String password;
 
     public int getId() {

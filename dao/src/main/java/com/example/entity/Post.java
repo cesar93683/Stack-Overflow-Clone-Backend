@@ -18,7 +18,7 @@ public class Post {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false, updatable = false)
     private String title;
 
     @Column(name = "content", nullable = false)
@@ -27,7 +27,7 @@ public class Post {
     @Column(name = "votes", nullable = false)
     private int votes;
 
-    @Column(name = "post_response_id")
+    @Column(name = "post_response_id", updatable = false)
     private int postResponseId;
 
     @OneToMany(mappedBy = "post")
