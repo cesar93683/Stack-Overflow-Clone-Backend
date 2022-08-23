@@ -14,7 +14,7 @@
 
 	<properties>
 		<version.jakarta.xml-bind>2.3.2</version.jakarta.xml-bind>
-		<version.jjwt>0.9.1</version.jjwt>
+		<version.jjwt>0.11.5</version.jjwt>
 		<version.mysql>8.0.30</version.mysql>
 		<version.spring.boot>2.7.3</version.spring.boot>
 	</properties>
@@ -55,7 +55,17 @@
 			</dependency>
 			<dependency>
 				<groupId>io.jsonwebtoken</groupId>
-				<artifactId>jjwt</artifactId>
+				<artifactId>jjwt-api</artifactId>
+				<version>${version.jjwt}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt-impl</artifactId>
+				<version>${version.jjwt}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt-jackson</artifactId>
 				<version>${version.jjwt}</version>
 			</dependency>
 			<dependency>
