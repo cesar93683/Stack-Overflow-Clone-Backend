@@ -13,6 +13,7 @@
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
+		<version.jakarta.xml-bind>2.3.2</version.jakarta.xml-bind>
 		<version.jjwt>0.9.1</version.jjwt>
 		<version.mysql>8.0.30</version.mysql>
 		<version.spring.boot>2.7.3</version.spring.boot>
@@ -57,6 +58,20 @@
 				<artifactId>jjwt</artifactId>
 				<version>${version.jjwt}</version>
 			</dependency>
+			<dependency>
+				<groupId>jakarta.xml.bind</groupId>
+				<artifactId>jakarta.xml.bind-api</artifactId>
+				<version>${version.jakarta.xml-bind}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 </project>
