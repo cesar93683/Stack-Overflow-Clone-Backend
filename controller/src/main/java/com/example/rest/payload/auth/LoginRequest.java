@@ -1,16 +1,11 @@
-package com.example.payload.auth;
+package com.example.rest.payload.auth;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 
-public class SignUpRequest {
+public class LoginRequest {
 
     @Size(min = 3, max = 20)
     private String username;
-
-    @Size(min = 1, max = 50)
-    @Email
-    private String email;
 
     @Size(min = 6, max = 40)
     private String password;
@@ -21,14 +16,6 @@ public class SignUpRequest {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getPassword() {

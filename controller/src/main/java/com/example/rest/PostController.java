@@ -2,8 +2,8 @@ package com.example.rest;
 
 import com.example.exceptions.PostException;
 import com.example.exceptions.UserException;
-import com.example.payload.GenericResponse;
-import com.example.payload.post.*;
+import com.example.rest.payload.GenericResponse;
+import com.example.rest.payload.post.*;
 import com.example.security.services.UserDetailsImpl;
 import com.example.service.PostService;
 import org.apache.logging.log4j.LogManager;

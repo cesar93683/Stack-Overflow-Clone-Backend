@@ -1,9 +1,9 @@
 package com.example.rest;
 
 import com.example.entity.User;
-import com.example.payload.GenericResponse;
-import com.example.payload.auth.LoginRequest;
-import com.example.payload.auth.SignUpRequest;
+import com.example.rest.payload.GenericResponse;
+import com.example.rest.payload.auth.LoginRequest;
+import com.example.rest.payload.auth.SignUpRequest;
 import com.example.security.jwt.JwtUtils;
 import com.example.security.services.UserDetailsImpl;
 import com.example.service.UserService;

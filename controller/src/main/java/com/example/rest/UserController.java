@@ -1,6 +1,6 @@
 package com.example.rest;
 
-import com.example.payload.GenericResponse;
+import com.example.rest.payload.GenericResponse;
 import com.example.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

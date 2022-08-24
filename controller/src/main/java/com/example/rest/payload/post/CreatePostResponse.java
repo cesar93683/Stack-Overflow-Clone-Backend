@@ -1,6 +1,6 @@
-package com.example.payload.post;
+package com.example.rest.payload.post;
 
-import com.example.payload.GenericResponse;
+import com.example.rest.payload.GenericResponse;
 
 public class CreatePostResponse extends GenericResponse {
 

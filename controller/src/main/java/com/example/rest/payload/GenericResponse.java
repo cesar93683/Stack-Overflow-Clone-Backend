@@ -1,4 +1,4 @@
-package com.example.payload;
+package com.example.rest.payload;
 
 public class GenericResponse {
 
