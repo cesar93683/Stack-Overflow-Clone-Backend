@@ -1,6 +1,5 @@
 package com.example.rest.payload.post;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 public class CreateCommentRequest {
@@ -8,7 +7,7 @@ public class CreateCommentRequest {
     @Size(min = 1, max = 100)
     private String content;
 
-    @NotBlank
+    @Size(min = 1, max = 10)
     private String postId;
 
     public String getContent() {

@@ -10,6 +10,7 @@ public class CreatePostRequest {
     @Size(min = 1, max = 500)
     private String content;
 
+    @Size(min = 1, max = 10)
     private String postResponseId;
 
     public String getTitle() {
