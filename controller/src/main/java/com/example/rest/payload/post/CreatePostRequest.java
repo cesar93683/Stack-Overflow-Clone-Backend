@@ -4,6 +4,7 @@ import javax.validation.constraints.Size;
 
 public class CreatePostRequest {
 
+    @Size(min = 1, max = 50)
     private String title;
 
     @Size(min = 1, max = 500)
