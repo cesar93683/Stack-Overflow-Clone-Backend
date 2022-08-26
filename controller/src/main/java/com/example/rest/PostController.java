@@ -23,7 +23,7 @@ import static com.example.utils.Constants.*;
 @RequestMapping("/api/posts")
 public class PostController {
 
-    Logger LOGGER = LogManager.getLogger(PostController.class);
+    private static final Logger LOGGER = LogManager.getLogger(PostController.class);
 
     @Autowired
     private PostService postService;

@@ -29,7 +29,8 @@ import static com.example.utils.Constants.*;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    Logger LOGGER = LogManager.getLogger(AuthController.class);
+    private static final Logger LOGGER = LogManager.getLogger(AuthController.class);
+
     @Autowired
     AuthenticationManager authenticationManager;
     @Autowired

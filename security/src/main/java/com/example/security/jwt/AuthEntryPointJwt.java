@@ -16,6 +16,7 @@ import java.util.Map;
 
 @Component
 public class AuthEntryPointJwt implements AuthenticationEntryPoint {
+
     private static final Logger LOGGER = LogManager.getLogger(AuthEntryPointJwt.class);
 
     @Override

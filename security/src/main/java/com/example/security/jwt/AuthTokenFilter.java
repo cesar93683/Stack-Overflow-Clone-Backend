@@ -18,11 +18,12 @@ import java.io.IOException;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
 
+    private static final Logger LOGGER = LogManager.getLogger(AuthTokenFilter.class);
+
     @Autowired
     private JwtUtils jwtUtils;
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
-    private static final Logger LOGGER = LogManager.getLogger(AuthTokenFilter.class);
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

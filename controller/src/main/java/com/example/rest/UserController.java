@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/users")
 public class UserController {
 
-    Logger LOGGER = LogManager.getLogger(UserController.class);
+    private static final Logger LOGGER = LogManager.getLogger(UserController.class);
 
     @Autowired
     private UserService userService;
