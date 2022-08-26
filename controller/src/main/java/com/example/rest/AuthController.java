@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,8 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.example.utils.Constants.ERROR_CODE_EMAIL_ALREADY_TAKEN;
-import static com.example.utils.Constants.ERROR_CODE_USERNAME_ALREADY_TAKEN;
+import static com.example.utils.Constants.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -41,8 +41,8 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
-    @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
         try {
             Authentication authentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
@@ -51,6 +51,8 @@ public class AuthController {
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
             ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
             return ResponseEntity.ok().body(new LoginResponse(0, jwtCookie.getValue()));
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.ok().body(new GenericResponse(ERROR_CODE_INVALID_LOGIN));
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(1));
@@ -58,13 +60,13 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<?> signup(@Valid @RequestBody SignUpRequest signUpRequest) {
         try {
-            if (userService.existsByUsername(signUpRequest.getUsername())) {
-                return ResponseEntity.badRequest().body(new GenericResponse(ERROR_CODE_USERNAME_ALREADY_TAKEN));
-            }
             if (userService.existsByEmail(signUpRequest.getEmail())) {
-                return ResponseEntity.badRequest().body(new GenericResponse(ERROR_CODE_EMAIL_ALREADY_TAKEN));
+                return ResponseEntity.ok().body(new GenericResponse(ERROR_CODE_EMAIL_ALREADY_TAKEN));
+            }
+            if (userService.existsByUsername(signUpRequest.getUsername())) {
+                return ResponseEntity.ok().body(new GenericResponse(ERROR_CODE_USERNAME_ALREADY_TAKEN));
             }
             // Create new user's account
             User user = new User();
