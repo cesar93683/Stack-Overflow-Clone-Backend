@@ -36,6 +36,7 @@ CREATE TABLE `post` (
   `title` varchar(50),
   `content` varchar(500) NOT NULL,
   `votes` int NOT NULL,
+  `num_post_responses` int NOT NULL,
   `post_response_id` int,
   `created_at` DATETIME NOT NULL,
   `updated_at` DATETIME,
@@ -53,7 +54,6 @@ CREATE TABLE `vote` (
   `comment_id` int NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
-
 
 
 DROP TABLE IF EXISTS `comment`;

@@ -95,6 +95,15 @@ public class PostServiceImpl implements PostService {
     public int createPost(String title, String content, int postResponseId, int userId) throws PostException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new PostException("User not found with id: " + userId));
+        if (postResponseId != -1) {
+            Post postResponseParent = postRepository.findById(postResponseId)
+                    .orElseThrow(() -> new PostException("Post not found with id: " + postResponseId));
+            if (postResponseParent.getPostResponseId() != -1) {
+                throw new PostException("Cannot create post response to a post response");
+            }
+            postResponseParent.setNumPostResponses(postResponseParent.getNumPostResponses() + 1);
+            postRepository.save(postResponseParent);
+        }
         Post post = new Post(title, content, user, postResponseId);
         return postRepository.save(post).getId();
     }

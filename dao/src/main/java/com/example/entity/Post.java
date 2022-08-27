@@ -27,6 +27,9 @@ public class Post {
     @Column(name = "votes", nullable = false)
     private int votes;
 
+    @Column(name = "num_post_responses", nullable = false)
+    private int numPostResponses;
+
     @Column(name = "post_response_id", updatable = false)
     private int postResponseId;
 
@@ -54,6 +57,7 @@ public class Post {
         this.title = title;
         this.content = content;
         this.votes = 0;
+        this.numPostResponses = 0;
         this.postResponseId = postResponseId;
         this.user = user;
     }
@@ -88,6 +92,14 @@ public class Post {
 
     public void setVotes(int votes) {
         this.votes = votes;
+    }
+
+    public int getNumPostResponses() {
+        return numPostResponses;
+    }
+
+    public void setNumPostResponses(int numPostResponses) {
+        this.numPostResponses = numPostResponses;
     }
 
     public int getPostResponseId() {
