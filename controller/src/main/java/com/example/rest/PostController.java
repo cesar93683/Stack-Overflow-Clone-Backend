@@ -32,13 +32,8 @@ public class PostController {
     public ResponseEntity<?> getPosts(@RequestParam(required = false) String page,
                                       @RequestParam(required = false) String sortedByVotes) {
         try {
-            int userId = -1;
-            try {
-                userId = getUserId();
-            } catch (UserException ignored) {
-            }
             return ResponseEntity.ok(postService.getPosts(page != null ? Integer.parseInt(page) : 0,
-                    Boolean.parseBoolean(sortedByVotes), userId));
+                    Boolean.parseBoolean(sortedByVotes), getUserIdIfExists()));
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(1));
@@ -50,7 +45,8 @@ public class PostController {
                                               @RequestParam(required = false) String sortedByVotes) {
         try {
             return ResponseEntity.ok(postService.getPostsByUserId(Integer.parseInt(userId),
-                    page != null ? Integer.parseInt(page) : 0, Boolean.parseBoolean(sortedByVotes)));
+                    page != null ? Integer.parseInt(page) : 0, Boolean.parseBoolean(sortedByVotes),
+                    getUserIdIfExists()));
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(1));
@@ -184,6 +180,14 @@ public class PostController {
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(1));
+        }
+    }
+
+    private int getUserIdIfExists() {
+        try {
+            return getUserId();
+        } catch (UserException ignored) {
+            return NO_USER_ID;
         }
     }
 

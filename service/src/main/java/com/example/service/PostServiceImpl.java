@@ -19,8 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.example.utils.Constants.DOWN_VOTE;
-import static com.example.utils.Constants.NEUTRAL;
+import static com.example.utils.Constants.*;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -41,7 +40,7 @@ public class PostServiceImpl implements PostService {
                 .stream()
                 .map((Post post) -> new PostDTO(post, false))
                 .collect(Collectors.toList());
-        if (userId == -1) {
+        if (userId == NO_USER_ID) {
             return posts;
         }
         List<Vote> votes = voteRepository.findByUserIdAndPostIdIn(userId, getPostIds(posts));
@@ -66,12 +65,18 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDTO> getPostsByUserId(int userId, int page, boolean sortedByVotes) {
+    public List<PostDTO> getPostsByUserId(int userId, int page, boolean sortedByVotes, int userIdIfExists) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sortedByVotes ? "votes" : "id").descending());
-        return postRepository.findAllByUserIdAndPostResponseId(userId, -1, pageable)
+        List<PostDTO> posts = postRepository.findAllByUserIdAndPostResponseId(userId, -1, pageable)
                 .stream()
                 .map((Post post) -> new PostDTO(post, false))
                 .collect(Collectors.toList());
+        if (userId == NO_USER_ID) {
+            return posts;
+        }
+        List<Vote> votes = voteRepository.findByUserIdAndPostIdIn(userId, getPostIds(posts));
+        updatePostsWithCurrVote(posts, votes);
+        return posts;
     }
 
     @Override
