@@ -85,6 +85,7 @@ public class PostServiceImpl implements PostService {
                 .collect(Collectors.toList());
         if (userId != NO_USER_ID) {
             updatePostsWithCurrVote(posts, userId);
+            updateCommentsWithCurrVoteFromPosts(posts, userId);
         }
         return posts;
 
@@ -210,6 +211,25 @@ public class PostServiceImpl implements PostService {
     private List<Integer> getCommentIds(List<CommentDTO> comments) {
         return comments
                 .stream()
+                .map(CommentDTO::getId)
+                .collect(Collectors.toList());
+    }
+
+    private void updateCommentsWithCurrVoteFromPosts(List<PostDTO> posts, int userId) {
+        List<Vote> votes = voteRepository.findByUserIdAndCommentIdIn(userId, getCommentIdsFromPosts(posts));
+        for (Vote vote : votes) {
+            for (PostDTO post : posts) {
+                post.getComments().stream()
+                        .filter(commentDTO -> commentDTO.getId() == vote.getCommentId())
+                        .findFirst()
+                        .ifPresent(commentDTO -> commentDTO.setCurrVote(vote.getVoteType()));
+            }
+        }
+    }
+
+    private List<Integer> getCommentIdsFromPosts(List<PostDTO> posts) {
+        return posts.stream()
+                .flatMap(post -> post.getComments().stream())
                 .map(CommentDTO::getId)
                 .collect(Collectors.toList());
     }
