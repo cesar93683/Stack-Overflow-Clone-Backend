@@ -10,9 +10,9 @@ public interface PostService {
 
     List<PostDTO> getPostsByUserId(int userId, int page, boolean sortedByVotes, int userIdIfExists);
 
-    PostDTO getPost(int id) throws PostException;
+    PostDTO getPost(int postId, int userId) throws PostException;
 
-    List<PostDTO> getPostResponses(int postId, int page, boolean sortedByVotes);
+    List<PostDTO> getPostResponses(int postId, int page, boolean sortedByVotes, int userId);
 
     int createPost(String title, String content, int postResponseId, int userId) throws PostException;
 

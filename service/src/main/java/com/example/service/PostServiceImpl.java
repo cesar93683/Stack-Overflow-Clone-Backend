@@ -40,28 +40,10 @@ public class PostServiceImpl implements PostService {
                 .stream()
                 .map((Post post) -> new PostDTO(post, false))
                 .collect(Collectors.toList());
-        if (userId == NO_USER_ID) {
-            return posts;
+        if (userId != NO_USER_ID) {
+            updatePostsWithCurrVote(posts, userId);
         }
-        List<Vote> votes = voteRepository.findByUserIdAndPostIdIn(userId, getPostIds(posts));
-        updatePostsWithCurrVote(posts, votes);
         return posts;
-    }
-
-    private static void updatePostsWithCurrVote(List<PostDTO> posts, List<Vote> votes) {
-        for (Vote vote : votes) {
-            posts.stream()
-                    .filter(post -> post.getId() == vote.getPostId())
-                    .findFirst()
-                    .ifPresent(post -> post.setCurrVote(vote.getVoteType()));
-        }
-    }
-
-    private List<Integer> getPostIds(List<PostDTO> posts) {
-        return posts
-                .stream()
-                .map(PostDTO::getId)
-                .collect(Collectors.toList());
     }
 
     @Override
@@ -71,31 +53,39 @@ public class PostServiceImpl implements PostService {
                 .stream()
                 .map((Post post) -> new PostDTO(post, false))
                 .collect(Collectors.toList());
-        if (userId == NO_USER_ID) {
-            return posts;
+        if (userId != NO_USER_ID) {
+            updatePostsWithCurrVote(posts, userId);
         }
-        List<Vote> votes = voteRepository.findByUserIdAndPostIdIn(userId, getPostIds(posts));
-        updatePostsWithCurrVote(posts, votes);
         return posts;
     }
 
     @Override
-    public PostDTO getPost(int id) throws PostException {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new PostException("Post not found with id: " + id));
+    public PostDTO getPost(int postId, int userId) throws PostException {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostException("Post not found with id: " + postId));
         if (post.getPostResponseId() != -1) {
             throw new PostException("Post is a post response");
         }
-        return new PostDTO(post, true);
+        PostDTO postDTO = new PostDTO(post, true);
+        if (userId != NO_USER_ID) {
+            voteRepository.findByUserIdAndPostId(userId, postId)
+                    .ifPresent(value -> postDTO.setCurrVote(value.getVoteType()));
+        }
+        return postDTO;
     }
 
     @Override
-    public List<PostDTO> getPostResponses(int postId, int page, boolean sortedByVotes) {
+    public List<PostDTO> getPostResponses(int postId, int page, boolean sortedByVotes, int userId) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sortedByVotes ? "votes" : "id").descending());
-        return postRepository.findAllByPostResponseId(postId, pageable)
+        List<PostDTO> posts = postRepository.findAllByPostResponseId(postId, pageable)
                 .stream()
                 .map((Post post) -> new PostDTO(post, true))
                 .collect(Collectors.toList());
+        if (userId != NO_USER_ID) {
+            updatePostsWithCurrVote(posts, userId);
+        }
+        return posts;
+
     }
 
     @Override
@@ -186,6 +176,23 @@ public class PostServiceImpl implements PostService {
         commentRepository.save(comment);
         vote.setVoteType(voteType);
         voteRepository.save(vote);
+    }
+
+    private void updatePostsWithCurrVote(List<PostDTO> posts, int userId) {
+        List<Vote> votes = voteRepository.findByUserIdAndPostIdIn(userId, getPostIds(posts));
+        for (Vote vote : votes) {
+            posts.stream()
+                    .filter(post -> post.getId() == vote.getPostId())
+                    .findFirst()
+                    .ifPresent(post -> post.setCurrVote(vote.getVoteType()));
+        }
+    }
+
+    private List<Integer> getPostIds(List<PostDTO> posts) {
+        return posts
+                .stream()
+                .map(PostDTO::getId)
+                .collect(Collectors.toList());
     }
 
     private int getVoteDiff(String oldVoteType, String newVoteType) {

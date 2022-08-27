@@ -56,7 +56,7 @@ public class PostController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getPost(@PathVariable String id) {
         try {
-            return ResponseEntity.ok(postService.getPost(Integer.parseInt(id)));
+            return ResponseEntity.ok(postService.getPost(Integer.parseInt(id), getUserIdIfExists()));
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(1));
@@ -69,7 +69,8 @@ public class PostController {
         try {
             return ResponseEntity.ok(postService.getPostResponses(Integer.parseInt(postId),
                     page != null ? Integer.parseInt(page) : 0,
-                    Boolean.parseBoolean(sortedByVotes)));
+                    Boolean.parseBoolean(sortedByVotes),
+                    getUserIdIfExists()));
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(1));
