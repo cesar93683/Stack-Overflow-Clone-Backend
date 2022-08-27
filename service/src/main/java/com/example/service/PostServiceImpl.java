@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.dto.CommentDTO;
 import com.example.dto.PostDTO;
 import com.example.entity.Comment;
 import com.example.entity.Post;
@@ -70,6 +71,7 @@ public class PostServiceImpl implements PostService {
         if (userId != NO_USER_ID) {
             voteRepository.findByUserIdAndPostId(userId, postId)
                     .ifPresent(value -> postDTO.setCurrVote(value.getVoteType()));
+            updateCommentsWithCurrVote(postDTO.getComments(), userId);
         }
         return postDTO;
     }
@@ -192,6 +194,23 @@ public class PostServiceImpl implements PostService {
         return posts
                 .stream()
                 .map(PostDTO::getId)
+                .collect(Collectors.toList());
+    }
+
+    private void updateCommentsWithCurrVote(List<CommentDTO> comments, int userId) {
+        List<Vote> votes = voteRepository.findByUserIdAndCommentIdIn(userId, getCommentIds(comments));
+        for (Vote vote : votes) {
+            comments.stream()
+                    .filter(comment -> comment.getId() == vote.getCommentId())
+                    .findFirst()
+                    .ifPresent(comment -> comment.setCurrVote(vote.getVoteType()));
+        }
+    }
+
+    private List<Integer> getCommentIds(List<CommentDTO> comments) {
+        return comments
+                .stream()
+                .map(CommentDTO::getId)
                 .collect(Collectors.toList());
     }
 

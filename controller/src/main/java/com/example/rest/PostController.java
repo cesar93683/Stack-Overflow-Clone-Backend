@@ -137,9 +137,9 @@ public class PostController {
     @PostMapping("/comments")
     public ResponseEntity<?> createComment(@Valid @RequestBody CreateCommentRequest createCommentRequest) {
         try {
-            int postId = postService.createComment(createCommentRequest.getContent(),
+            int commentId = postService.createComment(createCommentRequest.getContent(),
                     Integer.parseInt(createCommentRequest.getPostId()), getUserId());
-            return ResponseEntity.ok(new CreatePostResponse(0, postId));
+            return ResponseEntity.ok(new CreateCommentResponse(0, commentId));
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(1));
