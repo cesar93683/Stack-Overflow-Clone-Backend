@@ -13,4 +13,6 @@ public interface UserService {
     boolean existsByEmail(String email);
 
     void register(User user);
+
+    int getUserId(String username) throws UserException;
 }

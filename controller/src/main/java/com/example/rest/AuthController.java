@@ -50,7 +50,8 @@ public class AuthController {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
             ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
-            return ResponseEntity.ok().body(new LoginResponse(0, jwtCookie.getValue()));
+            int userId = userService.getUserId(loginRequest.getUsername());
+            return ResponseEntity.ok().body(new LoginResponse(0, jwtCookie.getValue(), userId));
         } catch (BadCredentialsException e) {
             return ResponseEntity.ok().body(new GenericResponse(ERROR_CODE_INVALID_LOGIN));
         } catch (Exception e) {

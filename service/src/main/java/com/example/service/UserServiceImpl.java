@@ -33,4 +33,12 @@ public class UserServiceImpl implements UserService {
     public void register(User user) {
         userRepository.save(user);
     }
+
+    @Override
+    public int getUserId(String username) throws UserException {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserException("User not found with username: " + username));
+        return user.getId();
+    }
+
 }
