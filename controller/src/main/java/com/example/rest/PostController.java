@@ -32,8 +32,13 @@ public class PostController {
     public ResponseEntity<?> getPosts(@RequestParam(required = false) String page,
                                       @RequestParam(required = false) String sortedByVotes) {
         try {
+            int userId = -1;
+            try {
+                userId = getUserId();
+            } catch (UserException ignored) {
+            }
             return ResponseEntity.ok(postService.getPosts(page != null ? Integer.parseInt(page) : 0,
-                    Boolean.parseBoolean(sortedByVotes)));
+                    Boolean.parseBoolean(sortedByVotes), userId));
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(1));

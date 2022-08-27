@@ -17,6 +17,7 @@ public class PostDTO {
     private int votes;
     private List<CommentDTO> comments;
     private UserDTO user;
+    private String currVote;
     private Date createdAt;
     private Date updatedAt;
 
@@ -82,6 +83,14 @@ public class PostDTO {
 
     public void setUser(UserDTO user) {
         this.user = user;
+    }
+
+    public String getCurrVote() {
+        return currVote;
+    }
+
+    public void setCurrVote(String currVote) {
+        this.currVote = currVote;
     }
 
     public Date getCreatedAt() {

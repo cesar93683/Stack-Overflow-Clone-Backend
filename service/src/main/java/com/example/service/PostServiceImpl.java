@@ -3,13 +3,13 @@ package com.example.service;
 import com.example.dto.PostDTO;
 import com.example.entity.Comment;
 import com.example.entity.Post;
-import com.example.entity.Vote;
 import com.example.entity.User;
+import com.example.entity.Vote;
 import com.example.exceptions.PostException;
 import com.example.repository.CommentRepository;
 import com.example.repository.PostRepository;
-import com.example.repository.VoteRepository;
 import com.example.repository.UserRepository;
+import com.example.repository.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,11 +35,33 @@ public class PostServiceImpl implements PostService {
     private CommentRepository commentRepository;
 
     @Override
-    public List<PostDTO> getPosts(int page, boolean sortedByVotes) {
+    public List<PostDTO> getPosts(int page, boolean sortedByVotes, int userId) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sortedByVotes ? "votes" : "id").descending());
-        return postRepository.findAllByPostResponseId(-1, pageable)
+        List<PostDTO> posts = postRepository.findAllByPostResponseId(-1, pageable)
                 .stream()
                 .map((Post post) -> new PostDTO(post, false))
+                .collect(Collectors.toList());
+        if (userId == -1) {
+            return posts;
+        }
+        List<Vote> votes = voteRepository.findByUserIdAndPostIdIn(userId, getPostIds(posts));
+        updatePostsWithCurrVote(posts, votes);
+        return posts;
+    }
+
+    private static void updatePostsWithCurrVote(List<PostDTO> posts, List<Vote> votes) {
+        for (Vote vote : votes) {
+            posts.stream()
+                    .filter(post -> post.getId() == vote.getPostId())
+                    .findFirst()
+                    .ifPresent(post -> post.setCurrVote(vote.getVoteType()));
+        }
+    }
+
+    private List<Integer> getPostIds(List<PostDTO> posts) {
+        return posts
+                .stream()
+                .map(PostDTO::getId)
                 .collect(Collectors.toList());
     }
 
