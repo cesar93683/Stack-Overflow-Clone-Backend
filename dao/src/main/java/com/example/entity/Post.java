@@ -52,7 +52,7 @@ public class Post {
         this.id = 0;
         this.title = title;
         this.content = content;
-        this.votes = 0;
+        this.votes = 1;
         this.numPostResponses = 0;
         this.postResponseId = postResponseId;
         this.user = user;

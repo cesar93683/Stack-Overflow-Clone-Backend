@@ -106,7 +106,9 @@ public class PostServiceImpl implements PostService {
             postRepository.save(postResponseParent);
         }
         Post post = new Post(title, content, user, postResponseId);
-        return postRepository.save(post).getId();
+        int postId = postRepository.save(post).getId();
+        voteRepository.save(new Vote(userId, postId, -1, UP_VOTE));
+        return postId;
     }
 
     @Override
