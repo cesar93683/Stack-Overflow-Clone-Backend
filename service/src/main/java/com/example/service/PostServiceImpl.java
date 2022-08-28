@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -116,6 +117,7 @@ public class PostServiceImpl implements PostService {
             throw new PostException("User with id: " + userId + " did not create post with id: " + postId);
         }
         post.setContent(content);
+        post.setUpdatedAt(new Date());
         postRepository.save(post);
     }
 
@@ -162,6 +164,7 @@ public class PostServiceImpl implements PostService {
             throw new PostException("User with id: " + userId + " did not create comment with id: " + commentId);
         }
         comment.setContent(content);
+        comment.setUpdatedAt(new Date());
         commentRepository.save(comment);
     }
 

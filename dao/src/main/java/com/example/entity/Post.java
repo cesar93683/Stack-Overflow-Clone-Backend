@@ -40,11 +40,9 @@ public class Post {
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
     private User user;
 
-    @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private Date createdAt;
 
-    @LastModifiedDate
     @Column(name = "updated_at")
     private Date updatedAt;
 
@@ -60,6 +58,7 @@ public class Post {
         this.numPostResponses = 0;
         this.postResponseId = postResponseId;
         this.user = user;
+        this.createdAt = new Date();
     }
 
     public int getId() {

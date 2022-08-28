@@ -31,11 +31,9 @@ public class Comment {
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
     private User user;
 
-    @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private Date createdAt;
 
-    @LastModifiedDate
     @Column(name = "updated_at")
     private Date updatedAt;
 
@@ -49,6 +47,7 @@ public class Comment {
         this.votes = 0;
         this.post = post;
         this.user = user;
+        this.createdAt = new Date();
     }
 
     public int getId() {
