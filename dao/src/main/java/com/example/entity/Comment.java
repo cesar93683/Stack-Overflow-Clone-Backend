@@ -34,7 +34,7 @@ public class Comment {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Date createdAt;
 
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", nullable = false)
     private Date updatedAt;
 
     @SuppressWarnings("unused")
@@ -48,6 +48,7 @@ public class Comment {
         this.post = post;
         this.user = user;
         this.createdAt = new Date();
+        this.updatedAt = createdAt;
     }
 
     public int getId() {

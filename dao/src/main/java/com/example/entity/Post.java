@@ -59,6 +59,7 @@ public class Post {
         this.postResponseId = postResponseId;
         this.user = user;
         this.createdAt = new Date();
+        this.updatedAt = createdAt;
     }
 
     public int getId() {
