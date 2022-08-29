@@ -156,7 +156,10 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException("Post not found with id: " + postId));
         Comment comment = new Comment(content, user, post);
-        return commentRepository.save(comment).getId();
+        int commentId = commentRepository.save(comment).getId();
+        comment.setId(commentId);
+        voteRepository.save(new Vote(user, null, comment, UP_VOTE));
+        return postId;
     }
 
     @Override
