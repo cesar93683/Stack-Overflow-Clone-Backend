@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.dto.CommentDTO;
 import com.example.dto.PostDTO;
 import com.example.exceptions.PostException;
 
@@ -22,7 +23,7 @@ public interface PostService {
 
     void votePost(int userId, int postId, String vote) throws PostException;
 
-    int createComment(String content, int postId, int userId) throws PostException;
+    CommentDTO createComment(String content, int postId, int userId) throws PostException;
 
     void updateComment(int commentId, String content, int userId) throws PostException;
 

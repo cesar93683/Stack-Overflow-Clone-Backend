@@ -150,7 +150,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public int createComment(String content, int postId, int userId) throws PostException {
+    public CommentDTO createComment(String content, int postId, int userId) throws PostException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new PostException("User not found with id: " + userId));
         Post post = postRepository.findById(postId)
@@ -159,7 +159,9 @@ public class PostServiceImpl implements PostService {
         int commentId = commentRepository.save(comment).getId();
         comment.setId(commentId);
         voteRepository.save(new Vote(user, null, comment, UP_VOTE));
-        return commentId;
+        CommentDTO commentDTO = new CommentDTO(comment);
+        commentDTO.setCurrVote(UP_VOTE);
+        return commentDTO;
     }
 
     @Override
