@@ -85,7 +85,7 @@ public class PostController {
             String postResponseId = createPostRequest.getPostResponseId();
             if (!((title != null && content != null && postResponseId == null) ||
                     ((title == null && content != null && postResponseId != null)))) {
-                throw new PostException("Invalid content passed in");
+                throw new PostException("Invalid request");
             }
             int postId = postService.createPost(title, content,
                     postResponseId != null ? Integer.parseInt(postResponseId) : -1, getUserId());
