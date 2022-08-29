@@ -50,8 +50,8 @@ CREATE TABLE `vote` (
   `id` int NOT NULL AUTO_INCREMENT,
   `vote` varchar(9) NOT NULL,
   `user_id` int NOT NULL,
-  `post_id` int NOT NULL,
-  `comment_id` int NOT NULL,
+  `post_id` int,
+  `comment_id` int,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 

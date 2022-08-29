@@ -14,23 +14,26 @@ public class Vote {
     @Column(name = "vote", nullable = false)
     private String voteType;
 
-    @Column(name = "user_id", nullable = false, updatable = false)
-    private int userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false, updatable = false)
+    private User user;
 
-    @Column(name = "post_id", nullable = false, updatable = false)
-    private int postId;
+    @ManyToOne
+    @JoinColumn(name = "post_id", updatable = false)
+    private Post post;
 
-    @Column(name = "comment_id", nullable = false, updatable = false)
-    private int commentId;
+    @ManyToOne
+    @JoinColumn(name = "comment_id", updatable = false)
+    private Comment comment;
 
     @SuppressWarnings("unused")
     public Vote() {
     }
 
-    public Vote(int userId, int postId, int commentId, String voteType) {
-        this.userId = userId;
-        this.commentId = commentId;
-        this.postId = postId;
+    public Vote(User user, Post post, Comment comment, String voteType) {
+        this.user = user;
+        this.comment = comment;
+        this.post = post;
         this.voteType = voteType;
     }
 
@@ -50,27 +53,27 @@ public class Vote {
         this.voteType = voteType;
     }
 
-    public int getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public int getPostId() {
-        return postId;
+    public Post getPost() {
+        return post;
     }
 
-    public void setPostId(int postId) {
-        this.postId = postId;
+    public void setPost(Post post) {
+        this.post = post;
     }
 
-    public int getCommentId() {
-        return commentId;
+    public Comment getComment() {
+        return comment;
     }
 
-    public void setCommentId(int commentId) {
-        this.commentId = commentId;
+    public void setComment(Comment comment) {
+        this.comment = comment;
     }
 }

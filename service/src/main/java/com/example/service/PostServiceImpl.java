@@ -107,7 +107,8 @@ public class PostServiceImpl implements PostService {
         }
         Post post = new Post(title, content, user, postResponseId);
         int postId = postRepository.save(post).getId();
-        voteRepository.save(new Vote(userId, postId, -1, UP_VOTE));
+        post.setId(postId);
+        voteRepository.save(new Vote(user, post, null, UP_VOTE));
         return postId;
     }
 
@@ -140,7 +141,7 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException("Post not found with id: " + postId));
         Vote vote = voteRepository.findByUserIdAndPostId(user.getId(), postId)
-                .orElse(new Vote(userId, postId, -1, NEUTRAL));
+                .orElse(new Vote(user, post, null, NEUTRAL));
 
         post.setVotes(post.getVotes() + getVoteDiff(vote.getVoteType(), voteType));
         postRepository.save(post);
@@ -187,7 +188,7 @@ public class PostServiceImpl implements PostService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new PostException("Comment not found with id: " + commentId));
         Vote vote = voteRepository.findByUserIdAndCommentId(user.getId(), commentId)
-                .orElse(new Vote(userId, -1, commentId, NEUTRAL));
+                .orElse(new Vote(user, null, comment, NEUTRAL));
 
         comment.setVotes(comment.getVotes() + getVoteDiff(vote.getVoteType(), voteType));
         commentRepository.save(comment);
@@ -199,7 +200,7 @@ public class PostServiceImpl implements PostService {
         List<Vote> votes = voteRepository.findByUserIdAndPostIdIn(userId, getPostIds(posts));
         for (Vote vote : votes) {
             posts.stream()
-                    .filter(post -> post.getId() == vote.getPostId())
+                    .filter(post -> post.getId() == vote.getPost().getId())
                     .findFirst()
                     .ifPresent(post -> post.setCurrVote(vote.getVoteType()));
         }
@@ -216,7 +217,7 @@ public class PostServiceImpl implements PostService {
         List<Vote> votes = voteRepository.findByUserIdAndCommentIdIn(userId, getCommentIds(comments));
         for (Vote vote : votes) {
             comments.stream()
-                    .filter(comment -> comment.getId() == vote.getCommentId())
+                    .filter(comment -> comment.getId() == vote.getComment().getId())
                     .findFirst()
                     .ifPresent(comment -> comment.setCurrVote(vote.getVoteType()));
         }
@@ -234,7 +235,7 @@ public class PostServiceImpl implements PostService {
         for (Vote vote : votes) {
             for (PostDTO post : posts) {
                 post.getComments().stream()
-                        .filter(commentDTO -> commentDTO.getId() == vote.getCommentId())
+                        .filter(commentDTO -> commentDTO.getId() == vote.getComment().getId())
                         .findFirst()
                         .ifPresent(commentDTO -> commentDTO.setCurrVote(vote.getVoteType()));
             }
