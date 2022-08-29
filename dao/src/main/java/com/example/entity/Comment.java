@@ -42,7 +42,7 @@ public class Comment {
     public Comment(String content, User user, Post post) {
         this.id = 0;
         this.content = content;
-        this.votes = 0;
+        this.votes = 1;
         this.post = post;
         this.user = user;
         this.createdAt = new Date();
