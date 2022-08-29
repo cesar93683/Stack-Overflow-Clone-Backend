@@ -159,7 +159,7 @@ public class PostServiceImpl implements PostService {
         int commentId = commentRepository.save(comment).getId();
         comment.setId(commentId);
         voteRepository.save(new Vote(user, null, comment, UP_VOTE));
-        return postId;
+        return commentId;
     }
 
     @Override
