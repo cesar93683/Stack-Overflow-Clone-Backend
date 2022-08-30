@@ -87,9 +87,8 @@ public class PostController {
                     ((title == null && content != null && postResponseId != null)))) {
                 throw new PostException("Invalid request");
             }
-            int postId = postService.createPost(title, content,
-                    postResponseId != null ? Integer.parseInt(postResponseId) : -1, getUserId());
-            return ResponseEntity.ok(new CreatePostResponse(0, postId));
+            return ResponseEntity.ok(postService.createPost(title, content,
+                    postResponseId != null ? Integer.parseInt(postResponseId) : -1, getUserId()));
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(1));

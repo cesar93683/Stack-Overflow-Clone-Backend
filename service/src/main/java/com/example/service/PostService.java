@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.example.dto.CommentDTO;
 import com.example.dto.PostDTO;
+import com.example.entity.Post;
 import com.example.exceptions.PostException;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public interface PostService {
 
     List<PostDTO> getPostResponses(int postId, int page, boolean sortedByVotes, int userId);
 
-    int createPost(String title, String content, int postResponseId, int userId) throws PostException;
+    Post createPost(String title, String content, int postResponseId, int userId) throws PostException;
 
     void updatePost(int postId, String content, int userId) throws PostException;
 
