@@ -8,7 +8,7 @@ public class SignUpRequest {
     @Size(min = 3, max = 20)
     private String username;
 
-    @Size(min = 1, max = 50)
+    @Size(min = 3, max = 320)
     @Email
     private String email;
 
