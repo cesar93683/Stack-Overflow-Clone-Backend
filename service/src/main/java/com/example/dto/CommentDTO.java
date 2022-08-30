@@ -14,7 +14,6 @@ public class CommentDTO {
     private UserDTO user;
     private String currVote;
     private Date createdAt;
-    private Date updatedAt;
 
     public CommentDTO(Comment comment) {
         id = comment.getId();
@@ -22,7 +21,6 @@ public class CommentDTO {
         votes = comment.getVotes();
         user = new UserDTO(comment.getUser());
         createdAt = comment.getCreatedAt();
-        updatedAt = comment.getUpdatedAt();
     }
 
     public int getId() {
@@ -71,14 +69,6 @@ public class CommentDTO {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
 }

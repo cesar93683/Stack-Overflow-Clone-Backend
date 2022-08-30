@@ -15,14 +15,14 @@ public class Comment {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, updatable = false)
     private String content;
 
     @Column(name = "votes", nullable = false)
     private int votes;
 
     @ManyToOne
-    @JoinColumn(name = "post_id", nullable = false)
+    @JoinColumn(name = "post_id", nullable = false, updatable = false)
     private Post post;
 
     @ManyToOne
@@ -31,9 +31,6 @@ public class Comment {
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Date createdAt;
-
-    @Column(name = "updated_at", nullable = false)
-    private Date updatedAt;
 
     @SuppressWarnings("unused")
     public Comment() {
@@ -46,7 +43,6 @@ public class Comment {
         this.post = post;
         this.user = user;
         this.createdAt = new Date();
-        this.updatedAt = createdAt;
     }
 
     public int getId() {
@@ -95,13 +91,5 @@ public class Comment {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }

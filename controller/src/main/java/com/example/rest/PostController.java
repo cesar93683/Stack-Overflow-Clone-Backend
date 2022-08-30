@@ -145,17 +145,6 @@ public class PostController {
         }
     }
 
-    @PutMapping("/comments/{id}")
-    public ResponseEntity<?> updateComment(@Valid @RequestBody UpdateRequest updateRequest, @PathVariable String id) {
-        try {
-            postService.updateComment(Integer.parseInt(id), updateRequest.getContent(), getUserId());
-            return ResponseEntity.ok(new GenericResponse(0));
-        } catch (Exception e) {
-            LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1));
-        }
-    }
-
     @DeleteMapping("/comments/{id}")
     public ResponseEntity<?> deleteComment(@PathVariable String id) {
         try {

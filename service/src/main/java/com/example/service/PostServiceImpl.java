@@ -165,18 +165,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void updateComment(int commentId, String content, int userId) throws PostException {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new PostException("Comment not found with id: " + commentId));
-        if (comment.getUser().getId() != userId) {
-            throw new PostException("User with id: " + userId + " did not create comment with id: " + commentId);
-        }
-        comment.setContent(content);
-        comment.setUpdatedAt(new Date());
-        commentRepository.save(comment);
-    }
-
-    @Override
     public void deleteComment(int commentId, int userId) throws PostException {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new PostException("Comment not found with id: " + commentId));

@@ -25,8 +25,6 @@ public interface PostService {
 
     CommentDTO createComment(String content, int postId, int userId) throws PostException;
 
-    void updateComment(int commentId, String content, int userId) throws PostException;
-
     void deleteComment(int commentId, int userId) throws PostException;
 
     void voteComment(int userId, int commentId, String vote) throws PostException;
