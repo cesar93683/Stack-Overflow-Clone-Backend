@@ -131,6 +131,13 @@ public class PostServiceImpl implements PostService {
         if (post.getUser().getId() != userId) {
             throw new PostException("User with id: " + userId + " did not create post with id: " + postId);
         }
+        int postParentId = post.getPostResponseId();
+        if (postParentId != -1) {
+            Post postParent = postRepository.findById(postParentId)
+                    .orElseThrow(() -> new PostException("Post parent not found with id: " + postParentId));
+            postParent.setNumPostResponses(postParent.getNumPostResponses() - 1);
+            postRepository.save(postParent);
+        }
         postRepository.delete(post);
     }
 
