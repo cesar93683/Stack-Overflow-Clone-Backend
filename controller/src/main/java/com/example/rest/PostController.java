@@ -160,7 +160,6 @@ public class PostController {
     public ResponseEntity<?> voteComment(@Valid @RequestBody VoteRequest voteRequest) {
         try {
             if (!UP_VOTE.equals(voteRequest.getAction()) &&
-                    !DOWN_VOTE.equals(voteRequest.getAction()) &&
                     !NEUTRAL.equals(voteRequest.getAction())) {
                 throw new PostException("Invalid vote action");
             }
