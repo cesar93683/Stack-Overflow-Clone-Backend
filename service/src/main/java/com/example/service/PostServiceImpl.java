@@ -93,7 +93,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post createPost(String title, String content, int postResponseId, int userId) throws PostException {
+    public PostDTO createPost(String title, String content, int postResponseId, int userId) throws PostException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new PostException("User not found with id: " + userId));
         if (postResponseId != -1) {
@@ -112,7 +112,9 @@ public class PostServiceImpl implements PostService {
         int postId = postRepository.save(post).getId();
         post.setId(postId);
         voteRepository.save(new Vote(user, post, null, UP_VOTE));
-        return post;
+        PostDTO postDTO = new PostDTO(post, false);
+        postDTO.setCurrVote(UP_VOTE);
+        return postDTO;
     }
 
     @Override
