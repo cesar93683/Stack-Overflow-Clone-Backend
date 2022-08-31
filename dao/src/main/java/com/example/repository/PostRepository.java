@@ -12,4 +12,6 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     List<Post> findAllByUserIdAndPostResponseId(int userId, int postResponseId, Pageable pageable);
 
     List<Post> findAllByPostResponseId(int postResponseId, Pageable pageable);
+
+    List<Post> findAllByPostResponseId(int postResponseId);
 }

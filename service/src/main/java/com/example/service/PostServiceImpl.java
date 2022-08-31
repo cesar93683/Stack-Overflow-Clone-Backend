@@ -102,6 +102,9 @@ public class PostServiceImpl implements PostService {
             if (postResponseParent.getPostResponseId() != -1) {
                 throw new PostException("Cannot create post response to a post response");
             }
+            if (hasResponseToThisPost(userId, postResponseId)) {
+                throw new PostException("User with id " + user + " has already created a post response to post with id: " + postResponseId);
+            }
             postResponseParent.setNumPostResponses(postResponseParent.getNumPostResponses() + 1);
             postRepository.save(postResponseParent);
         }
@@ -194,6 +197,15 @@ public class PostServiceImpl implements PostService {
         commentRepository.save(comment);
         vote.setVoteType(voteType);
         voteRepository.save(vote);
+    }
+
+    private boolean hasResponseToThisPost(int userId, int postResponseId) {
+        for (Post post : postRepository.findAllByPostResponseId(postResponseId)) {
+            if (post.getUser().getId() == userId) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void updatePostsWithCurrVote(List<PostDTO> posts, int userId) {
