@@ -11,6 +11,8 @@ public interface QuestionService {
 
     List<QuestionDTO> getQuestionsByUserId(int userId, int page, boolean sortedByVotes, int userIdIfExists);
 
+    List<QuestionDTO> getQuestionsAnsweredByUserId(int userId, int page, boolean sortedByVotes, int userIdIfExists);
+
     QuestionDTO getQuestion(int questionId, int userId) throws ServiceException;
 
     QuestionDTO createQuestion(String title, String content, int userId) throws ServiceException;

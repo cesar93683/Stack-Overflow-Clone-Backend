@@ -1,11 +1,9 @@
 package com.example.service;
 
+import com.example.dto.AnswerDTO;
 import com.example.dto.CommentDTO;
 import com.example.dto.QuestionDTO;
-import com.example.entity.Comment;
-import com.example.entity.Question;
-import com.example.entity.User;
-import com.example.entity.Vote;
+import com.example.entity.*;
 import com.example.exceptions.ServiceException;
 import com.example.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +57,15 @@ public class QuestionServiceImpl implements QuestionService {
             updateQuestionsWithCurrVote(questions, userId);
         }
         return questions;
+    }
+
+    @Override
+    public List<QuestionDTO> getQuestionsAnsweredByUserId(int userId, int page, boolean sortedByVotes, int userIdIfExists) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(sortedByVotes ? "votes" : "id").descending());
+        return answerRepository.findAllByUserId(userId, pageable)
+                .stream()
+                .map((Answer answer) -> new QuestionDTO(answer.getQuestion(), false))
+                .collect(Collectors.toList());
     }
 
     @Override
