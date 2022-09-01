@@ -1,38 +1,33 @@
 package com.example.rest;
 
 import com.example.exceptions.ServiceException;
-import com.example.exceptions.UserException;
 import com.example.rest.payload.GenericResponse;
-import com.example.rest.payload.post.*;
-import com.example.security.services.UserDetailsImpl;
-import com.example.service.AnswerService;
-import com.example.service.CommentService;
+import com.example.rest.payload.post.CreateCommentRequest;
+import com.example.rest.payload.post.CreatePostRequest;
+import com.example.rest.payload.post.PostVoteRequest;
+import com.example.rest.payload.post.UpdateRequest;
 import com.example.service.QuestionService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static com.example.rest.utils.Utils.getUserId;
+import static com.example.rest.utils.Utils.getUserIdIfExists;
 import static com.example.utils.Constants.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/posts")
-public class PostController {
+public class QuestionController {
 
-    private static final Logger LOGGER = LogManager.getLogger(PostController.class);
+    private static final Logger LOGGER = LogManager.getLogger(QuestionController.class);
 
     @Autowired
     private QuestionService questionService;
-    @Autowired
-    private AnswerService answerService;
-    @Autowired
-    private CommentService commentService;
 
     @GetMapping("/all")
     public ResponseEntity<?> getPosts(@RequestParam(required = false) String page,
@@ -63,20 +58,6 @@ public class PostController {
     public ResponseEntity<?> getPost(@PathVariable String id) {
         try {
             return ResponseEntity.ok(questionService.getQuestion(Integer.parseInt(id), getUserIdIfExists()));
-        } catch (Exception e) {
-            LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1));
-        }
-    }
-
-    @GetMapping("/responses/{postId}")
-    public ResponseEntity<?> getPostResponses(@PathVariable String postId, @RequestParam(required = false) String page,
-                                              @RequestParam(required = false) String sortedByVotes) {
-        try {
-            return ResponseEntity.ok(answerService.getAnswers(Integer.parseInt(postId),
-                    page != null ? Integer.parseInt(page) : 0,
-                    Boolean.parseBoolean(sortedByVotes),
-                    getUserIdIfExists()));
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(1));
@@ -135,54 +116,12 @@ public class PostController {
     @PostMapping("/comments")
     public ResponseEntity<?> createComment(@Valid @RequestBody CreateCommentRequest createCommentRequest) {
         try {
-            return ResponseEntity.ok(commentService.createQuestionComment(createCommentRequest.getContent(),
+            return ResponseEntity.ok(questionService.createQuestionComment(createCommentRequest.getContent(),
                     Integer.parseInt(createCommentRequest.getPostId()), getUserId()));
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(1));
         }
-    }
-
-    @DeleteMapping("/comments/{id}")
-    public ResponseEntity<?> deleteComment(@PathVariable String id) {
-        try {
-            commentService.deleteComment(Integer.parseInt(id), getUserId());
-            return ResponseEntity.ok(new GenericResponse(0));
-        } catch (Exception e) {
-            LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1));
-        }
-    }
-
-    @PostMapping("/comments/vote")
-    public ResponseEntity<?> voteComment(@Valid @RequestBody VoteRequest voteRequest) {
-        try {
-            if (!UP_VOTE.equals(voteRequest.getAction()) &&
-                    !NEUTRAL.equals(voteRequest.getAction())) {
-                throw new ServiceException("Invalid vote action");
-            }
-            commentService.voteComment(getUserId(), Integer.parseInt(voteRequest.getId()), voteRequest.getAction());
-            return ResponseEntity.ok(new GenericResponse(0));
-        } catch (Exception e) {
-            LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1));
-        }
-    }
-
-    private int getUserIdIfExists() {
-        try {
-            return getUserId();
-        } catch (UserException ignored) {
-            return NO_USER_ID;
-        }
-    }
-
-    private int getUserId() throws UserException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
-            return userDetails.getId();
-        }
-        throw new UserException("User id not found");
     }
 
 }

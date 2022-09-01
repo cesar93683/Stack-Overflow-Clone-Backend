@@ -28,6 +28,8 @@ public class AnswerServiceImpl implements AnswerService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private CommentRepository commentRepository;
+    @Autowired
     private VoteRepository voteRepository;
 
     @Override
@@ -104,6 +106,21 @@ public class AnswerServiceImpl implements AnswerService {
         answerRepository.save(answer);
         vote.setVoteType(voteType);
         voteRepository.save(vote);
+    }
+
+    @Override
+    public CommentDTO createAnswerComment(String content, int answerId, int userId) throws ServiceException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ServiceException("User not found with id: " + userId));
+        Answer answer = answerRepository.findById(answerId)
+                .orElseThrow(() -> new ServiceException("Answer not found with id: " + answerId));
+        Comment comment = new Comment(content, user, null, answer);
+        int commentId = commentRepository.save(comment).getId();
+        comment.setId(commentId);
+        voteRepository.save(new Vote(user, null, null, comment, UP_VOTE));
+        CommentDTO commentDTO = new CommentDTO(comment);
+        commentDTO.setCurrVote(UP_VOTE);
+        return commentDTO;
     }
 
     private boolean hasRespondedToThisQuestion(int userId, int questionId) {

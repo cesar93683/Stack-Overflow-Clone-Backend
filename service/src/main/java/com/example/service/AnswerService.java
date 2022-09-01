@@ -1,6 +1,7 @@
 package com.example.service;
 
 import com.example.dto.AnswerDTO;
+import com.example.dto.CommentDTO;
 import com.example.exceptions.ServiceException;
 
 import java.util.List;
@@ -16,4 +17,5 @@ public interface AnswerService {
 
     void voteAnswer(int userId, int answerId, String vote) throws ServiceException;
 
+    CommentDTO createAnswerComment(String content, int answerId, int userId) throws ServiceException;
 }
