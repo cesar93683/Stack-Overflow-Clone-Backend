@@ -19,7 +19,7 @@ public class Vote {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "post_id", updatable = false)
+    @JoinColumn(name = "question_id", updatable = false)
     private Question question;
 
     @ManyToOne

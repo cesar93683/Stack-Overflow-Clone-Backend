@@ -1,4 +1,4 @@
-package com.example.rest.payload.post;
+package com.example.rest.payload.data;
 
 import javax.validation.constraints.Size;
 

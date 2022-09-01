@@ -1,7 +1,7 @@
 package com.example.rest;
 
 import com.example.rest.payload.GenericResponse;
-import com.example.rest.payload.post.CreateCommentRequest;
+import com.example.rest.payload.data.CreateCommentRequest;
 import com.example.service.AnswerService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,7 +42,7 @@ public class AnswerController {
     public ResponseEntity<?> createComment(@Valid @RequestBody CreateCommentRequest createCommentRequest) {
         try {
             return ResponseEntity.ok(answerService.createAnswerComment(createCommentRequest.getContent(),
-                    Integer.parseInt(createCommentRequest.getPostId()), getUserId()));
+                    Integer.parseInt(createCommentRequest.getId()), getUserId()));
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(1));

@@ -1,8 +1,8 @@
-package com.example.rest.payload.post;
+package com.example.rest.payload.data;
 
 import javax.validation.constraints.Size;
 
-public class UpdateRequest {
+public class UpdateContentRequest {
 
     @Size(min = 3, max = 500)
     private String content;

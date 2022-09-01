@@ -2,7 +2,7 @@ package com.example.rest;
 
 import com.example.exceptions.ServiceException;
 import com.example.rest.payload.GenericResponse;
-import com.example.rest.payload.post.VoteRequest;
+import com.example.rest.payload.data.VoteRequest;
 import com.example.service.CommentService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

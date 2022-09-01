@@ -15,7 +15,7 @@ public class QuestionDTO {
     private String title;
     private String content;
     private int votes;
-    private int numPostResponses;
+    private int numAnswers;
     private List<CommentDTO> comments;
     private UserDTO user;
     private String currVote;
@@ -27,7 +27,7 @@ public class QuestionDTO {
         title = question.getTitle();
         content = question.getContent();
         votes = question.getVotes();
-        numPostResponses = question.getNumAnswers();
+        numAnswers = question.getNumAnswers();
         if (includeComments) {
             comments = new ArrayList<>();
             for (Comment comment : question.getComments()) {
@@ -71,12 +71,12 @@ public class QuestionDTO {
         this.votes = votes;
     }
 
-    public int getNumPostResponses() {
-        return numPostResponses;
+    public int getNumAnswers() {
+        return numAnswers;
     }
 
-    public void setNumPostResponses(int numPostResponses) {
-        this.numPostResponses = numPostResponses;
+    public void setNumAnswers(int numAnswers) {
+        this.numAnswers = numAnswers;
     }
 
     public List<CommentDTO> getComments() {

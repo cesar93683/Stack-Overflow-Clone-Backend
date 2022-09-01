@@ -1,4 +1,4 @@
-package com.example.rest.payload.post;
+package com.example.rest.payload.data;
 
 import javax.validation.constraints.Size;
 
@@ -8,7 +8,7 @@ public class CreateCommentRequest {
     private String content;
 
     @Size(min = 1, max = 10)
-    private String postId;
+    private String id;
 
     public String getContent() {
         return content;
@@ -18,12 +18,12 @@ public class CreateCommentRequest {
         this.content = content;
     }
 
-    public String getPostId() {
-        return postId;
+    public String getId() {
+        return id;
     }
 
-    public void setPostId(String postId) {
-        this.postId = postId;
+    public void setId(String id) {
+        this.id = id;
     }
 
 }

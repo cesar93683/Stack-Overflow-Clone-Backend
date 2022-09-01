@@ -1,8 +1,8 @@
-package com.example.rest.payload.post;
+package com.example.rest.payload.data;
 
 import javax.validation.constraints.Size;
 
-public class CreatePostRequest {
+public class CreateQuestionRequest {
 
     @Size(min = 3, max = 50)
     private String title;
