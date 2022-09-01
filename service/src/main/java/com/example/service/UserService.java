@@ -2,11 +2,11 @@ package com.example.service;
 
 import com.example.dto.UserDTO;
 import com.example.entity.User;
-import com.example.exceptions.UserException;
+import com.example.exceptions.ServiceException;
 
 public interface UserService {
 
-    UserDTO getUserById(int id) throws UserException;
+    UserDTO getUserById(int id) throws ServiceException;
 
     boolean existsByUsername(String username);
 
@@ -14,5 +14,5 @@ public interface UserService {
 
     void register(User user);
 
-    int getUserId(String username) throws UserException;
+    int getUserId(String username) throws ServiceException;
 }
