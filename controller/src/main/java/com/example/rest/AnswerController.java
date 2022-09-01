@@ -24,11 +24,11 @@ public class AnswerController {
     @Autowired
     private AnswerService answerService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getAnswers(@PathVariable String id, @RequestParam(required = false) String page,
+    @GetMapping("/{answerId}")
+    public ResponseEntity<?> getAnswersByAnswerId(@PathVariable String answerId, @RequestParam(required = false) String page,
                                         @RequestParam(required = false) String sortedByVotes) {
         try {
-            return ResponseEntity.ok(answerService.getAnswers(Integer.parseInt(id),
+            return ResponseEntity.ok(answerService.getAnswers(Integer.parseInt(answerId),
                     page != null ? Integer.parseInt(page) : 0,
                     Boolean.parseBoolean(sortedByVotes),
                     getUserIdIfExists()));
