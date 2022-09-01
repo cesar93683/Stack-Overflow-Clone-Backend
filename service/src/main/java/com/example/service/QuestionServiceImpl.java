@@ -2,7 +2,10 @@ package com.example.service;
 
 import com.example.dto.CommentDTO;
 import com.example.dto.QuestionDTO;
-import com.example.entity.*;
+import com.example.entity.Comment;
+import com.example.entity.Question;
+import com.example.entity.User;
+import com.example.entity.Vote;
 import com.example.exceptions.ServiceException;
 import com.example.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
