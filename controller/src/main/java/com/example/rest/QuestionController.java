@@ -34,7 +34,7 @@ public class QuestionController {
                                           @RequestParam(required = false) String sortedByVotes) {
         try {
             return ResponseEntity.ok(questionService.getQuestions(page != null ? Integer.parseInt(page) : 0,
-                    Boolean.parseBoolean(sortedByVotes), getUserIdIfExists()));
+                    Boolean.parseBoolean(sortedByVotes)));
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(1));
@@ -46,8 +46,7 @@ public class QuestionController {
                                                   @RequestParam(required = false) String sortedByVotes) {
         try {
             return ResponseEntity.ok(questionService.getQuestionsByUserId(Integer.parseInt(userId),
-                    page != null ? Integer.parseInt(page) : 0, Boolean.parseBoolean(sortedByVotes),
-                    getUserIdIfExists()));
+                    page != null ? Integer.parseInt(page) : 0, Boolean.parseBoolean(sortedByVotes)));
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(1));
@@ -59,8 +58,7 @@ public class QuestionController {
                                                   @RequestParam(required = false) String sortedByVotes) {
         try {
             return ResponseEntity.ok(questionService.getQuestionsAnsweredByUserId(Integer.parseInt(userId),
-                    page != null ? Integer.parseInt(page) : 0, Boolean.parseBoolean(sortedByVotes),
-                    getUserIdIfExists()));
+                    page != null ? Integer.parseInt(page) : 0, Boolean.parseBoolean(sortedByVotes)));
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(1));
@@ -129,7 +127,7 @@ public class QuestionController {
     @PostMapping("/comments")
     public ResponseEntity<?> createComment(@Valid @RequestBody CreateCommentRequest createCommentRequest) {
         try {
-            return ResponseEntity.ok(questionService.createQuestionComment(createCommentRequest.getContent(),
+            return ResponseEntity.ok(questionService.createComment(createCommentRequest.getContent(),
                     Integer.parseInt(createCommentRequest.getId()), getUserId()));
         } catch (Exception e) {
             LOGGER.error(e);

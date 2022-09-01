@@ -7,9 +7,7 @@ import com.example.exceptions.ServiceException;
 import java.util.List;
 
 public interface AnswerService {
-    List<AnswerDTO> getAnswers(int questionId, int userId);
-
-    List<AnswerDTO> getAnswersByUserId(int userId, int page, boolean sortedByVotes, int userIdIfExists);
+    List<AnswerDTO> getAnswersByQuestionId(int questionId, int userId);
 
     AnswerDTO createAnswer(String content, int userId, int questionId) throws ServiceException;
 
@@ -19,5 +17,5 @@ public interface AnswerService {
 
     void voteAnswer(int userId, int answerId, String vote) throws ServiceException;
 
-    CommentDTO createAnswerComment(String content, int answerId, int userId) throws ServiceException;
+    CommentDTO createComment(String content, int answerId, int userId) throws ServiceException;
 }

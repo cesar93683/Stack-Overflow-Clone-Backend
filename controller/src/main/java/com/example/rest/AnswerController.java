@@ -32,20 +32,7 @@ public class AnswerController {
     @GetMapping("/{questionId}")
     public ResponseEntity<?> getAnswersByQuestionId(@PathVariable String questionId) {
         try {
-            return ResponseEntity.ok(answerService.getAnswers(Integer.parseInt(questionId),
-                    getUserIdIfExists()));
-        } catch (Exception e) {
-            LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1));
-        }
-    }
-
-    @GetMapping("/users/{userId}")
-    public ResponseEntity<?> getAnswersByUserId(@PathVariable String userId, @RequestParam(required = false) String page,
-                                                @RequestParam(required = false) String sortedByVotes) {
-        try {
-            return ResponseEntity.ok(answerService.getAnswersByUserId(Integer.parseInt(userId),
-                    page != null ? Integer.parseInt(page) : 0, Boolean.parseBoolean(sortedByVotes),
+            return ResponseEntity.ok(answerService.getAnswersByQuestionId(Integer.parseInt(questionId),
                     getUserIdIfExists()));
         } catch (Exception e) {
             LOGGER.error(e);
@@ -105,7 +92,7 @@ public class AnswerController {
     @PostMapping("/comments")
     public ResponseEntity<?> createComment(@Valid @RequestBody CreateCommentRequest createCommentRequest) {
         try {
-            return ResponseEntity.ok(answerService.createAnswerComment(createCommentRequest.getContent(),
+            return ResponseEntity.ok(answerService.createComment(createCommentRequest.getContent(),
                     Integer.parseInt(createCommentRequest.getId()), getUserId()));
         } catch (Exception e) {
             LOGGER.error(e);

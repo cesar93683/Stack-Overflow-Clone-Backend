@@ -33,7 +33,7 @@ public class AnswerServiceImpl implements AnswerService {
     private VoteRepository voteRepository;
 
     @Override
-    public List<AnswerDTO> getAnswers(int questionId, int userId) {
+    public List<AnswerDTO> getAnswersByQuestionId(int questionId, int userId) {
         List<AnswerDTO> answers = answerRepository.findAllByQuestionId(questionId)
                 .stream()
                 .map((Answer answer) -> new AnswerDTO(answer, true))
@@ -41,19 +41,6 @@ public class AnswerServiceImpl implements AnswerService {
         if (userId != NO_USER_ID) {
             updateAnswersWithCurrVote(answers, userId);
             updateCommentsWithCurrVoteFromAnswers(answers, userId);
-        }
-        return answers;
-    }
-
-    @Override
-    public List<AnswerDTO> getAnswersByUserId(int userId, int page, boolean sortedByVotes, int userIdIfExists) {
-        Pageable pageable = PageRequest.of(page, 10, Sort.by(sortedByVotes ? "votes" : "id").descending());
-        List<AnswerDTO> answers = answerRepository.findAllByUserId(userId, pageable)
-                .stream()
-                .map((Answer answer) -> new AnswerDTO(answer, false))
-                .collect(Collectors.toList());
-        if (userId != NO_USER_ID) {
-            updateAnswersWithCurrVote(answers, userId);
         }
         return answers;
     }
@@ -69,7 +56,6 @@ public class AnswerServiceImpl implements AnswerService {
         }
         question.setNumAnswers(question.getNumAnswers() + 1);
         questionRepository.save(question);
-
 
         Answer answer = new Answer(content, user, question);
         int answerId = answerRepository.save(answer).getId();
@@ -121,7 +107,7 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public CommentDTO createAnswerComment(String content, int answerId, int userId) throws ServiceException {
+    public CommentDTO createComment(String content, int answerId, int userId) throws ServiceException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException("User not found with id: " + userId));
         Answer answer = answerRepository.findById(answerId)
@@ -133,15 +119,6 @@ public class AnswerServiceImpl implements AnswerService {
         CommentDTO commentDTO = new CommentDTO(comment);
         commentDTO.setCurrVote(UP_VOTE);
         return commentDTO;
-    }
-
-    private boolean hasRespondedToThisQuestion(int userId, int questionId) {
-        for (Answer answer : answerRepository.findAllByQuestionId(questionId)) {
-            if (answer.getUser().getId() == userId) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void updateAnswersWithCurrVote(List<AnswerDTO> answers, int userId) {
@@ -178,5 +155,14 @@ public class AnswerServiceImpl implements AnswerService {
                 .flatMap(answer -> answer.getComments().stream())
                 .map(CommentDTO::getId)
                 .collect(Collectors.toList());
+    }
+
+    private boolean hasRespondedToThisQuestion(int userId, int questionId) {
+        for (Answer answer : answerRepository.findAllByQuestionId(questionId)) {
+            if (answer.getUser().getId() == userId) {
+                return true;
+            }
+        }
+        return false;
     }
 }

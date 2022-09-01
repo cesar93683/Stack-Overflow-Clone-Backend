@@ -1,6 +1,5 @@
 package com.example.service;
 
-import com.example.dto.AnswerDTO;
 import com.example.dto.CommentDTO;
 import com.example.dto.QuestionDTO;
 import com.example.entity.*;
@@ -34,33 +33,25 @@ public class QuestionServiceImpl implements QuestionService {
     private CommentRepository commentRepository;
 
     @Override
-    public List<QuestionDTO> getQuestions(int page, boolean sortedByVotes, int userId) {
+    public List<QuestionDTO> getQuestions(int page, boolean sortedByVotes) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sortedByVotes ? "votes" : "id").descending());
-        List<QuestionDTO> questions = questionRepository.findAll(pageable)
+        return questionRepository.findAll(pageable)
                 .stream()
                 .map((Question question) -> new QuestionDTO(question, false))
                 .collect(Collectors.toList());
-        if (userId != NO_USER_ID) {
-            updateQuestionsWithCurrVote(questions, userId);
-        }
-        return questions;
     }
 
     @Override
-    public List<QuestionDTO> getQuestionsByUserId(int userId, int page, boolean sortedByVotes, int userIdIfExists) {
+    public List<QuestionDTO> getQuestionsByUserId(int userId, int page, boolean sortedByVotes) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sortedByVotes ? "votes" : "id").descending());
-        List<QuestionDTO> questions = questionRepository.findAllByUserId(userId, pageable)
+        return questionRepository.findAllByUserId(userId, pageable)
                 .stream()
                 .map((Question question) -> new QuestionDTO(question, false))
                 .collect(Collectors.toList());
-        if (userId != NO_USER_ID) {
-            updateQuestionsWithCurrVote(questions, userId);
-        }
-        return questions;
     }
 
     @Override
-    public List<QuestionDTO> getQuestionsAnsweredByUserId(int userId, int page, boolean sortedByVotes, int userIdIfExists) {
+    public List<QuestionDTO> getQuestionsAnsweredByUserId(int userId, int page, boolean sortedByVotes) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sortedByVotes ? "votes" : "id").descending());
         return answerRepository.findAllByUserId(userId, pageable)
                 .stream()
@@ -74,8 +65,7 @@ public class QuestionServiceImpl implements QuestionService {
                 .orElseThrow(() -> new ServiceException("Question not found with id: " + questionId));
         QuestionDTO questionDTO = new QuestionDTO(question, true);
         if (userId != NO_USER_ID) {
-            voteRepository.findByUserIdAndQuestionId(userId, questionId)
-                    .ifPresent(value -> questionDTO.setCurrVote(value.getVoteType()));
+            updatedQuestionWithCurrVote(userId, questionDTO);
             updateCommentsWithCurrVote(questionDTO.getComments(), userId);
         }
         return questionDTO;
@@ -132,7 +122,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public CommentDTO createQuestionComment(String content, int questionId, int userId) throws ServiceException {
+    public CommentDTO createComment(String content, int questionId, int userId) throws ServiceException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException("User not found with id: " + userId));
         Question question = questionRepository.findById(questionId)
@@ -146,21 +136,9 @@ public class QuestionServiceImpl implements QuestionService {
         return commentDTO;
     }
 
-    private void updateQuestionsWithCurrVote(List<QuestionDTO> questions, int userId) {
-        List<Vote> votes = voteRepository.findByUserIdAndQuestionIdIn(userId, getQuestionIds(questions));
-        for (Vote vote : votes) {
-            questions.stream()
-                    .filter(question -> question.getId() == vote.getQuestion().getId())
-                    .findFirst()
-                    .ifPresent(question -> question.setCurrVote(vote.getVoteType()));
-        }
-    }
-
-    private List<Integer> getQuestionIds(List<QuestionDTO> questions) {
-        return questions
-                .stream()
-                .map(QuestionDTO::getId)
-                .collect(Collectors.toList());
+    private void updatedQuestionWithCurrVote(int userId, QuestionDTO questionDTO) {
+        voteRepository.findByUserIdAndQuestionId(userId, questionDTO.getId())
+                .ifPresent(value -> questionDTO.setCurrVote(value.getVoteType()));
     }
 
     private void updateCommentsWithCurrVote(List<CommentDTO> comments, int userId) {
