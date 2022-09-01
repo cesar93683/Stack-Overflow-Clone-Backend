@@ -2,7 +2,10 @@ package com.example.rest;
 
 import com.example.exceptions.ServiceException;
 import com.example.rest.payload.GenericResponse;
-import com.example.rest.payload.data.*;
+import com.example.rest.payload.data.CreateCommentRequest;
+import com.example.rest.payload.data.CreateQuestionRequest;
+import com.example.rest.payload.data.UpdateContentRequest;
+import com.example.rest.payload.data.VoteRequest;
 import com.example.service.QuestionService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,7 +31,7 @@ public class QuestionController {
 
     @GetMapping("/all")
     public ResponseEntity<?> getQuestions(@RequestParam(required = false) String page,
-                                      @RequestParam(required = false) String sortedByVotes) {
+                                          @RequestParam(required = false) String sortedByVotes) {
         try {
             return ResponseEntity.ok(questionService.getQuestions(page != null ? Integer.parseInt(page) : 0,
                     Boolean.parseBoolean(sortedByVotes), getUserIdIfExists()));
@@ -40,7 +43,7 @@ public class QuestionController {
 
     @GetMapping("/users/{userId}")
     public ResponseEntity<?> getQuestionsByUserId(@PathVariable String userId, @RequestParam(required = false) String page,
-                                              @RequestParam(required = false) String sortedByVotes) {
+                                                  @RequestParam(required = false) String sortedByVotes) {
         try {
             return ResponseEntity.ok(questionService.getQuestionsByUserId(Integer.parseInt(userId),
                     page != null ? Integer.parseInt(page) : 0, Boolean.parseBoolean(sortedByVotes),
