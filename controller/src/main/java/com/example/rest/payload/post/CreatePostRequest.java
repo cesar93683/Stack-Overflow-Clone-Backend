@@ -10,9 +10,6 @@ public class CreatePostRequest {
     @Size(min = 3, max = 500)
     private String content;
 
-    @Size(min = 1, max = 10)
-    private String postResponseId;
-
     public String getTitle() {
         return title;
     }
@@ -27,14 +24,6 @@ public class CreatePostRequest {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public String getPostResponseId() {
-        return postResponseId;
-    }
-
-    public void setPostResponseId(String postResponseId) {
-        this.postResponseId = postResponseId;
     }
 
 }

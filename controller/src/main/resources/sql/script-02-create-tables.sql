@@ -28,16 +28,29 @@ insert into user (id, email, username, password)
 VALUES(NULL, "user05@gmail.com", "user05", "$2a$10$c8D7sSh28qon5iwSzwaYj.o47lTfdq0ECtxAKd8rFo9q1G1bsaYcy");
 
 
-DROP TABLE IF EXISTS `post`;
+DROP TABLE IF EXISTS `question`;
 
-CREATE TABLE `post` (
+CREATE TABLE `question` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
   `title` varchar(50),
   `content` varchar(500) NOT NULL,
   `votes` int NOT NULL,
-  `num_post_responses` int NOT NULL,
-  `post_response_id` int,
+  `num_answers` int NOT NULL,
+  `created_at` DATETIME NOT NULL,
+  `updated_at` DATETIME,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+
+DROP TABLE IF EXISTS `answer`;
+
+CREATE TABLE `answer` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `question_id` int NOT NULL,
+  `content` varchar(500) NOT NULL,
+  `votes` int NOT NULL,
   `created_at` DATETIME NOT NULL,
   `updated_at` DATETIME,
   PRIMARY KEY (`id`)
@@ -50,7 +63,8 @@ CREATE TABLE `vote` (
   `id` int NOT NULL AUTO_INCREMENT,
   `vote` varchar(9) NOT NULL,
   `user_id` int NOT NULL,
-  `post_id` int,
+  `question_id` int,
+  `answer_id` int,
   `comment_id` int,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
@@ -63,7 +77,8 @@ CREATE TABLE `comment` (
   `user_id` int NOT NULL,
   `content` varchar(100) NOT NULL,
   `votes` int NOT NULL,
-  `post_id` int NOT NULL,
+  `question_id` int,
+  `answer_id` int,
   `created_at` DATETIME NOT NULL,
   `updated_at` DATETIME,
   PRIMARY KEY (`id`)

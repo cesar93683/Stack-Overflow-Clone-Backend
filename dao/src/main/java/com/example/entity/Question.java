@@ -7,9 +7,9 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "post")
+@Table(name = "question")
 @EntityListeners(AuditingEntityListener.class)
-public class Post {
+public class Question {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,13 +25,10 @@ public class Post {
     @Column(name = "votes", nullable = false)
     private int votes;
 
-    @Column(name = "num_post_responses", nullable = false)
-    private int numPostResponses;
+    @Column(name = "num_answers", nullable = false)
+    private int numAnswers;
 
-    @Column(name = "post_response_id", updatable = false)
-    private int postResponseId;
-
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "question")
     private List<Comment> comments;
 
     @ManyToOne
@@ -45,16 +42,15 @@ public class Post {
     private Date updatedAt;
 
     @SuppressWarnings("unused")
-    public Post() {
+    public Question() {
     }
 
-    public Post(String title, String content, User user, int postResponseId) {
+    public Question(String title, String content, User user) {
         this.id = 0;
         this.title = title;
         this.content = content;
         this.votes = 1;
-        this.numPostResponses = 0;
-        this.postResponseId = postResponseId;
+        this.numAnswers = 0;
         this.user = user;
         this.createdAt = new Date();
         this.updatedAt = createdAt;
@@ -92,20 +88,12 @@ public class Post {
         this.votes = votes;
     }
 
-    public int getNumPostResponses() {
-        return numPostResponses;
+    public int getNumAnswers() {
+        return numAnswers;
     }
 
-    public void setNumPostResponses(int numPostResponses) {
-        this.numPostResponses = numPostResponses;
-    }
-
-    public int getPostResponseId() {
-        return postResponseId;
-    }
-
-    public void setPostResponseId(int postResponseId) {
-        this.postResponseId = postResponseId;
+    public void setNumAnswers(int numAnswers) {
+        this.numAnswers = numAnswers;
     }
 
     public List<Comment> getComments() {

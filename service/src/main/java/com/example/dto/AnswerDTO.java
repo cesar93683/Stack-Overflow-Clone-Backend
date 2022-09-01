@@ -1,7 +1,7 @@
 package com.example.dto;
 
+import com.example.entity.Answer;
 import com.example.entity.Comment;
-import com.example.entity.Post;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.ArrayList;
@@ -9,34 +9,30 @@ import java.util.Date;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PostDTO {
+public class AnswerDTO {
 
     private int id;
-    private String title;
     private String content;
     private int votes;
-    private int numPostResponses;
     private List<CommentDTO> comments;
     private UserDTO user;
     private String currVote;
     private Date createdAt;
     private Date updatedAt;
 
-    public PostDTO(Post post, boolean includeComments) {
-        id = post.getId();
-        title = post.getTitle();
-        content = post.getContent();
-        votes = post.getVotes();
-        numPostResponses = post.getNumPostResponses();
+    public AnswerDTO(Answer answer, boolean includeComments) {
+        id = answer.getId();
+        content = answer.getContent();
+        votes = answer.getVotes();
         if (includeComments) {
             comments = new ArrayList<>();
-            for (Comment comment : post.getComments()) {
+            for (Comment comment : answer.getComments()) {
                 comments.add(new CommentDTO(comment));
             }
         }
-        user = new UserDTO(post.getUser());
-        createdAt = post.getCreatedAt();
-        updatedAt = post.getUpdatedAt();
+        user = new UserDTO(answer.getUser());
+        createdAt = answer.getCreatedAt();
+        updatedAt = answer.getUpdatedAt();
     }
 
     public int getId() {
@@ -45,14 +41,6 @@ public class PostDTO {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getContent() {
@@ -69,14 +57,6 @@ public class PostDTO {
 
     public void setVotes(int votes) {
         this.votes = votes;
-    }
-
-    public int getNumPostResponses() {
-        return numPostResponses;
-    }
-
-    public void setNumPostResponses(int numPostResponses) {
-        this.numPostResponses = numPostResponses;
     }
 
     public List<CommentDTO> getComments() {

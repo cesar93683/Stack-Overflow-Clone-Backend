@@ -4,50 +4,53 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
-@Table(name = "comment")
+@Table(name = "answer")
 @EntityListeners(AuditingEntityListener.class)
-public class Comment {
+public class Answer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
 
-    @Column(name = "content", nullable = false, updatable = false)
+    @Column(name = "content", nullable = false)
     private String content;
 
     @Column(name = "votes", nullable = false)
     private int votes;
 
-    @ManyToOne
-    @JoinColumn(name = "question_id", updatable = false)
-    private Question question;
-
-    @ManyToOne
-    @JoinColumn(name = "answer_id", updatable = false)
-    private Answer answer;
+    @OneToMany(mappedBy = "answer")
+    private List<Comment> comments;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "question_id", nullable = false, updatable = false)
+    private Question question;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Date createdAt;
 
+    @Column(name = "updated_at")
+    private Date updatedAt;
+
     @SuppressWarnings("unused")
-    public Comment() {
+    public Answer() {
     }
 
-    public Comment(String content, User user, Question question, Answer answer) {
+    public Answer(String content, User user, Question question) {
         this.id = 0;
         this.content = content;
         this.votes = 1;
-        this.question = question;
-        this.answer = answer;
         this.user = user;
+        this.question = question;
         this.createdAt = new Date();
+        this.updatedAt = createdAt;
     }
 
     public int getId() {
@@ -74,20 +77,12 @@ public class Comment {
         this.votes = votes;
     }
 
-    public Question getQuestion() {
-        return question;
+    public List<Comment> getComments() {
+        return comments;
     }
 
-    public void setQuestion(Question question) {
-        this.question = question;
-    }
-
-    public Answer getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(Answer answer) {
-        this.answer = answer;
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     public User getUser() {
@@ -98,11 +93,27 @@ public class Comment {
         this.user = user;
     }
 
+    public Question getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(Question question) {
+        this.question = question;
+    }
+
     public Date getCreatedAt() {
         return createdAt;
     }
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

@@ -20,7 +20,11 @@ public class Vote {
 
     @ManyToOne
     @JoinColumn(name = "post_id", updatable = false)
-    private Post post;
+    private Question question;
+
+    @ManyToOne
+    @JoinColumn(name = "answer_id", updatable = false)
+    private Answer answer;
 
     @ManyToOne
     @JoinColumn(name = "comment_id", updatable = false)
@@ -30,10 +34,11 @@ public class Vote {
     public Vote() {
     }
 
-    public Vote(User user, Post post, Comment comment, String voteType) {
+    public Vote(User user, Question question, Answer answer, Comment comment, String voteType) {
         this.user = user;
+        this.question = question;
+        this.answer = answer;
         this.comment = comment;
-        this.post = post;
         this.voteType = voteType;
     }
 
@@ -61,12 +66,20 @@ public class Vote {
         this.user = user;
     }
 
-    public Post getPost() {
-        return post;
+    public Question getQuestion() {
+        return question;
     }
 
-    public void setPost(Post post) {
-        this.post = post;
+    public void setQuestion(Question question) {
+        this.question = question;
+    }
+
+    public Answer getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(Answer answer) {
+        this.answer = answer;
     }
 
     public Comment getComment() {

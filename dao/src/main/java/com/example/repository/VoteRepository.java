@@ -9,8 +9,15 @@ import java.util.Optional;
 
 @Repository
 public interface VoteRepository extends JpaRepository<Vote, Integer> {
-    Optional<Vote> findByUserIdAndPostId(int userId, int postId);
+    Optional<Vote> findByUserIdAndQuestionId(int userId, int questionId);
+
+    Optional<Vote> findByUserIdAndAnswerId(int userId, int answerId);
+
     Optional<Vote> findByUserIdAndCommentId(int userId, int commentId);
-    List<Vote> findByUserIdAndPostIdIn(int userId, List<Integer> postIds);
+
+    List<Vote> findByUserIdAndQuestionIdIn(int userId, List<Integer> questionIds);
+
+    List<Vote> findByUserIdAndAnswerIdIn(int userId, List<Integer> answerIds);
+
     List<Vote> findByUserIdAndCommentIdIn(int userId, List<Integer> commentIds);
 }
