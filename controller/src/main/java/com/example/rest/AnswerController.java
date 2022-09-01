@@ -29,7 +29,7 @@ public class AnswerController {
     @Autowired
     private AnswerService answerService;
 
-    @GetMapping("/{answerId}")
+    @GetMapping("/{questionId}")
     public ResponseEntity<?> getAnswersByQuestionId(@PathVariable String questionId, @RequestParam(required = false) String page,
                                                   @RequestParam(required = false) String sortedByVotes) {
         try {
