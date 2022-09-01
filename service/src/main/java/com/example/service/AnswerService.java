@@ -9,6 +9,8 @@ import java.util.List;
 public interface AnswerService {
     List<AnswerDTO> getAnswers(int answerId, int page, boolean sortedByVotes, int userId);
 
+    List<AnswerDTO> getAnswersByUserId(int userId, int page, boolean sortedByVotes, int userIdIfExists);
+
     AnswerDTO createAnswer(String content, int userId, int questionId) throws ServiceException;
 
     void updateAnswer(int answerId, String content, int userId) throws ServiceException;

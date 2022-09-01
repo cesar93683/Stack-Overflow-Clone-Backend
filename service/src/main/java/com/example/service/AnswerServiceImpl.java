@@ -47,6 +47,19 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
+    public List<AnswerDTO> getAnswersByUserId(int userId, int page, boolean sortedByVotes, int userIdIfExists) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(sortedByVotes ? "votes" : "id").descending());
+        List<AnswerDTO> answers = answerRepository.findAllByUserId(userId, pageable)
+                .stream()
+                .map((Answer answer) -> new AnswerDTO(answer, false))
+                .collect(Collectors.toList());
+        if (userId != NO_USER_ID) {
+            updateAnswersWithCurrVote(answers, userId);
+        }
+        return answers;
+    }
+
+    @Override
     public AnswerDTO createAnswer(String content, int userId, int questionId) throws ServiceException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException("User not found with id: " + userId));
