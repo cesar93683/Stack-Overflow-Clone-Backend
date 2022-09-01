@@ -1,11 +1,13 @@
 package com.example.rest;
 
-import com.example.exceptions.QuestionAndAnswerException;
+import com.example.exceptions.ServiceException;
 import com.example.exceptions.UserException;
 import com.example.rest.payload.GenericResponse;
 import com.example.rest.payload.post.*;
 import com.example.security.services.UserDetailsImpl;
-import com.example.service.QuestionAndAnswerService;
+import com.example.service.AnswerService;
+import com.example.service.CommentService;
+import com.example.service.QuestionService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +28,17 @@ public class PostController {
     private static final Logger LOGGER = LogManager.getLogger(PostController.class);
 
     @Autowired
-    private QuestionAndAnswerService questionAndAnswerService;
+    private QuestionService questionService;
+    @Autowired
+    private AnswerService answerService;
+    @Autowired
+    private CommentService commentService;
 
     @GetMapping("/all")
     public ResponseEntity<?> getPosts(@RequestParam(required = false) String page,
                                       @RequestParam(required = false) String sortedByVotes) {
         try {
-            return ResponseEntity.ok(questionAndAnswerService.getQuestions(page != null ? Integer.parseInt(page) : 0,
+            return ResponseEntity.ok(questionService.getQuestions(page != null ? Integer.parseInt(page) : 0,
                     Boolean.parseBoolean(sortedByVotes), getUserIdIfExists()));
         } catch (Exception e) {
             LOGGER.error(e);
@@ -44,7 +50,7 @@ public class PostController {
     public ResponseEntity<?> getPostsByUserId(@PathVariable String userId, @RequestParam(required = false) String page,
                                               @RequestParam(required = false) String sortedByVotes) {
         try {
-            return ResponseEntity.ok(questionAndAnswerService.getQuestionsByUserId(Integer.parseInt(userId),
+            return ResponseEntity.ok(questionService.getQuestionsByUserId(Integer.parseInt(userId),
                     page != null ? Integer.parseInt(page) : 0, Boolean.parseBoolean(sortedByVotes),
                     getUserIdIfExists()));
         } catch (Exception e) {
@@ -56,7 +62,7 @@ public class PostController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getPost(@PathVariable String id) {
         try {
-            return ResponseEntity.ok(questionAndAnswerService.getQuestion(Integer.parseInt(id), getUserIdIfExists()));
+            return ResponseEntity.ok(questionService.getQuestion(Integer.parseInt(id), getUserIdIfExists()));
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(1));
@@ -67,7 +73,7 @@ public class PostController {
     public ResponseEntity<?> getPostResponses(@PathVariable String postId, @RequestParam(required = false) String page,
                                               @RequestParam(required = false) String sortedByVotes) {
         try {
-            return ResponseEntity.ok(questionAndAnswerService.getAnswers(Integer.parseInt(postId),
+            return ResponseEntity.ok(answerService.getAnswers(Integer.parseInt(postId),
                     page != null ? Integer.parseInt(page) : 0,
                     Boolean.parseBoolean(sortedByVotes),
                     getUserIdIfExists()));
@@ -80,7 +86,7 @@ public class PostController {
     @PostMapping("/")
     public ResponseEntity<?> createPost(@Valid @RequestBody CreatePostRequest createPostRequest) {
         try {
-            return ResponseEntity.ok(questionAndAnswerService.createQuestion(createPostRequest.getTitle(),
+            return ResponseEntity.ok(questionService.createQuestion(createPostRequest.getTitle(),
                     createPostRequest.getContent(), getUserId()));
         } catch (Exception e) {
             LOGGER.error(e);
@@ -91,7 +97,7 @@ public class PostController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updatePost(@Valid @RequestBody UpdateRequest updateRequest, @PathVariable String id) {
         try {
-            questionAndAnswerService.updateQuestion(Integer.parseInt(id), updateRequest.getContent(), getUserId());
+            questionService.updateQuestion(Integer.parseInt(id), updateRequest.getContent(), getUserId());
             return ResponseEntity.ok(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);
@@ -102,7 +108,7 @@ public class PostController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePost(@PathVariable String id) {
         try {
-            questionAndAnswerService.deleteQuestion(Integer.parseInt(id), getUserId());
+            questionService.deleteQuestion(Integer.parseInt(id), getUserId());
             return ResponseEntity.ok(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);
@@ -116,9 +122,9 @@ public class PostController {
             if (!UP_VOTE.equals(postVoteRequest.getAction()) &&
                     !DOWN_VOTE.equals(postVoteRequest.getAction()) &&
                     !NEUTRAL.equals(postVoteRequest.getAction())) {
-                throw new QuestionAndAnswerException("Invalid vote action");
+                throw new ServiceException("Invalid vote action");
             }
-            questionAndAnswerService.voteQuestion(getUserId(), Integer.parseInt(postVoteRequest.getPostId()), postVoteRequest.getAction());
+            questionService.voteQuestion(getUserId(), Integer.parseInt(postVoteRequest.getPostId()), postVoteRequest.getAction());
             return ResponseEntity.ok(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);
@@ -129,7 +135,7 @@ public class PostController {
     @PostMapping("/comments")
     public ResponseEntity<?> createComment(@Valid @RequestBody CreateCommentRequest createCommentRequest) {
         try {
-            return ResponseEntity.ok(questionAndAnswerService.createQuestionComment(createCommentRequest.getContent(),
+            return ResponseEntity.ok(commentService.createQuestionComment(createCommentRequest.getContent(),
                     Integer.parseInt(createCommentRequest.getPostId()), getUserId()));
         } catch (Exception e) {
             LOGGER.error(e);
@@ -140,7 +146,7 @@ public class PostController {
     @DeleteMapping("/comments/{id}")
     public ResponseEntity<?> deleteComment(@PathVariable String id) {
         try {
-            questionAndAnswerService.deleteComment(Integer.parseInt(id), getUserId());
+            commentService.deleteComment(Integer.parseInt(id), getUserId());
             return ResponseEntity.ok(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);
@@ -153,9 +159,9 @@ public class PostController {
         try {
             if (!UP_VOTE.equals(voteRequest.getAction()) &&
                     !NEUTRAL.equals(voteRequest.getAction())) {
-                throw new QuestionAndAnswerException("Invalid vote action");
+                throw new ServiceException("Invalid vote action");
             }
-            questionAndAnswerService.voteComment(getUserId(), Integer.parseInt(voteRequest.getId()), voteRequest.getAction());
+            commentService.voteComment(getUserId(), Integer.parseInt(voteRequest.getId()), voteRequest.getAction());
             return ResponseEntity.ok(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);
