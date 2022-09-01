@@ -11,7 +11,5 @@ import java.util.List;
 public interface AnswerRepository extends JpaRepository<Answer, Integer> {
     List<Answer> findAllByUserId(int userId, Pageable pageable);
 
-    List<Answer> findAllByQuestionId(int questionId, Pageable pageable);
-
     List<Answer> findAllByQuestionId(int questionId);
 }

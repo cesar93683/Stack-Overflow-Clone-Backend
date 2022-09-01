@@ -30,12 +30,9 @@ public class AnswerController {
     private AnswerService answerService;
 
     @GetMapping("/{questionId}")
-    public ResponseEntity<?> getAnswersByQuestionId(@PathVariable String questionId, @RequestParam(required = false) String page,
-                                                  @RequestParam(required = false) String sortedByVotes) {
+    public ResponseEntity<?> getAnswersByQuestionId(@PathVariable String questionId) {
         try {
             return ResponseEntity.ok(answerService.getAnswers(Integer.parseInt(questionId),
-                    page != null ? Integer.parseInt(page) : 0,
-                    Boolean.parseBoolean(sortedByVotes),
                     getUserIdIfExists()));
         } catch (Exception e) {
             LOGGER.error(e);

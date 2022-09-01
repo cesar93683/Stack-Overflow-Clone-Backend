@@ -7,7 +7,7 @@ import com.example.exceptions.ServiceException;
 import java.util.List;
 
 public interface AnswerService {
-    List<AnswerDTO> getAnswers(int questionId, int page, boolean sortedByVotes, int userId);
+    List<AnswerDTO> getAnswers(int questionId, int userId);
 
     List<AnswerDTO> getAnswersByUserId(int userId, int page, boolean sortedByVotes, int userIdIfExists);
 

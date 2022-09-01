@@ -33,9 +33,8 @@ public class AnswerServiceImpl implements AnswerService {
     private VoteRepository voteRepository;
 
     @Override
-    public List<AnswerDTO> getAnswers(int questionId, int page, boolean sortedByVotes, int userId) {
-        Pageable pageable = PageRequest.of(page, 10, Sort.by(sortedByVotes ? "votes" : "id").descending());
-        List<AnswerDTO> answers = answerRepository.findAllByQuestionId(questionId, pageable)
+    public List<AnswerDTO> getAnswers(int questionId, int userId) {
+        List<AnswerDTO> answers = answerRepository.findAllByQuestionId(questionId)
                 .stream()
                 .map((Answer answer) -> new AnswerDTO(answer, true))
                 .collect(Collectors.toList());
