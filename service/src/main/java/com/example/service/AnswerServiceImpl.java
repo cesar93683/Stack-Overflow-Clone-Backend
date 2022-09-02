@@ -97,9 +97,9 @@ public class AnswerServiceImpl implements AnswerService {
                 .orElseThrow(() -> new ServiceException("Answer not found with id: " + answerId));
         Vote vote = voteRepository.findByUserIdAndAnswerId(user.getId(), answerId)
                 .orElse(new Vote(user, null, answer, null, NEUTRAL));
-        answer.setVotes(answer.getVotes() + getVoteDiff(vote.getVoteType(), voteType));
+        answer.setVotes(answer.getVotes() + getVoteDiff(vote.getVote(), voteType));
         answerRepository.save(answer);
-        vote.setVoteType(voteType);
+        vote.setVote(voteType);
         voteRepository.save(vote);
     }
 
@@ -124,7 +124,7 @@ public class AnswerServiceImpl implements AnswerService {
             answers.stream()
                     .filter(answer -> answer.getId() == vote.getAnswer().getId())
                     .findFirst()
-                    .ifPresent(answer -> answer.setCurrVote(vote.getVoteType()));
+                    .ifPresent(answer -> answer.setCurrVote(vote.getVote()));
         }
     }
 
@@ -142,7 +142,7 @@ public class AnswerServiceImpl implements AnswerService {
                 answer.getComments().stream()
                         .filter(commentDTO -> commentDTO.getId() == vote.getComment().getId())
                         .findFirst()
-                        .ifPresent(commentDTO -> commentDTO.setCurrVote(vote.getVoteType()));
+                        .ifPresent(commentDTO -> commentDTO.setCurrVote(vote.getVote()));
             }
         }
     }

@@ -42,9 +42,9 @@ public class CommentServiceImpl implements CommentService {
         Vote vote = voteRepository.findByUserIdAndCommentId(user.getId(), commentId)
                 .orElse(new Vote(user, null, null, comment, NEUTRAL));
 
-        comment.setVotes(comment.getVotes() + getVoteDiff(vote.getVoteType(), voteType));
+        comment.setVotes(comment.getVotes() + getVoteDiff(vote.getVote(), voteType));
         commentRepository.save(comment);
-        vote.setVoteType(voteType);
+        vote.setVote(voteType);
         voteRepository.save(vote);
     }
 }

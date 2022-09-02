@@ -12,7 +12,7 @@ public class CommentDTO {
     private String content;
     private int votes;
     private UserDTO user;
-    private String currVote;
+    private int currVote;
     private Date createdAt;
 
     public CommentDTO(Comment comment) {
@@ -55,11 +55,11 @@ public class CommentDTO {
         this.user = user;
     }
 
-    public String getCurrVote() {
+    public int getCurrVote() {
         return currVote;
     }
 
-    public void setCurrVote(String currVote) {
+    public void setCurrVote(int currVote) {
         this.currVote = currVote;
     }
 

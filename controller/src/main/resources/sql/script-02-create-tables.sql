@@ -61,7 +61,7 @@ DROP TABLE IF EXISTS `vote`;
 
 CREATE TABLE `vote` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `vote` varchar(9) NOT NULL,
+  `vote` int NOT NULL,
   `user_id` int NOT NULL,
   `question_id` int,
   `answer_id` int,

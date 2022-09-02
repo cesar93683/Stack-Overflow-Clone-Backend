@@ -12,7 +12,7 @@ public class Vote {
     private int id;
 
     @Column(name = "vote", nullable = false)
-    private String voteType;
+    private int vote;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
@@ -34,12 +34,12 @@ public class Vote {
     public Vote() {
     }
 
-    public Vote(User user, Question question, Answer answer, Comment comment, String voteType) {
+    public Vote(User user, Question question, Answer answer, Comment comment, int voteType) {
         this.user = user;
         this.question = question;
         this.answer = answer;
         this.comment = comment;
-        this.voteType = voteType;
+        this.vote = voteType;
     }
 
     public int getId() {
@@ -50,12 +50,12 @@ public class Vote {
         this.id = id;
     }
 
-    public String getVoteType() {
-        return voteType;
+    public int getVote() {
+        return vote;
     }
 
-    public void setVoteType(String voteType) {
-        this.voteType = voteType;
+    public void setVote(int vote) {
+        this.vote = vote;
     }
 
     public User getUser() {

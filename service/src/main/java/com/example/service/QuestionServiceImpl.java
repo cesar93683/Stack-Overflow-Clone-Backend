@@ -115,9 +115,9 @@ public class QuestionServiceImpl implements QuestionService {
         Vote vote = voteRepository.findByUserIdAndQuestionId(user.getId(), questionId)
                 .orElse(new Vote(user, question, null, null, NEUTRAL));
 
-        question.setVotes(question.getVotes() + getVoteDiff(vote.getVoteType(), voteType));
+        question.setVotes(question.getVotes() + getVoteDiff(vote.getVote(), voteType));
         questionRepository.save(question);
-        vote.setVoteType(voteType);
+        vote.setVote(voteType);
         voteRepository.save(vote);
     }
 
@@ -138,7 +138,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     private void updatedQuestionWithCurrVote(int userId, QuestionDTO questionDTO) {
         voteRepository.findByUserIdAndQuestionId(userId, questionDTO.getId())
-                .ifPresent(value -> questionDTO.setCurrVote(value.getVoteType()));
+                .ifPresent(value -> questionDTO.setCurrVote(value.getVote()));
     }
 
     private void updateCommentsWithCurrVote(List<CommentDTO> comments, int userId) {
@@ -147,7 +147,7 @@ public class QuestionServiceImpl implements QuestionService {
             comments.stream()
                     .filter(comment -> comment.getId() == vote.getComment().getId())
                     .findFirst()
-                    .ifPresent(comment -> comment.setCurrVote(vote.getVoteType()));
+                    .ifPresent(comment -> comment.setCurrVote(vote.getVote()));
         }
     }
 
