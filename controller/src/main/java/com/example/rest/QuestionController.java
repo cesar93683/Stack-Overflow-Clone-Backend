@@ -111,12 +111,11 @@ public class QuestionController {
     @PostMapping("/vote")
     public ResponseEntity<?> voteQuestion(@Valid @RequestBody VoteRequest voteRequest) {
         try {
-            if (!UP_VOTE.equals(voteRequest.getAction()) &&
-                    !DOWN_VOTE.equals(voteRequest.getAction()) &&
-                    !NEUTRAL.equals(voteRequest.getAction())) {
-                throw new ServiceException("Invalid vote action");
+            int vote = Integer.parseInt(voteRequest.getVote());
+            if (UP_VOTE != vote && NEUTRAL != vote && DOWN_VOTE != vote) {
+                throw new ServiceException("Invalid vote");
             }
-            questionService.voteQuestion(getUserId(), Integer.parseInt(voteRequest.getId()), voteRequest.getAction());
+            questionService.voteQuestion(getUserId(), Integer.parseInt(voteRequest.getId()), vote);
             return ResponseEntity.ok(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);

@@ -40,11 +40,11 @@ public class CommentController {
     @PostMapping("/vote")
     public ResponseEntity<?> voteComment(@Valid @RequestBody VoteRequest voteRequest) {
         try {
-            if (!UP_VOTE.equals(voteRequest.getAction()) &&
-                    !NEUTRAL.equals(voteRequest.getAction())) {
-                throw new ServiceException("Invalid vote action");
+            int vote = Integer.parseInt(voteRequest.getVote());
+            if (UP_VOTE != vote && NEUTRAL != vote) {
+                throw new ServiceException("Invalid vote");
             }
-            commentService.voteComment(getUserId(), Integer.parseInt(voteRequest.getId()), voteRequest.getAction());
+            commentService.voteComment(getUserId(), Integer.parseInt(voteRequest.getId()), vote);
             return ResponseEntity.ok(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);

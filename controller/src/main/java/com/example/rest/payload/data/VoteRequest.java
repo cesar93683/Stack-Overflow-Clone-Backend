@@ -4,18 +4,18 @@ import javax.validation.constraints.Size;
 
 public class VoteRequest {
 
-    @Size(min = 1, max = 9)
-    private String action;
+    @Size(min = 1, max = 1)
+    private String vote;
 
     @Size(min = 1, max = 10)
     private String id;
 
-    public String getAction() {
-        return action;
+    public String getVote() {
+        return vote;
     }
 
-    public void setAction(String action) {
-        this.action = action;
+    public void setVote(String vote) {
+        this.vote = vote;
     }
 
     public String getId() {

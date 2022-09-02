@@ -6,8 +6,8 @@ public interface Constants {
     int ERROR_CODE_EMAIL_ALREADY_TAKEN = 100;
     int ERROR_CODE_USERNAME_ALREADY_TAKEN = 101;
     int ERROR_CODE_INVALID_LOGIN = 102;
-    String UP_VOTE = "UP_VOTE";
-    String DOWN_VOTE = "DOWN_VOTE";
-    String NEUTRAL = "NEUTRAL";
+    int UP_VOTE = 1;
+    int DOWN_VOTE = -1;
+    int NEUTRAL = 0;
 
 }
