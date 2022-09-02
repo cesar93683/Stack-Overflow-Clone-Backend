@@ -52,7 +52,7 @@ public class AnswerServiceImpl implements AnswerService {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new ServiceException("Question not found with id: " + questionId));
         if (hasRespondedToThisQuestion(userId, questionId)) {
-            throw new ServiceException("User with id " + user + " has already answer question with id: " + questionId);
+            throw new ServiceException("User with id " + userId + " has already answer question with id: " + questionId);
         }
         question.setNumAnswers(question.getNumAnswers() + 1);
         questionRepository.save(question);
