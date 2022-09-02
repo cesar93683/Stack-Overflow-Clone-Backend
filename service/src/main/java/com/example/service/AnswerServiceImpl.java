@@ -90,7 +90,7 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public void voteAnswer(int userId, int answerId, String voteType) throws ServiceException {
+    public void voteAnswer(int userId, int answerId, int voteType) throws ServiceException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException("User not found with id: " + userId));
         Answer answer = answerRepository.findById(answerId)

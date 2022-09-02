@@ -34,7 +34,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void voteComment(int userId, int commentId, String voteType) throws ServiceException {
+    public void voteComment(int userId, int commentId, int voteType) throws ServiceException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException("User not found with id: " + userId));
         Comment comment = commentRepository.findById(commentId)

@@ -15,7 +15,7 @@ public interface AnswerService {
 
     void deleteAnswer(int answerId, int userId) throws ServiceException;
 
-    void voteAnswer(int userId, int answerId, String vote) throws ServiceException;
+    void voteAnswer(int userId, int answerId, int vote) throws ServiceException;
 
     CommentDTO createComment(String content, int answerId, int userId) throws ServiceException;
 }

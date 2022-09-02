@@ -6,5 +6,5 @@ public interface CommentService {
 
     void deleteComment(int commentId, int userId) throws ServiceException;
 
-    void voteComment(int userId, int commentId, String vote) throws ServiceException;
+    void voteComment(int userId, int commentId, int vote) throws ServiceException;
 }

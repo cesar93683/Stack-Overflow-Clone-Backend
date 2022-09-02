@@ -107,7 +107,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public void voteQuestion(int userId, int questionId, String voteType) throws ServiceException {
+    public void voteQuestion(int userId, int questionId, int voteType) throws ServiceException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException("User not found with id: " + userId));
         Question question = questionRepository.findById(questionId)
