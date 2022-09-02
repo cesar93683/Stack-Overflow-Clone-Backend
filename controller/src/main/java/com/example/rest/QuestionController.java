@@ -55,7 +55,7 @@ public class QuestionController {
 
     @GetMapping("/users/answered/{userId}")
     public ResponseEntity<?> getQuestionsAnsweredByUserId(@PathVariable String userId, @RequestParam(required = false) String page,
-                                                  @RequestParam(required = false) String sortedByVotes) {
+                                                          @RequestParam(required = false) String sortedByVotes) {
         try {
             return ResponseEntity.ok(questionService.getQuestionsAnsweredByUserId(Integer.parseInt(userId),
                     page != null ? Integer.parseInt(page) : 0, Boolean.parseBoolean(sortedByVotes)));
