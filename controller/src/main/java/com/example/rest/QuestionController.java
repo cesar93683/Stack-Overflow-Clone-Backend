@@ -29,7 +29,7 @@ public class QuestionController {
     @Autowired
     private QuestionService questionService;
 
-    @GetMapping("/all")
+    @GetMapping("/")
     public ResponseEntity<?> getQuestions(@RequestParam(required = false) String page,
                                           @RequestParam(required = false) String sortedByVotes) {
         try {
