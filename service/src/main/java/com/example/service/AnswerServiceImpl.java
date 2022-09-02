@@ -158,11 +158,8 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     private boolean hasRespondedToThisQuestion(int userId, int questionId) {
-        for (Answer answer : answerRepository.findAllByQuestionId(questionId)) {
-            if (answer.getUser().getId() == userId) {
-                return true;
-            }
-        }
-        return false;
+        return answerRepository.findAllByQuestionId(questionId)
+                .stream()
+                .anyMatch(answer -> answer.getUser().getId() == userId);
     }
 }
