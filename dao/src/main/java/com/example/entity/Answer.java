@@ -22,7 +22,7 @@ public class Answer {
     @Column(name = "votes", nullable = false)
     private int votes;
 
-    @OneToMany(mappedBy = "answer")
+    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
     @ManyToOne

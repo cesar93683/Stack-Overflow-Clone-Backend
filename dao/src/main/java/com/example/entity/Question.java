@@ -28,7 +28,7 @@ public class Question {
     @Column(name = "num_answers", nullable = false)
     private int numAnswers;
 
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
     @ManyToOne
