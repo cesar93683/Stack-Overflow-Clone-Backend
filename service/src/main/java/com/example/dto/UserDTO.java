@@ -1,9 +1,7 @@
 package com.example.dto;
 
 import com.example.entity.User;
-import com.fasterxml.jackson.annotation.JsonInclude;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO {
 
     private int id;

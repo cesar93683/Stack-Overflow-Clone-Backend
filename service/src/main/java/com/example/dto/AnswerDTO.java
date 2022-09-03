@@ -2,13 +2,11 @@ package com.example.dto;
 
 import com.example.entity.Answer;
 import com.example.entity.Comment;
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AnswerDTO {
 
     private int id;
@@ -24,13 +22,14 @@ public class AnswerDTO {
         id = answer.getId();
         content = answer.getContent();
         votes = answer.getVotes();
+        comments = new ArrayList<>();
         if (includeComments) {
-            comments = new ArrayList<>();
             for (Comment comment : answer.getComments()) {
                 comments.add(new CommentDTO(comment));
             }
         }
         user = new UserDTO(answer.getUser());
+        currVote = 0;
         createdAt = answer.getCreatedAt();
         updatedAt = answer.getUpdatedAt();
     }

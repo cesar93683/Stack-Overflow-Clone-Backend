@@ -1,11 +1,9 @@
 package com.example.dto;
 
 import com.example.entity.Comment;
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Date;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentDTO {
 
     private int id;
@@ -20,6 +18,7 @@ public class CommentDTO {
         content = comment.getContent();
         votes = comment.getVotes();
         user = new UserDTO(comment.getUser());
+        currVote = 0;
         createdAt = comment.getCreatedAt();
     }
 
