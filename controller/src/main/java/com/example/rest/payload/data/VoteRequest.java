@@ -4,7 +4,7 @@ import javax.validation.constraints.Size;
 
 public class VoteRequest {
 
-    @Size(min = 1, max = 1)
+    @Size(min = 1, max = 2)
     private String vote;
 
     @Size(min = 1, max = 10)
