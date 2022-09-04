@@ -30,7 +30,7 @@ public class Comment {
     @JoinColumn(name = "answer_id", updatable = false)
     private Answer answer;
 
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Vote> voteList;
 
     @ManyToOne
