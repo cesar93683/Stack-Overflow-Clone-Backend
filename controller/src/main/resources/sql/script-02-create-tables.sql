@@ -28,6 +28,9 @@ insert into user (id, email, username, password)
 VALUES(NULL, "user05@gmail.com", "user05", "$2a$10$c8D7sSh28qon5iwSzwaYj.o47lTfdq0ECtxAKd8rFo9q1G1bsaYcy");
 
 
+DROP TABLE IF EXISTS `vote`;
+DROP TABLE IF EXISTS `comment`;
+DROP TABLE IF EXISTS `answer`;
 DROP TABLE IF EXISTS `question`;
 
 CREATE TABLE `question` (
@@ -42,9 +45,6 @@ CREATE TABLE `question` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
-
-DROP TABLE IF EXISTS `answer`;
-
 CREATE TABLE `answer` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
@@ -53,24 +53,12 @@ CREATE TABLE `answer` (
   `votes` int NOT NULL,
   `created_at` DATETIME NOT NULL,
   `updated_at` DATETIME,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `FK_ANSWER_QUESTION_idx` (`question_id`),
+  CONSTRAINT `FK_ANSWER_QUESTION`
+  FOREIGN KEY (`question_id`)
+  REFERENCES `question` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
-
-
-DROP TABLE IF EXISTS `vote`;
-
-CREATE TABLE `vote` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `vote` int NOT NULL,
-  `user_id` int NOT NULL,
-  `question_id` int,
-  `answer_id` int,
-  `comment_id` int,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
-
-
-DROP TABLE IF EXISTS `comment`;
 
 CREATE TABLE `comment` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -80,6 +68,35 @@ CREATE TABLE `comment` (
   `question_id` int,
   `answer_id` int,
   `created_at` DATETIME NOT NULL,
-  `updated_at` DATETIME,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `FK_COMMENT_QUESTION_idx` (`question_id`),
+  CONSTRAINT `FK_COMMENT_QUESTION`
+  FOREIGN KEY (`question_id`)
+  REFERENCES `question` (`id`),
+  KEY `FK_COMMENT_ANSWER_idx` (`answer_id`),
+  CONSTRAINT `FK_COMMENT_ANSWER`
+  FOREIGN KEY (`answer_id`)
+  REFERENCES `answer` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `vote` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `vote` int NOT NULL,
+  `user_id` int NOT NULL,
+  `question_id` int,
+  `answer_id` int,
+  `comment_id` int,
+  PRIMARY KEY (`id`),
+  KEY `FK_VOTE_QUESTION_idx` (`question_id`),
+  CONSTRAINT `FK_VOTE_QUESTION`
+  FOREIGN KEY (`question_id`)
+  REFERENCES `question` (`id`),
+  KEY `FK_VOTE_ANSWER_idx` (`answer_id`),
+  CONSTRAINT `FK_VOTE_ANSWER`
+  FOREIGN KEY (`answer_id`)
+  REFERENCES `answer` (`id`),
+  KEY `FK_VOTE_COMMENT_idx` (`comment_id`),
+  CONSTRAINT `FK_VOTE_COMMENT`
+  FOREIGN KEY (`comment_id`)
+  REFERENCES `comment` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
