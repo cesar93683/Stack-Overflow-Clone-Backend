@@ -33,6 +33,9 @@ public class Answer {
     @JoinColumn(name = "question_id", nullable = false, updatable = false)
     private Question question;
 
+    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL)
+    private List<Vote> voteList;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Date createdAt;
 
@@ -99,6 +102,14 @@ public class Answer {
 
     public void setQuestion(Question question) {
         this.question = question;
+    }
+
+    public List<Vote> getVoteList() {
+        return voteList;
+    }
+
+    public void setVoteList(List<Vote> voteList) {
+        this.voteList = voteList;
     }
 
     public Date getCreatedAt() {

@@ -3,7 +3,6 @@ package com.example.entity;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.util.AbstractList;
 import java.util.Date;
 import java.util.List;
 
@@ -34,6 +33,9 @@ public class Question {
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<Comment> comments;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    private List<Vote> voteList;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
@@ -114,6 +116,14 @@ public class Question {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public List<Vote> getVoteList() {
+        return voteList;
+    }
+
+    public void setVoteList(List<Vote> voteList) {
+        this.voteList = voteList;
     }
 
     public User getUser() {

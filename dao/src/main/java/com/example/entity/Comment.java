@@ -4,6 +4,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "comment")
@@ -28,6 +29,9 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name = "answer_id", updatable = false)
     private Answer answer;
+
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
+    private List<Vote> voteList;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
@@ -88,6 +92,14 @@ public class Comment {
 
     public void setAnswer(Answer answer) {
         this.answer = answer;
+    }
+
+    public List<Vote> getVoteList() {
+        return voteList;
+    }
+
+    public void setVoteList(List<Vote> voteList) {
+        this.voteList = voteList;
     }
 
     public User getUser() {
