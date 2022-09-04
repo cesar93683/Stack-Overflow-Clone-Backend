@@ -42,7 +42,11 @@ CREATE TABLE `question` (
   `num_answers` int NOT NULL,
   `created_at` DATETIME NOT NULL,
   `updated_at` DATETIME,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `FK_QUESTION_USER_idx` (`user_id`),
+  CONSTRAINT `FK_QUESTION_USER`
+  FOREIGN KEY (`user_id`)
+  REFERENCES `user` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `answer` (
@@ -54,6 +58,10 @@ CREATE TABLE `answer` (
   `created_at` DATETIME NOT NULL,
   `updated_at` DATETIME,
   PRIMARY KEY (`id`),
+  KEY `FK_ANSWER_USER_idx` (`user_id`),
+  CONSTRAINT `FK_ANSWER_USER`
+  FOREIGN KEY (`user_id`)
+  REFERENCES `user` (`id`),
   KEY `FK_ANSWER_QUESTION_idx` (`question_id`),
   CONSTRAINT `FK_ANSWER_QUESTION`
   FOREIGN KEY (`question_id`)
@@ -69,6 +77,10 @@ CREATE TABLE `comment` (
   `answer_id` int,
   `created_at` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
+  KEY `FK_COMMENT_USER_idx` (`user_id`),
+  CONSTRAINT `FK_COMMENT_USER`
+  FOREIGN KEY (`user_id`)
+  REFERENCES `user` (`id`),
   KEY `FK_COMMENT_QUESTION_idx` (`question_id`),
   CONSTRAINT `FK_COMMENT_QUESTION`
   FOREIGN KEY (`question_id`)
@@ -87,6 +99,10 @@ CREATE TABLE `vote` (
   `answer_id` int,
   `comment_id` int,
   PRIMARY KEY (`id`),
+  KEY `FK_VOTE_USER_idx` (`user_id`),
+  CONSTRAINT `FK_VOTE_USER`
+  FOREIGN KEY (`user_id`)
+  REFERENCES `user` (`id`),
   KEY `FK_VOTE_QUESTION_idx` (`question_id`),
   CONSTRAINT `FK_VOTE_QUESTION`
   FOREIGN KEY (`question_id`)
