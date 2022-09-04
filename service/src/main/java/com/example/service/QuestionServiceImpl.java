@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.dto.AnswerDTO;
 import com.example.dto.CommentDTO;
 import com.example.dto.QuestionDTO;
 import com.example.entity.*;
@@ -67,6 +68,8 @@ public class QuestionServiceImpl implements QuestionService {
         if (userId != NO_USER_ID) {
             updatedQuestionWithCurrVote(userId, questionDTO);
             updateCommentsWithCurrVote(questionDTO.getComments(), userId);
+            updateAnswersWithCurrVote(questionDTO.getAnswers(), userId);
+            updateCommentsWithCurrVoteFromAnswers(questionDTO.getAnswers(), userId);
         }
         return questionDTO;
     }
@@ -149,6 +152,42 @@ public class QuestionServiceImpl implements QuestionService {
                     .findFirst()
                     .ifPresent(comment -> comment.setCurrVote(vote.getVote()));
         }
+    }
+
+    private void updateAnswersWithCurrVote(List<AnswerDTO> answers, int userId) {
+        List<Vote> votes = voteRepository.findByUserIdAndAnswerIdIn(userId, getAnswerIds(answers));
+        for (Vote vote : votes) {
+            answers.stream()
+                    .filter(answer -> answer.getId() == vote.getAnswer().getId())
+                    .findFirst()
+                    .ifPresent(answer -> answer.setCurrVote(vote.getVote()));
+        }
+    }
+
+    private List<Integer> getAnswerIds(List<AnswerDTO> answers) {
+        return answers
+                .stream()
+                .map(AnswerDTO::getId)
+                .collect(Collectors.toList());
+    }
+
+    private void updateCommentsWithCurrVoteFromAnswers(List<AnswerDTO> answers, int userId) {
+        List<Vote> votes = voteRepository.findByUserIdAndCommentIdIn(userId, getCommentIdsFromAnswers(answers));
+        for (Vote vote : votes) {
+            for (AnswerDTO answer : answers) {
+                answer.getComments().stream()
+                        .filter(commentDTO -> commentDTO.getId() == vote.getComment().getId())
+                        .findFirst()
+                        .ifPresent(commentDTO -> commentDTO.setCurrVote(vote.getVote()));
+            }
+        }
+    }
+
+    private List<Integer> getCommentIdsFromAnswers(List<AnswerDTO> answers) {
+        return answers.stream()
+                .flatMap(answer -> answer.getComments().stream())
+                .map(CommentDTO::getId)
+                .collect(Collectors.toList());
     }
 
     private List<Integer> getCommentIds(List<CommentDTO> comments) {

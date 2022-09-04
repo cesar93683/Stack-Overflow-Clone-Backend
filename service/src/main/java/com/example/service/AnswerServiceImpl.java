@@ -9,10 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
-import static com.example.utils.Constants.*;
+import static com.example.utils.Constants.NEUTRAL;
+import static com.example.utils.Constants.UP_VOTE;
 import static com.example.utils.Utils.getVoteDiff;
 
 @Service
@@ -28,19 +27,6 @@ public class AnswerServiceImpl implements AnswerService {
     private CommentRepository commentRepository;
     @Autowired
     private VoteRepository voteRepository;
-
-    @Override
-    public List<AnswerDTO> getAnswersByQuestionId(int questionId, int userId) {
-        List<AnswerDTO> answers = answerRepository.findAllByQuestionId(questionId)
-                .stream()
-                .map((Answer answer) -> new AnswerDTO(answer, true))
-                .collect(Collectors.toList());
-        if (userId != NO_USER_ID) {
-            updateAnswersWithCurrVote(answers, userId);
-            updateCommentsWithCurrVoteFromAnswers(answers, userId);
-        }
-        return answers;
-    }
 
     @Override
     public AnswerDTO createAnswer(String content, int userId, int questionId) throws ServiceException {
@@ -116,42 +102,6 @@ public class AnswerServiceImpl implements AnswerService {
         CommentDTO commentDTO = new CommentDTO(comment);
         commentDTO.setCurrVote(UP_VOTE);
         return commentDTO;
-    }
-
-    private void updateAnswersWithCurrVote(List<AnswerDTO> answers, int userId) {
-        List<Vote> votes = voteRepository.findByUserIdAndAnswerIdIn(userId, getAnswerIds(answers));
-        for (Vote vote : votes) {
-            answers.stream()
-                    .filter(answer -> answer.getId() == vote.getAnswer().getId())
-                    .findFirst()
-                    .ifPresent(answer -> answer.setCurrVote(vote.getVote()));
-        }
-    }
-
-    private List<Integer> getAnswerIds(List<AnswerDTO> answers) {
-        return answers
-                .stream()
-                .map(AnswerDTO::getId)
-                .collect(Collectors.toList());
-    }
-
-    private void updateCommentsWithCurrVoteFromAnswers(List<AnswerDTO> answers, int userId) {
-        List<Vote> votes = voteRepository.findByUserIdAndCommentIdIn(userId, getCommentIdsFromAnswers(answers));
-        for (Vote vote : votes) {
-            for (AnswerDTO answer : answers) {
-                answer.getComments().stream()
-                        .filter(commentDTO -> commentDTO.getId() == vote.getComment().getId())
-                        .findFirst()
-                        .ifPresent(commentDTO -> commentDTO.setCurrVote(vote.getVote()));
-            }
-        }
-    }
-
-    private List<Integer> getCommentIdsFromAnswers(List<AnswerDTO> answers) {
-        return answers.stream()
-                .flatMap(answer -> answer.getComments().stream())
-                .map(CommentDTO::getId)
-                .collect(Collectors.toList());
     }
 
     private boolean hasRespondedToThisQuestion(int userId, int questionId) {

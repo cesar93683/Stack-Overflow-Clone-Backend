@@ -1,5 +1,6 @@
 package com.example.dto;
 
+import com.example.entity.Answer;
 import com.example.entity.Comment;
 import com.example.entity.Question;
 
@@ -14,20 +15,25 @@ public class QuestionDTO {
     private String content;
     private int votes;
     private int numAnswers;
+    private List<AnswerDTO> answers;
     private List<CommentDTO> comments;
     private UserDTO user;
     private int currVote;
     private Date createdAt;
     private Date updatedAt;
 
-    public QuestionDTO(Question question, boolean includeComments) {
+    public QuestionDTO(Question question, boolean includeCommentsAndAnswers) {
         id = question.getId();
         title = question.getTitle();
         content = question.getContent();
         votes = question.getVotes();
         numAnswers = question.getNumAnswers();
+        answers = new ArrayList<>();
         comments = new ArrayList<>();
-        if (includeComments) {
+        if (includeCommentsAndAnswers) {
+            for (Answer answer : question.getAnswers()) {
+                answers.add(new AnswerDTO(answer, true));
+            }
             for (Comment comment : question.getComments()) {
                 comments.add(new CommentDTO(comment));
             }
@@ -76,6 +82,14 @@ public class QuestionDTO {
 
     public void setNumAnswers(int numAnswers) {
         this.numAnswers = numAnswers;
+    }
+
+    public List<AnswerDTO> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<AnswerDTO> answers) {
+        this.answers = answers;
     }
 
     public List<CommentDTO> getComments() {

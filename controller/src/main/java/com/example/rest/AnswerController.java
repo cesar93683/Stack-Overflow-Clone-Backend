@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static com.example.rest.utils.Utils.getUserId;
-import static com.example.rest.utils.Utils.getUserIdIfExists;
 import static com.example.utils.Constants.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -28,17 +27,6 @@ public class AnswerController {
 
     @Autowired
     private AnswerService answerService;
-
-    @GetMapping("/{questionId}")
-    public ResponseEntity<?> getAnswersByQuestionId(@PathVariable String questionId) {
-        try {
-            return ResponseEntity.ok(answerService.getAnswersByQuestionId(Integer.parseInt(questionId),
-                    getUserIdIfExists()));
-        } catch (Exception e) {
-            LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1));
-        }
-    }
 
     @PostMapping("/")
     public ResponseEntity<?> createAnswer(@Valid @RequestBody CreateAnswerRequest createAnswerRequest) {
