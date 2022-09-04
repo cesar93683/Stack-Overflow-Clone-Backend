@@ -22,7 +22,7 @@ public class Answer {
     @Column(name = "votes", nullable = false)
     private int votes;
 
-    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
     @ManyToOne
@@ -33,7 +33,7 @@ public class Answer {
     @JoinColumn(name = "question_id", nullable = false, updatable = false)
     private Question question;
 
-    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL)
     private List<Vote> voteList;
 
     @Column(name = "created_at", nullable = false, updatable = false)
