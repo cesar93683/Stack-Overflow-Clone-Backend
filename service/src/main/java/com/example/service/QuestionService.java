@@ -2,12 +2,13 @@ package com.example.service;
 
 import com.example.dto.CommentDTO;
 import com.example.dto.QuestionDTO;
+import com.example.dto.QuestionsDTO;
 import com.example.exceptions.ServiceException;
 
 import java.util.List;
 
 public interface QuestionService {
-    List<QuestionDTO> getQuestions(int page, boolean sortByVotes);
+    QuestionsDTO getQuestions(int page, boolean sortByVotes);
 
     List<QuestionDTO> getQuestionsByUserId(int userId, int page, boolean sortedByVotes);
 

@@ -3,10 +3,12 @@ package com.example.service;
 import com.example.dto.AnswerDTO;
 import com.example.dto.CommentDTO;
 import com.example.dto.QuestionDTO;
+import com.example.dto.QuestionsDTO;
 import com.example.entity.*;
 import com.example.exceptions.ServiceException;
 import com.example.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -35,12 +37,14 @@ public class QuestionServiceImpl implements QuestionService {
     private CommentRepository commentRepository;
 
     @Override
-    public List<QuestionDTO> getQuestions(int page, boolean sortedByVotes) {
+    public QuestionsDTO getQuestions(int page, boolean sortedByVotes) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sortedByVotes ? "votes" : "id").descending());
-        return questionRepository.findAll(pageable)
+        Page<Question> pageQuestion = questionRepository.findAll(pageable);
+        List<QuestionDTO> questions = pageQuestion
                 .stream()
                 .map((Question question) -> new QuestionDTO(question, false))
                 .collect(Collectors.toList());
+        return new QuestionsDTO(pageQuestion.getTotalPages(), questions);
     }
 
     @Override
