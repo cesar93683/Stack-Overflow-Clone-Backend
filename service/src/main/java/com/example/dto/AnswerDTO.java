@@ -12,6 +12,7 @@ public class AnswerDTO {
     private int id;
     private String content;
     private int votes;
+    private int accepted;
     private List<CommentDTO> comments;
     private UserDTO user;
     private int currVote;
@@ -22,6 +23,7 @@ public class AnswerDTO {
         id = answer.getId();
         content = answer.getContent();
         votes = answer.getVotes();
+        accepted = answer.getAccepted();
         comments = new ArrayList<>();
         if (includeComments) {
             for (Comment comment : answer.getComments()) {
@@ -56,6 +58,14 @@ public class AnswerDTO {
 
     public void setVotes(int votes) {
         this.votes = votes;
+    }
+
+    public int getAccepted() {
+        return accepted;
+    }
+
+    public void setAccepted(int accepted) {
+        this.accepted = accepted;
     }
 
     public List<CommentDTO> getComments() {
@@ -97,5 +107,4 @@ public class AnswerDTO {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
-
 }

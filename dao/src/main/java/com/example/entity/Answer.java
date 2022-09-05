@@ -19,6 +19,9 @@ public class Answer {
     @Column(name = "votes", nullable = false)
     private int votes;
 
+    @Column(name = "accepted", nullable = false)
+    private int accepted;
+
     @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
@@ -47,6 +50,7 @@ public class Answer {
         this.id = 0;
         this.content = content;
         this.votes = 1;
+        this.accepted = 0;
         this.user = user;
         this.question = question;
         this.createdAt = new Date();
@@ -75,6 +79,14 @@ public class Answer {
 
     public void setVotes(int votes) {
         this.votes = votes;
+    }
+
+    public int getAccepted() {
+        return accepted;
+    }
+
+    public void setAccepted(int accepted) {
+        this.accepted = accepted;
     }
 
     public List<Comment> getComments() {
