@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -67,9 +68,8 @@ public class QuestionServiceImpl implements QuestionService {
         QuestionDTO questionDTO = new QuestionDTO(question, true);
         if (userId != NO_USER_ID) {
             updatedQuestionWithCurrVote(userId, questionDTO);
-            updateCommentsWithCurrVote(questionDTO.getComments(), userId);
+            updateCommentsWithCurrVote(getComments(questionDTO), userId);
             updateAnswersWithCurrVote(questionDTO.getAnswers(), userId);
-            updateCommentsWithCurrVoteFromAnswers(questionDTO.getAnswers(), userId);
         }
         return questionDTO;
     }
@@ -144,6 +144,14 @@ public class QuestionServiceImpl implements QuestionService {
                 .ifPresent(value -> questionDTO.setCurrVote(value.getVote()));
     }
 
+    private List<CommentDTO> getComments(QuestionDTO question) {
+        List<CommentDTO> comments = new ArrayList<>(question.getComments());
+        for (AnswerDTO answer : question.getAnswers()) {
+            comments.addAll(answer.getComments());
+        }
+        return comments;
+    }
+
     private void updateCommentsWithCurrVote(List<CommentDTO> comments, int userId) {
         List<Vote> votes = voteRepository.findByUserIdAndCommentIdIn(userId, getCommentIds(comments));
         for (Vote vote : votes) {
@@ -152,6 +160,13 @@ public class QuestionServiceImpl implements QuestionService {
                     .findFirst()
                     .ifPresent(comment -> comment.setCurrVote(vote.getVote()));
         }
+    }
+
+    private List<Integer> getCommentIds(List<CommentDTO> comments) {
+        return comments
+                .stream()
+                .map(CommentDTO::getId)
+                .collect(Collectors.toList());
     }
 
     private void updateAnswersWithCurrVote(List<AnswerDTO> answers, int userId) {
@@ -168,32 +183,6 @@ public class QuestionServiceImpl implements QuestionService {
         return answers
                 .stream()
                 .map(AnswerDTO::getId)
-                .collect(Collectors.toList());
-    }
-
-    private void updateCommentsWithCurrVoteFromAnswers(List<AnswerDTO> answers, int userId) {
-        List<Vote> votes = voteRepository.findByUserIdAndCommentIdIn(userId, getCommentIdsFromAnswers(answers));
-        for (Vote vote : votes) {
-            for (AnswerDTO answer : answers) {
-                answer.getComments().stream()
-                        .filter(commentDTO -> commentDTO.getId() == vote.getComment().getId())
-                        .findFirst()
-                        .ifPresent(commentDTO -> commentDTO.setCurrVote(vote.getVote()));
-            }
-        }
-    }
-
-    private List<Integer> getCommentIdsFromAnswers(List<AnswerDTO> answers) {
-        return answers.stream()
-                .flatMap(answer -> answer.getComments().stream())
-                .map(CommentDTO::getId)
-                .collect(Collectors.toList());
-    }
-
-    private List<Integer> getCommentIds(List<CommentDTO> comments) {
-        return comments
-                .stream()
-                .map(CommentDTO::getId)
                 .collect(Collectors.toList());
     }
 }
