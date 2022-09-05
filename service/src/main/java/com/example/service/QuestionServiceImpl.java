@@ -48,21 +48,25 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<QuestionDTO> getQuestionsByUserId(int userId, int page, boolean sortedByVotes) {
+    public QuestionsDTO getQuestionsByUserId(int userId, int page, boolean sortedByVotes) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sortedByVotes ? "votes" : "id").descending());
-        return questionRepository.findAllByUserId(userId, pageable)
+        Page<Question> pageQuestion = questionRepository.findAllByUserId(userId, pageable);
+        List<QuestionDTO> questions = pageQuestion
                 .stream()
                 .map((Question question) -> new QuestionDTO(question, false))
                 .collect(Collectors.toList());
+        return new QuestionsDTO(pageQuestion.getTotalPages(), questions);
     }
 
     @Override
-    public List<QuestionDTO> getQuestionsAnsweredByUserId(int userId, int page, boolean sortedByVotes) {
+    public QuestionsDTO getQuestionsAnsweredByUserId(int userId, int page, boolean sortedByVotes) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sortedByVotes ? "votes" : "id").descending());
-        return answerRepository.findAllByUserId(userId, pageable)
+        Page<Answer> pageQuestion = answerRepository.findAllByUserId(userId, pageable);
+        List<QuestionDTO> questions = pageQuestion
                 .stream()
                 .map((Answer answer) -> new QuestionDTO(answer.getQuestion(), false))
                 .collect(Collectors.toList());
+        return new QuestionsDTO(pageQuestion.getTotalPages(), questions);
     }
 
     @Override

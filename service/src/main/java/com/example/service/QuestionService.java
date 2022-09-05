@@ -5,14 +5,12 @@ import com.example.dto.QuestionDTO;
 import com.example.dto.QuestionsDTO;
 import com.example.exceptions.ServiceException;
 
-import java.util.List;
-
 public interface QuestionService {
     QuestionsDTO getQuestions(int page, boolean sortByVotes);
 
-    List<QuestionDTO> getQuestionsByUserId(int userId, int page, boolean sortedByVotes);
+    QuestionsDTO getQuestionsByUserId(int userId, int page, boolean sortedByVotes);
 
-    List<QuestionDTO> getQuestionsAnsweredByUserId(int userId, int page, boolean sortedByVotes);
+    QuestionsDTO getQuestionsAnsweredByUserId(int userId, int page, boolean sortedByVotes);
 
     QuestionDTO getQuestion(int questionId, int userId) throws ServiceException;
 
