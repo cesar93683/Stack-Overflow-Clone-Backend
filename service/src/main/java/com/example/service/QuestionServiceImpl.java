@@ -67,7 +67,7 @@ public class QuestionServiceImpl implements QuestionService {
                 .orElseThrow(() -> new ServiceException("Question not found with id: " + questionId));
         QuestionDTO questionDTO = new QuestionDTO(question, true);
         if (userId != NO_USER_ID) {
-            updatedQuestionWithCurrVote(userId, questionDTO);
+            updatedQuestionWithCurrVote(questionDTO, userId);
             updateCommentsWithCurrVote(getComments(questionDTO), userId);
             updateAnswersWithCurrVote(questionDTO.getAnswers(), userId);
         }
@@ -139,7 +139,7 @@ public class QuestionServiceImpl implements QuestionService {
         return commentDTO;
     }
 
-    private void updatedQuestionWithCurrVote(int userId, QuestionDTO questionDTO) {
+    private void updatedQuestionWithCurrVote(QuestionDTO questionDTO, int userId) {
         voteRepository.findByUserIdAndQuestionId(userId, questionDTO.getId())
                 .ifPresent(value -> questionDTO.setCurrVote(value.getVote()));
     }
