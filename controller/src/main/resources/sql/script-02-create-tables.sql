@@ -55,6 +55,7 @@ CREATE TABLE `answer` (
   `question_id` int NOT NULL,
   `content` varchar(500) NOT NULL,
   `votes` int NOT NULL,
+  `accepted` int NOT NULL,
   `created_at` DATETIME NOT NULL,
   `updated_at` DATETIME,
   PRIMARY KEY (`id`),
