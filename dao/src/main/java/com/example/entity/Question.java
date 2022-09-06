@@ -57,6 +57,7 @@ public class Question {
         this.content = content;
         this.votes = 1;
         this.numAnswers = 0;
+        this.answered = 0;
         this.user = user;
         this.createdAt = new Date();
         this.updatedAt = createdAt;
