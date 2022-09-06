@@ -81,7 +81,7 @@ public class AnswerServiceImpl implements AnswerService {
                 .orElseThrow(() -> new ServiceException("Answer not found with id: " + answerId));
         Question question = answer.getQuestion();
         if (question.getUser().getId() != userId) {
-            throw new ServiceException("User with id: " + userId + " did not create answer with id: " + answerId);
+            throw new ServiceException("User with id: " + userId + " did not create question with id: " + question.getId());
         }
         List<Answer> answers = question.getAnswers();
         Answer prevAcceptedAnswer = answers.stream().
