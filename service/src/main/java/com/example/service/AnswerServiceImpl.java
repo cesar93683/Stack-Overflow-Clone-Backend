@@ -94,8 +94,9 @@ public class AnswerServiceImpl implements AnswerService {
         if (prevAcceptedAnswer == null) {
             answer.setAccepted(1);
         }
+        question.setAnswered(1);
         answerRepository.save(answer);
-        // TODO update question to say the question has been answered
+        questionRepository.save(question);
     }
 
     @Override
