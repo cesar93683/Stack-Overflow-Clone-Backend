@@ -40,6 +40,7 @@ CREATE TABLE `question` (
   `content` varchar(500) NOT NULL,
   `votes` int NOT NULL,
   `num_answers` int NOT NULL,
+  `answered` int NOT NULL,
   `created_at` DATETIME NOT NULL,
   `updated_at` DATETIME,
   PRIMARY KEY (`id`),
