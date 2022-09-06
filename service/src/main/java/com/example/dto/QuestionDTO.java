@@ -15,6 +15,7 @@ public class QuestionDTO {
     private String content;
     private int votes;
     private int numAnswers;
+    private int answered;
     private List<AnswerDTO> answers;
     private List<CommentDTO> comments;
     private UserDTO user;
@@ -28,6 +29,7 @@ public class QuestionDTO {
         content = question.getContent();
         votes = question.getVotes();
         numAnswers = question.getNumAnswers();
+        answered = question.getAnswered();
         answers = new ArrayList<>();
         comments = new ArrayList<>();
         if (includeCommentsAndAnswers) {
@@ -74,6 +76,14 @@ public class QuestionDTO {
 
     public void setVotes(int votes) {
         this.votes = votes;
+    }
+
+    public int getAnswered() {
+        return answered;
+    }
+
+    public void setAnswered(int answered) {
+        this.answered = answered;
     }
 
     public int getNumAnswers() {

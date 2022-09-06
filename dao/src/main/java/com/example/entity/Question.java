@@ -25,6 +25,9 @@ public class Question {
     @Column(name = "num_answers", nullable = false)
     private int numAnswers;
 
+    @Column(name = "answered", nullable = false)
+    private int answered;
+
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<Answer> answers;
 
@@ -97,6 +100,14 @@ public class Question {
 
     public void setNumAnswers(int numAnswers) {
         this.numAnswers = numAnswers;
+    }
+
+    public int getAnswered() {
+        return answered;
+    }
+
+    public void setAnswered(int answered) {
+        this.answered = answered;
     }
 
     public List<Answer> getAnswers() {
