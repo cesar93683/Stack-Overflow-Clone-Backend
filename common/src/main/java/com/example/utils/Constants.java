@@ -9,5 +9,6 @@ public interface Constants {
     int UP_VOTE = 1;
     int DOWN_VOTE = -1;
     int NEUTRAL = 0;
+    int ANSWER_ACCEPTED = 1;
 
 }

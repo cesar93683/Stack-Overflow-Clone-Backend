@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
-import static com.example.utils.Constants.NEUTRAL;
-import static com.example.utils.Constants.UP_VOTE;
+import static com.example.utils.Constants.*;
 import static com.example.utils.Utils.getVoteDiff;
 
 @Service
@@ -73,6 +73,29 @@ public class AnswerServiceImpl implements AnswerService {
         question.setNumAnswers(question.getNumAnswers() - 1);
         questionRepository.save(question);
         answerRepository.delete(answer);
+    }
+
+    @Override
+    public void acceptAnswer(int answerId, int userId) throws ServiceException {
+        Answer answer = answerRepository.findById(answerId)
+                .orElseThrow(() -> new ServiceException("Answer not found with id: " + answerId));
+        Question question = answer.getQuestion();
+        if (question.getUser().getId() != userId) {
+            throw new ServiceException("User with id: " + userId + " did not create answer with id: " + answerId);
+        }
+        List<Answer> answers = question.getAnswers();
+        Answer prevAcceptedAnswer = answers.stream().
+                filter(questionAnswer -> questionAnswer.getAccepted() == ANSWER_ACCEPTED)
+                .findFirst()
+                .orElse(null);
+        if (prevAcceptedAnswer == answer) {
+            throw new ServiceException("Answer has already been set as accepted");
+        }
+        if (prevAcceptedAnswer == null) {
+            answer.setAccepted(1);
+        }
+        answerRepository.save(answer);
+        // TODO update question to say the question has been answered
     }
 
     @Override

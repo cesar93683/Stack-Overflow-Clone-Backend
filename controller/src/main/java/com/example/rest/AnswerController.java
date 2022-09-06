@@ -61,6 +61,17 @@ public class AnswerController {
         }
     }
 
+    @PostMapping("/accept/{id}")
+    public ResponseEntity<?> acceptAnswer(@PathVariable String id) {
+        try {
+            answerService.acceptAnswer(Integer.parseInt(id), getUserId());
+            return ResponseEntity.ok(new GenericResponse(0));
+        } catch (Exception e) {
+            LOGGER.error(e);
+            return ResponseEntity.badRequest().body(new GenericResponse(1));
+        }
+    }
+
     @PostMapping("/vote")
     public ResponseEntity<?> voteAnswer(@Valid @RequestBody VoteRequest voteRequest) {
         try {
