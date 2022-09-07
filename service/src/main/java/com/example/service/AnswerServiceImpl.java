@@ -39,10 +39,7 @@ public class AnswerServiceImpl implements AnswerService {
         }
         question.setNumAnswers(question.getNumAnswers() + 1);
         questionRepository.save(question);
-
-        Answer answer = new Answer(content, user, question);
-        int answerId = answerRepository.save(answer).getId();
-        answer.setId(answerId);
+        Answer answer =  answerRepository.save(new Answer(content, user, question));
         voteRepository.save(new Vote(user, null, answer, null, UP_VOTE));
         AnswerDTO answerDTO = new AnswerDTO(answer, false);
         answerDTO.setCurrVote(UP_VOTE);
@@ -121,9 +118,7 @@ public class AnswerServiceImpl implements AnswerService {
                 .orElseThrow(() -> new ServiceException("User not found with id: " + userId));
         Answer answer = answerRepository.findById(answerId)
                 .orElseThrow(() -> new ServiceException("Answer not found with id: " + answerId));
-        Comment comment = new Comment(content, user, null, answer);
-        int commentId = commentRepository.save(comment).getId();
-        comment.setId(commentId);
+        Comment comment = commentRepository.save(new Comment(content, user, null, answer));
         voteRepository.save(new Vote(user, null, null, comment, UP_VOTE));
         CommentDTO commentDTO = new CommentDTO(comment);
         commentDTO.setCurrVote(UP_VOTE);

@@ -86,9 +86,7 @@ public class QuestionServiceImpl implements QuestionService {
     public QuestionDTO createQuestion(String title, String content, int userId) throws ServiceException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException("User not found with id: " + userId));
-        Question question = new Question(title, content, user);
-        int questionId = questionRepository.save(question).getId();
-        question.setId(questionId);
+        Question question = questionRepository.save( new Question(title, content, user));
         voteRepository.save(new Vote(user, question, null, null, UP_VOTE));
         QuestionDTO questionDTO = new QuestionDTO(question, false);
         questionDTO.setCurrVote(UP_VOTE);
@@ -138,9 +136,7 @@ public class QuestionServiceImpl implements QuestionService {
                 .orElseThrow(() -> new ServiceException("User not found with id: " + userId));
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new ServiceException("Question not found with id: " + questionId));
-        Comment comment = new Comment(content, user, question, null);
-        int commentId = commentRepository.save(comment).getId();
-        comment.setId(commentId);
+        Comment comment = commentRepository.save(new Comment(content, user, question, null));
         voteRepository.save(new Vote(user, null, null, comment, UP_VOTE));
         CommentDTO commentDTO = new CommentDTO(comment);
         commentDTO.setCurrVote(UP_VOTE);
