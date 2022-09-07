@@ -6,10 +6,12 @@ public class UserDTO {
 
     private int id;
     private String username;
+    private int reputation;
 
     public UserDTO(User user) {
         id = user.getId();
         username = user.getUsername();
+        reputation = user.getReputation();
     }
 
     public int getId() {
@@ -28,4 +30,11 @@ public class UserDTO {
         this.username = username;
     }
 
+    public int getReputation() {
+        return reputation;
+    }
+
+    public void setReputation(int reputation) {
+        this.reputation = reputation;
+    }
 }
