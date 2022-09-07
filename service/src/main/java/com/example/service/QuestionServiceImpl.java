@@ -86,7 +86,7 @@ public class QuestionServiceImpl implements QuestionService {
     public QuestionDTO createQuestion(String title, String content, int userId) throws ServiceException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException("User not found with id: " + userId));
-        Question question = questionRepository.save( new Question(title, content, user));
+        Question question = questionRepository.save(new Question(title, content, user));
         voteRepository.save(new Vote(user, question, null, null, UP_VOTE));
         QuestionDTO questionDTO = new QuestionDTO(question, false);
         questionDTO.setCurrVote(UP_VOTE);
@@ -116,17 +116,25 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public void voteQuestion(int userId, int questionId, int voteType) throws ServiceException {
-        User user = userRepository.findById(userId)
+    public void voteQuestion(int userId, int questionId, int newVoteType) throws ServiceException {
+        User userVoter = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException("User not found with id: " + userId));
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new ServiceException("Question not found with id: " + questionId));
-        Vote vote = voteRepository.findByUserIdAndQuestionId(user.getId(), questionId)
-                .orElse(new Vote(user, question, null, null, NEUTRAL));
+        Vote vote = voteRepository.findByUserIdAndQuestionId(userVoter.getId(), questionId)
+                .orElse(new Vote(userVoter, question, null, null, NEUTRAL));
+        int oldVoteType = vote.getVote();
+        if (newVoteType == oldVoteType) {
+            return;
+        }
+        question.setVotes(question.getVotes() + getVoteDiff(vote.getVote(), newVoteType));
+        vote.setVote(newVoteType);
+        User userQuestion = question.getUser();
+        if (userVoter != userQuestion) {
+            updateReputation(newVoteType, oldVoteType, userQuestion);
+        }
 
-        question.setVotes(question.getVotes() + getVoteDiff(vote.getVote(), voteType));
         questionRepository.save(question);
-        vote.setVote(voteType);
         voteRepository.save(vote);
     }
 
@@ -188,5 +196,27 @@ public class QuestionServiceImpl implements QuestionService {
                 .stream()
                 .map(AnswerDTO::getId)
                 .collect(Collectors.toList());
+    }
+
+    private void updateReputation(int newVoteType, int oldVoteType, User userAnswer) {
+        if (newVoteType == UP_VOTE) {
+            if (oldVoteType == NEUTRAL) {
+                userAnswer.setReputation(userAnswer.getReputation() + 10);
+            } else { // DOWN_VOTE
+                userAnswer.setReputation(userAnswer.getReputation() + 12);
+            }
+        } else if (newVoteType == NEUTRAL) {
+            if (oldVoteType == UP_VOTE) {
+                userAnswer.setReputation(userAnswer.getReputation() - 10);
+            } else { // DOWN_VOTE
+                userAnswer.setReputation(userAnswer.getReputation() + 2);
+            }
+        } else { // DOWN_VOTE
+            if (oldVoteType == UP_VOTE) {
+                userAnswer.setReputation(userAnswer.getReputation() - 12);
+            } else { // NEUTRAL
+                userAnswer.setReputation(userAnswer.getReputation() - 2);
+            }
+        }
     }
 }
