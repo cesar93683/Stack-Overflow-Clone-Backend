@@ -1,12 +1,12 @@
 package com.example.rest;
 
+import com.example.dto.QuestionsDTO;
+import com.example.dto.UserDTO;
 import com.example.exceptions.ServiceException;
 import com.example.rest.payload.GenericResponse;
-import com.example.rest.payload.data.CreateCommentRequest;
-import com.example.rest.payload.data.CreateQuestionRequest;
-import com.example.rest.payload.data.UpdateContentRequest;
-import com.example.rest.payload.data.VoteRequest;
+import com.example.rest.payload.data.*;
 import com.example.service.QuestionService;
+import com.example.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +28,8 @@ public class QuestionController {
 
     @Autowired
     private QuestionService questionService;
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/")
     public ResponseEntity<?> getQuestions(@RequestParam(required = false) String page,
@@ -45,8 +47,16 @@ public class QuestionController {
     public ResponseEntity<?> getQuestionsByUserId(@PathVariable String userId, @RequestParam(required = false) String page,
                                                   @RequestParam(required = false) String sortedByVotes) {
         try {
-            return ResponseEntity.ok(questionService.getQuestionsByUserId(Integer.parseInt(userId),
-                    page != null ? Integer.parseInt(page) : 0, Boolean.parseBoolean(sortedByVotes)));
+            QuestionsDTO questions = questionService.getQuestionsByUserId(Integer.parseInt(userId),
+                    page != null ? Integer.parseInt(page) : 0, Boolean.parseBoolean(sortedByVotes));
+            if (questions.getQuestions().size() == 0) {
+                UserDTO user = userService.getUserById(Integer.parseInt(userId));
+                return ResponseEntity.ok(new GetQuestionsByUserResponse(0, user,
+                        questions.getQuestions(), questions.getTotalPages()));
+            } else {
+                return ResponseEntity.ok(new GetQuestionsByUserResponse(0, questions.getQuestions().get(0).getUser(),
+                        questions.getQuestions(), questions.getTotalPages()));
+            }
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(1));
