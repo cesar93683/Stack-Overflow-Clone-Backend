@@ -49,14 +49,7 @@ public class QuestionController {
         try {
             QuestionsDTO questions = questionService.getQuestionsByUserId(Integer.parseInt(userId),
                     page != null ? Integer.parseInt(page) : 0, Boolean.parseBoolean(sortedByVotes));
-            if (questions.getQuestions().size() == 0) {
-                UserDTO user = userService.getUserById(Integer.parseInt(userId));
-                return ResponseEntity.ok(new GetQuestionsByUserResponse(0, user,
-                        questions.getQuestions(), questions.getTotalPages()));
-            } else {
-                return ResponseEntity.ok(new GetQuestionsByUserResponse(0, questions.getQuestions().get(0).getUser(),
-                        questions.getQuestions(), questions.getTotalPages()));
-            }
+            return getGetQuestionsByUserResponseResponseEntity(userId, questions);
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(1));
@@ -67,11 +60,23 @@ public class QuestionController {
     public ResponseEntity<?> getQuestionsAnsweredByUserId(@PathVariable String userId, @RequestParam(required = false) String page,
                                                           @RequestParam(required = false) String sortedByVotes) {
         try {
-            return ResponseEntity.ok(questionService.getQuestionsAnsweredByUserId(Integer.parseInt(userId),
-                    page != null ? Integer.parseInt(page) : 0, Boolean.parseBoolean(sortedByVotes)));
+            QuestionsDTO questions = questionService.getQuestionsAnsweredByUserId(Integer.parseInt(userId),
+                    page != null ? Integer.parseInt(page) : 0, Boolean.parseBoolean(sortedByVotes));
+            return getGetQuestionsByUserResponseResponseEntity(userId, questions);
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(1));
+        }
+    }
+
+    private ResponseEntity<GetQuestionsByUserResponse> getGetQuestionsByUserResponseResponseEntity(String userId, QuestionsDTO questions) throws ServiceException {
+        if (questions.getQuestions().size() == 0) {
+            UserDTO user = userService.getUserById(Integer.parseInt(userId));
+            return ResponseEntity.ok(new GetQuestionsByUserResponse(0, user,
+                    questions.getQuestions(), questions.getTotalPages()));
+        } else {
+            return ResponseEntity.ok(new GetQuestionsByUserResponse(0, questions.getQuestions().get(0).getUser(),
+                    questions.getQuestions(), questions.getTotalPages()));
         }
     }
 
