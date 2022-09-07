@@ -91,9 +91,11 @@ public class AnswerServiceImpl implements AnswerService {
         if (prevAcceptedAnswer == answer) {
             throw new ServiceException("Answer has already been set as accepted");
         }
-        if (prevAcceptedAnswer == null) {
-            answer.setAccepted(1);
+        if (prevAcceptedAnswer != null) {
+            prevAcceptedAnswer.setAccepted(0);
+            answerRepository.save(prevAcceptedAnswer);
         }
+        answer.setAccepted(1);
         question.setAnswered(1);
         answerRepository.save(answer);
         questionRepository.save(question);
