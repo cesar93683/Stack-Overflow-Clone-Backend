@@ -1,6 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `user_tracker`;
 USE `user_tracker`;
 
+DROP TABLE IF EXISTS `vote`;
+DROP TABLE IF EXISTS `comment`;
+DROP TABLE IF EXISTS `answer`;
+DROP TABLE IF EXISTS `question`;
 DROP TABLE IF EXISTS `user`;
 
 CREATE TABLE `user` (
@@ -8,30 +12,25 @@ CREATE TABLE `user` (
   `email` varchar(50) DEFAULT NULL,
   `username` varchar(20) DEFAULT NULL,
   `password` varchar(120) DEFAULT NULL,
+  `reputation` int NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 -- password is pass01
-insert into user (id, email, username, password)
-VALUES(NULL, "user01@gmail.com", "user01", "$2a$10$WRmYG3DRvHNRihopk.RCFOHeOvCe0yPZId6amT574VyEJxRRDBxvC");
+insert into user (id, email, username, password, reputation)
+VALUES(NULL, "user01@gmail.com", "user01", "$2a$10$WRmYG3DRvHNRihopk.RCFOHeOvCe0yPZId6amT574VyEJxRRDBxvC", 0);
 -- password is pass02
-insert into user (id, email, username, password)
-VALUES(NULL, "user02@gmail.com", "user02", "$2a$10$Ue1cDhxgg5Hm58AS4w7aHurS/zzFTQGBSfMxnKRlAMe2iaFFu9NXC");
+insert into user (id, email, username, password, reputation)
+VALUES(NULL, "user02@gmail.com", "user02", "$2a$10$Ue1cDhxgg5Hm58AS4w7aHurS/zzFTQGBSfMxnKRlAMe2iaFFu9NXC", 0);
 -- password is pass03
-insert into user (id, email, username, password)
-VALUES(NULL, "user03@gmail.com", "user03", "$2a$10$/Pp1T8qY87InP97Et4pSPuK0egPdxTBFDZjL9KSw5bdFH46ID9o3K");
+insert into user (id, email, username, password, reputation)
+VALUES(NULL, "user03@gmail.com", "user03", "$2a$10$/Pp1T8qY87InP97Et4pSPuK0egPdxTBFDZjL9KSw5bdFH46ID9o3K", 0);
 -- password is pass04
-insert into user (id, email, username, password)
-VALUES(NULL, "user04@gmail.com", "user04", "$2a$10$Yuk6YEde4zComZ2AzoliX.aLNWMYOlZnWZJKu3yZLxdRF2SgdwGZm");
+insert into user (id, email, username, password, reputation)
+VALUES(NULL, "user04@gmail.com", "user04", "$2a$10$Yuk6YEde4zComZ2AzoliX.aLNWMYOlZnWZJKu3yZLxdRF2SgdwGZm", 0);
 -- password is pass05
-insert into user (id, email, username, password)
-VALUES(NULL, "user05@gmail.com", "user05", "$2a$10$c8D7sSh28qon5iwSzwaYj.o47lTfdq0ECtxAKd8rFo9q1G1bsaYcy");
-
-
-DROP TABLE IF EXISTS `vote`;
-DROP TABLE IF EXISTS `comment`;
-DROP TABLE IF EXISTS `answer`;
-DROP TABLE IF EXISTS `question`;
+insert into user (id, email, username, password, reputation)
+VALUES(NULL, "user05@gmail.com", "user05", "$2a$10$c8D7sSh28qon5iwSzwaYj.o47lTfdq0ECtxAKd8rFo9q1G1bsaYcy", 0);
 
 CREATE TABLE `question` (
   `id` int NOT NULL AUTO_INCREMENT,
