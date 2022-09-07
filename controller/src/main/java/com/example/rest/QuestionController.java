@@ -49,7 +49,7 @@ public class QuestionController {
         try {
             QuestionsDTO questions = questionService.getQuestionsByUserId(Integer.parseInt(userId),
                     page != null ? Integer.parseInt(page) : 0, Boolean.parseBoolean(sortedByVotes));
-            return getGetQuestionsByUserResponseResponseEntity(userId, questions);
+            return getGetQuestionsByUserResponse(userId, questions);
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(1));
@@ -62,14 +62,14 @@ public class QuestionController {
         try {
             QuestionsDTO questions = questionService.getQuestionsAnsweredByUserId(Integer.parseInt(userId),
                     page != null ? Integer.parseInt(page) : 0, Boolean.parseBoolean(sortedByVotes));
-            return getGetQuestionsByUserResponseResponseEntity(userId, questions);
+            return getGetQuestionsByUserResponse(userId, questions);
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(1));
         }
     }
 
-    private ResponseEntity<GetQuestionsByUserResponse> getGetQuestionsByUserResponseResponseEntity(String userId, QuestionsDTO questions) throws ServiceException {
+    private ResponseEntity<GetQuestionsByUserResponse> getGetQuestionsByUserResponse(String userId, QuestionsDTO questions) throws ServiceException {
         if (questions.getQuestions().size() == 0) {
             UserDTO user = userService.getUserById(Integer.parseInt(userId));
             return ResponseEntity.ok(new GetQuestionsByUserResponse(0, user,
