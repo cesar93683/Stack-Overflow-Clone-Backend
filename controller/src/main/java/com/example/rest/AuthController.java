@@ -74,6 +74,7 @@ public class AuthController {
             user.setUsername(signUpRequest.getUsername());
             user.setEmail(signUpRequest.getEmail());
             user.setPassword(encoder.encode(signUpRequest.getPassword()));
+            user.setReputation(1);
             userService.register(user);
             return ResponseEntity.ok(new GenericResponse(0));
         } catch (Exception e) {
