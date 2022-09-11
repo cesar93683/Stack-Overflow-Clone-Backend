@@ -13,4 +13,4 @@ Run StackOverflowCloneApplication.
 
 Not required, but recommend.  
 Go to Settings -> Version Control -> Commit -> Uncheck "Use non-modal commit interface".
-Go to Settings -> Editor -> Inlay Hints -> Code Vision -> Uncheck "Code Author", Uncheck "Usages".
+Go to Settings -> Editor -> Inlay Hints -> Code Vision -> Uncheck "Code Author", Uncheck "Usages", Uncheck "Inheritors".
