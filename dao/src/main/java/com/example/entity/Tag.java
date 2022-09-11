@@ -17,7 +17,7 @@ public class Tag {
     @Column(name = "content", nullable = false, updatable = false)
     private String content;
 
-    @Column(name = "num_questions", nullable = false, updatable = false)
+    @Column(name = "num_questions", nullable = false)
     private String numQuestions;
 
 }
