@@ -1,6 +1,8 @@
 CREATE DATABASE  IF NOT EXISTS `user_tracker`;
 USE `user_tracker`;
 
+DROP TABLE IF EXISTS `question_tag`;
+DROP TABLE IF EXISTS `tag`;
 DROP TABLE IF EXISTS `vote`;
 DROP TABLE IF EXISTS `comment`;
 DROP TABLE IF EXISTS `answer`;
@@ -117,3 +119,21 @@ CREATE TABLE `vote` (
   FOREIGN KEY (`comment_id`)
   REFERENCES `comment` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `tag` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `tag` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `question_tag` (
+	`question_id` int NOT NULL,
+    `tag_id` int NOT NULL,
+    PRIMARY KEY (`question_id`, `tag_id`),
+	CONSTRAINT `FK_QUESTION`
+    FOREIGN KEY (`question_id`)
+    REFERENCES `question` (`id`),
+	CONSTRAINT `FK_TAG`
+    FOREIGN KEY (`tag_id`)
+    REFERENCES `tag` (`id`)
+)
