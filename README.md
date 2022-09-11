@@ -11,4 +11,6 @@ In IntelliJ, go to Project Structure and set JDK to JDK 11.
 Create run configuration "clean install" and run it.  
 Run StackOverflowCloneApplication.  
 
-Not required, but recommend. Go to Settings -> Uncheck "Use non-modal commit interface".
+Not required, but recommend.  
+Go to Settings -> Version Control -> Commit -> Uncheck "Use non-modal commit interface".
+Go to Settings -> Editor -> Inlay Hints -> Code Vision -> Uncheck "Code Author".
