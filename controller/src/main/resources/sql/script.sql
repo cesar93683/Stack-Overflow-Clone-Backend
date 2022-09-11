@@ -122,7 +122,9 @@ CREATE TABLE `vote` (
 
 CREATE TABLE `tag` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `tag` varchar(20) DEFAULT NULL,
+  `tag` varchar(20) NOT NULL,
+  `description` varchar(200) NOT NULL,
+  `num_questions` NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
