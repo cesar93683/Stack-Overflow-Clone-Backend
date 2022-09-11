@@ -38,6 +38,14 @@ public class Question {
     private List<Vote> voteList;
 
     @ManyToOne
+    @JoinTable(
+            name = "question_tag",
+            joinColumns = @JoinColumn(name = "question_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private List<Tag> tags;
+
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
     private User user;
 
@@ -133,6 +141,14 @@ public class Question {
 
     public void setVoteList(List<Vote> voteList) {
         this.voteList = voteList;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
     }
 
     public User getUser() {

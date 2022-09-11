@@ -1,31 +1,21 @@
-package com.example.entity;
+package com.example.dto;
 
-import javax.persistence.*;
+import com.example.entity.Tag;
 
-@Entity
-@Table(name = "tag")
-public class Tag {
+public class TagDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
-
-    @Column(name = "tag", nullable = false, updatable = false)
     private String tag;
 
-    @Column(name = "description", nullable = false, updatable = false)
     private String description;
 
-    @Column(name = "num_questions", nullable = false)
     private String numQuestions;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public TagDTO(Tag tag, boolean onlyTag) {
+        this.tag = tag.getTag();
+        if (!onlyTag) {
+            this.description = tag.getDescription();
+            this.numQuestions = tag.getNumQuestions();
+        }
     }
 
     public String getTag() {
@@ -51,4 +41,5 @@ public class Tag {
     public void setNumQuestions(String numQuestions) {
         this.numQuestions = numQuestions;
     }
+
 }

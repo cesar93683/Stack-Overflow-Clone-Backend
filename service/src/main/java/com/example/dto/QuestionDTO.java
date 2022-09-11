@@ -3,6 +3,7 @@ package com.example.dto;
 import com.example.entity.Answer;
 import com.example.entity.Comment;
 import com.example.entity.Question;
+import com.example.entity.Tag;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,6 +20,7 @@ public class QuestionDTO {
     private List<AnswerDTO> answers;
     private List<CommentDTO> comments;
     private UserDTO user;
+    private List<TagDTO> tags;
     private int currVote;
     private Date createdAt;
     private Date updatedAt;
@@ -41,6 +43,10 @@ public class QuestionDTO {
             }
         }
         user = new UserDTO(question.getUser());
+        tags = new ArrayList<>();
+        for (Tag tag : question.getTags()) {
+            tags.add(new TagDTO(tag, false));
+        }
         currVote = 0;
         createdAt = question.getCreatedAt();
         updatedAt = question.getUpdatedAt();
@@ -116,6 +122,14 @@ public class QuestionDTO {
 
     public void setUser(UserDTO user) {
         this.user = user;
+    }
+
+    public List<TagDTO> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<TagDTO> tags) {
+        this.tags = tags;
     }
 
     public int getCurrVote() {
