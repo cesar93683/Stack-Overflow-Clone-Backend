@@ -123,10 +123,17 @@ CREATE TABLE `vote` (
 CREATE TABLE `tag` (
   `id` int NOT NULL AUTO_INCREMENT,
   `tag` varchar(20) NOT NULL,
-  `description` varchar(200) NOT NULL,
-  `num_questions` NOT NULL,
+  `description` varchar(500) NOT NULL,
+  `num_questions` int NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+insert into tag (id, tag, description, num_questions)
+VALUES(NULL, "javascript", "For questions regarding programming in ECMAScript (JavaScript/JS) and its various dialects/implementations (excluding ActionScript). Note JavaScript is NOT the same as Java!", 0);
+insert into tag (id, tag, description, num_questions)
+VALUES(NULL, "java", "Java is a high-level object-oriented programming language. Use this tag when you're having problems using or understanding the language itself. This tag is frequently used alongside other tags for libraries and/or frameworks used by Java developers.", 0);
+insert into tag (id, tag, description, num_questions)
+VALUES(NULL, "python", "Python is a multi-paradigm, dynamically typed, multi-purpose programming language. It is designed to be quick to learn, understand, and use, and enforces a clean and uniform syntax. Please note that Python 2 is officially out of support as of 2020-01-01. For version-specific Python questions, add the [python-2.7] or [python-3.x] tag. When using a Python variant (e.g. Jython, PyPy) or library (e.g. Pandas, NumPy), please include it in the tags.", 0);
 
 CREATE TABLE `question_tag` (
 	`question_id` int NOT NULL,
@@ -138,4 +145,4 @@ CREATE TABLE `question_tag` (
 	CONSTRAINT `FK_TAG`
     FOREIGN KEY (`tag_id`)
     REFERENCES `tag` (`id`)
-)
+);
