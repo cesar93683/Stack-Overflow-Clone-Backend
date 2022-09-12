@@ -149,4 +149,14 @@ public class QuestionController {
         }
     }
 
+    @GetMapping("/tags")
+    public ResponseEntity<?> getTags() {
+        try {
+            return ResponseEntity.ok(questionService.getTags());
+        } catch (Exception e) {
+            LOGGER.error(e);
+            return ResponseEntity.badRequest().body(new GenericResponse(1));
+        }
+    }
+
 }

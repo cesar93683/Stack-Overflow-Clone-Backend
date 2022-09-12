@@ -1,9 +1,6 @@
 package com.example.service;
 
-import com.example.dto.AnswerDTO;
-import com.example.dto.CommentDTO;
-import com.example.dto.QuestionDTO;
-import com.example.dto.QuestionsDTO;
+import com.example.dto.*;
 import com.example.entity.*;
 import com.example.exceptions.ServiceException;
 import com.example.repository.*;
@@ -190,6 +187,15 @@ public class QuestionServiceImpl implements QuestionService {
         CommentDTO commentDTO = new CommentDTO(comment);
         commentDTO.setCurrVote(UP_VOTE);
         return commentDTO;
+    }
+
+    @Override
+    public List<TagDTO> getTags() {
+        List<TagDTO> tags = new ArrayList<>();
+        for (Tag tag : tagRepository.findAll()) {
+            tags.add(new TagDTO(tag, true));
+        }
+        return tags;
     }
 
     private void updatedQuestionWithCurrVote(QuestionDTO questionDTO, int userId) {
