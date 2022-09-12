@@ -93,7 +93,7 @@ public class QuestionController {
     public ResponseEntity<?> createQuestion(@Valid @RequestBody CreateQuestionRequest createQuestionRequest) {
         try {
             return ResponseEntity.ok(questionService.createQuestion(createQuestionRequest.getTitle(),
-                    createQuestionRequest.getContent(), getUserId()));
+                    createQuestionRequest.getContent(), createQuestionRequest.getTags(), getUserId()));
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(1));

@@ -45,7 +45,7 @@ public class QuestionDTO {
         user = new UserDTO(question.getUser());
         tags = new ArrayList<>();
         for (Tag tag : question.getTags()) {
-            tags.add(new TagDTO(tag, false));
+            tags.add(new TagDTO(tag, true));
         }
         currVote = 0;
         createdAt = question.getCreatedAt();

@@ -35,6 +35,8 @@ public class QuestionServiceImpl implements QuestionService {
     private VoteRepository voteRepository;
     @Autowired
     private CommentRepository commentRepository;
+    @Autowired
+    private TagRepository tagRepository;
 
     @Override
     public QuestionsDTO getQuestions(int page, boolean sortedByVotes) {
@@ -83,11 +85,16 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public QuestionDTO createQuestion(String title, String content, int userId) throws ServiceException {
+    public QuestionDTO createQuestion(String title, String content, List<String> tagTypes, int userId) throws ServiceException {
+        List<Tag> tags = tagRepository.findByTagIn(tagTypes);
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException("User not found with id: " + userId));
-        Question question = questionRepository.save(new Question(title, content, user));
+        Question question = questionRepository.save(new Question(title, content, user, tags));
         voteRepository.save(new Vote(user, question, null, null, UP_VOTE));
+        for (Tag tag : tags) {
+            tag.setNumQuestions(tag.getNumQuestions() + 1);
+        }
+        tagRepository.saveAll(tags);
         QuestionDTO questionDTO = new QuestionDTO(question, false);
         questionDTO.setCurrVote(UP_VOTE);
         return questionDTO;

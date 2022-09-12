@@ -37,7 +37,7 @@ public class Question {
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<Vote> voteList;
 
-    @ManyToOne
+    @ManyToMany
     @JoinTable(
             name = "question_tag",
             joinColumns = @JoinColumn(name = "question_id"),
@@ -59,13 +59,14 @@ public class Question {
     public Question() {
     }
 
-    public Question(String title, String content, User user) {
+    public Question(String title, String content, User user, List<Tag> tags) {
         this.id = 0;
         this.title = title;
         this.content = content;
         this.votes = 1;
         this.numAnswers = 0;
         this.answered = 0;
+        this.tags = tags;
         this.user = user;
         this.createdAt = new Date();
         this.updatedAt = createdAt;
