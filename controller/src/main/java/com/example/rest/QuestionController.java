@@ -101,9 +101,10 @@ public class QuestionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateQuestion(@Valid @RequestBody UpdateContentRequest updateContentRequest, @PathVariable String id) {
+    public ResponseEntity<?> updateQuestion(@Valid @RequestBody UpdateQuestionRequest updateQuestionRequest, @PathVariable String id) {
         try {
-            questionService.updateQuestion(Integer.parseInt(id), updateContentRequest.getContent(), getUserId());
+            questionService.updateQuestion(Integer.parseInt(id), updateQuestionRequest.getContent(),
+                    updateQuestionRequest.getTags(), getUserId());
             return ResponseEntity.ok(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);

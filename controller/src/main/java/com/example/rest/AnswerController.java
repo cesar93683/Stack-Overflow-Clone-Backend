@@ -4,7 +4,7 @@ import com.example.exceptions.ServiceException;
 import com.example.rest.payload.GenericResponse;
 import com.example.rest.payload.data.CreateAnswerRequest;
 import com.example.rest.payload.data.CreateCommentRequest;
-import com.example.rest.payload.data.UpdateContentRequest;
+import com.example.rest.payload.data.UpdateAnswerRequest;
 import com.example.rest.payload.data.VoteRequest;
 import com.example.service.AnswerService;
 import org.apache.logging.log4j.LogManager;
@@ -40,9 +40,9 @@ public class AnswerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateAnswer(@Valid @RequestBody UpdateContentRequest updateContentRequest, @PathVariable String id) {
+    public ResponseEntity<?> updateAnswer(@Valid @RequestBody UpdateAnswerRequest updateAnswerRequest, @PathVariable String id) {
         try {
-            answerService.updateAnswer(Integer.parseInt(id), updateContentRequest.getContent(), getUserId());
+            answerService.updateAnswer(Integer.parseInt(id), updateAnswerRequest.getContent(), getUserId());
             return ResponseEntity.ok(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);

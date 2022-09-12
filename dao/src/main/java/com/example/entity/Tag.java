@@ -18,7 +18,7 @@ public class Tag {
     private String description;
 
     @Column(name = "num_questions", nullable = false)
-    private String numQuestions;
+    private int numQuestions;
 
     public int getId() {
         return id;
@@ -44,11 +44,11 @@ public class Tag {
         this.description = description;
     }
 
-    public String getNumQuestions() {
+    public int getNumQuestions() {
         return numQuestions;
     }
 
-    public void setNumQuestions(String numQuestions) {
+    public void setNumQuestions(int numQuestions) {
         this.numQuestions = numQuestions;
     }
 }

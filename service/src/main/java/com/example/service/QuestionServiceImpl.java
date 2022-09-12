@@ -101,15 +101,49 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public void updateQuestion(int questionId, String content, int userId) throws ServiceException {
+    public void updateQuestion(int questionId, String content, List<String> tagTypes, int userId) throws ServiceException {
+        List<Tag> tags = tagRepository.findByTagIn(tagTypes);
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new ServiceException("Question not found with id: " + questionId));
         if (question.getUser().getId() != userId) {
             throw new ServiceException("User with id: " + userId + " did not create question with id: " + questionId);
         }
+        updateTags(tags, question.getTags());
         question.setContent(content);
+        question.setTags(tags);
         question.setUpdatedAt(new Date());
         questionRepository.save(question);
+    }
+
+    private void updateTags(List<Tag> updatedTags, List<Tag> currentTags) {
+        List<Tag> newTags = new ArrayList<>();
+        for (Tag updatedTag : updatedTags) {
+            boolean found = currentTags.stream()
+                    .anyMatch(currentTag -> updatedTag == currentTag);
+            if (!found) {
+                newTags.add(updatedTag);
+            }
+        }
+        List<Tag> removedTags = new ArrayList<>();
+        for (Tag currentTag : currentTags) {
+            boolean found = updatedTags.stream()
+                    .anyMatch(updatedTag -> currentTag == updatedTag);
+            if (!found) {
+                removedTags.add(currentTag);
+            }
+        }
+        if (!newTags.isEmpty()) {
+            for (Tag tag : newTags) {
+                tag.setNumQuestions(tag.getNumQuestions() + 1);
+            }
+            tagRepository.saveAll(newTags);
+        }
+        if (!removedTags.isEmpty()) {
+            for (Tag tag : removedTags) {
+                tag.setNumQuestions(tag.getNumQuestions() - 1);
+            }
+            tagRepository.saveAll(removedTags);
+        }
     }
 
     @Override

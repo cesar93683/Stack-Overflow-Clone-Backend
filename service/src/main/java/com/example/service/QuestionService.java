@@ -16,9 +16,9 @@ public interface QuestionService {
 
     QuestionDTO getQuestion(int questionId, int userId) throws ServiceException;
 
-    QuestionDTO createQuestion(String title, String content, List<String> tags, int userId) throws ServiceException;
+    QuestionDTO createQuestion(String title, String content, List<String> tagTypes, int userId) throws ServiceException;
 
-    void updateQuestion(int questionId, String content, int userId) throws ServiceException;
+    void updateQuestion(int questionId, String content, List<String> tagTypes, int userId) throws ServiceException;
 
     void deleteQuestion(int questionId, int userId) throws ServiceException;
 

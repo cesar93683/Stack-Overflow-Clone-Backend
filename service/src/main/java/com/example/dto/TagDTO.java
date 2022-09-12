@@ -8,7 +8,7 @@ public class TagDTO {
 
     private String description;
 
-    private String numQuestions;
+    private int numQuestions;
 
     public TagDTO(Tag tag, boolean onlyTag) {
         this.tag = tag.getTag();
@@ -34,11 +34,11 @@ public class TagDTO {
         this.description = description;
     }
 
-    public String getNumQuestions() {
+    public int getNumQuestions() {
         return numQuestions;
     }
 
-    public void setNumQuestions(String numQuestions) {
+    public void setNumQuestions(int numQuestions) {
         this.numQuestions = numQuestions;
     }
 
