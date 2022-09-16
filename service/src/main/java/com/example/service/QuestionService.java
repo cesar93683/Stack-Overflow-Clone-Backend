@@ -4,7 +4,6 @@ import com.example.dto.CommentDTO;
 import com.example.dto.QuestionDTO;
 import com.example.dto.QuestionsDTO;
 import com.example.dto.TagDTO;
-import com.example.entity.Tag;
 import com.example.exceptions.ServiceException;
 
 import java.util.List;
@@ -29,4 +28,6 @@ public interface QuestionService {
     CommentDTO createComment(String content, int questionId, int userId) throws ServiceException;
 
     List<TagDTO> getTags();
+
+    QuestionsDTO getQuestionByTag(String tag, int page, boolean sortByVotes);
 }

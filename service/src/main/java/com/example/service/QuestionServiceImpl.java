@@ -198,6 +198,19 @@ public class QuestionServiceImpl implements QuestionService {
         return tags;
     }
 
+    @Override
+    public QuestionsDTO getQuestionByTag(String tagType, int page, boolean sortedByVotes) {
+        Tag tag = tagRepository.findByTag(tagType)
+                .orElseThrow(() -> new org.hibernate.service.spi.ServiceException("Tag not found with tag: " + tagType));
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(sortedByVotes ? "votes" : "id").descending());
+        Page<Question> pageQuestion = questionRepository.findByTags(tag, pageable);
+        List<QuestionDTO> questions = pageQuestion
+                .stream()
+                .map((Question question) -> new QuestionDTO(question, false))
+                .collect(Collectors.toList());
+        return new QuestionsDTO(pageQuestion.getTotalPages(), questions);
+    }
+
     private void updatedQuestionWithCurrVote(QuestionDTO questionDTO, int userId) {
         voteRepository.findByUserIdAndQuestionId(userId, questionDTO.getId())
                 .ifPresent(value -> questionDTO.setCurrVote(value.getVote()));

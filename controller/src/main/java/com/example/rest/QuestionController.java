@@ -159,4 +159,16 @@ public class QuestionController {
         }
     }
 
+    @GetMapping("/tagged/{tag}")
+    public ResponseEntity<?> getQuestionByTag(@PathVariable String tag, @RequestParam(required = false) String page,
+                                              @RequestParam(required = false) String sortedByVotes) {
+        try {
+            return ResponseEntity.ok(questionService.getQuestionByTag(tag, page != null ? Integer.parseInt(page) : 0,
+                    Boolean.parseBoolean(sortedByVotes)));
+        } catch (Exception e) {
+            LOGGER.error(e);
+            return ResponseEntity.badRequest().body(new GenericResponse(1));
+        }
+    }
+
 }
