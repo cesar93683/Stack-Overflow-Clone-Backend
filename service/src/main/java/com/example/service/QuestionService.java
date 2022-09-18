@@ -9,7 +9,7 @@ import com.example.exceptions.ServiceException;
 import java.util.List;
 
 public interface QuestionService {
-    QuestionsDTO getQuestions(int page, boolean sortByVotes);
+    QuestionsDTO getQuestions(int page, boolean sortedByVotes);
 
     QuestionsDTO getQuestionsByUserId(int userId, int page, boolean sortedByVotes);
 
@@ -29,5 +29,5 @@ public interface QuestionService {
 
     List<TagDTO> getTags();
 
-    QuestionsDTO getQuestionByTag(String tag, int page, boolean sortByVotes);
+    QuestionsDTO getQuestionByTag(String tag, int page, boolean sortedByVotes);
 }
