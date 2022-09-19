@@ -39,7 +39,7 @@ public class QuestionController {
                     Boolean.parseBoolean(sortedByVotes)));
         } catch (Exception e) {
             LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1));
+            return ResponseEntity.badRequest().body(new GenericResponse(ERROR_CODE_BAD_REQUEST));
         }
     }
 
@@ -52,7 +52,7 @@ public class QuestionController {
             return getGetQuestionsByUserIdResponse(userId, questions);
         } catch (Exception e) {
             LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1));
+            return ResponseEntity.badRequest().body(new GenericResponse(ERROR_CODE_BAD_REQUEST));
         }
     }
 
@@ -65,7 +65,7 @@ public class QuestionController {
             return getGetQuestionsByUserIdResponse(userId, questions);
         } catch (Exception e) {
             LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1));
+            return ResponseEntity.badRequest().body(new GenericResponse(ERROR_CODE_BAD_REQUEST));
         }
     }
 
@@ -85,7 +85,7 @@ public class QuestionController {
             return ResponseEntity.ok(questionService.getQuestion(Integer.parseInt(id), getUserIdIfExists()));
         } catch (Exception e) {
             LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1));
+            return ResponseEntity.badRequest().body(new GenericResponse(ERROR_CODE_BAD_REQUEST));
         }
     }
 
@@ -96,7 +96,7 @@ public class QuestionController {
                     createQuestionRequest.getContent(), createQuestionRequest.getTags(), getUserId()));
         } catch (Exception e) {
             LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1));
+            return ResponseEntity.badRequest().body(new GenericResponse(ERROR_CODE_BAD_REQUEST));
         }
     }
 
@@ -108,7 +108,7 @@ public class QuestionController {
             return ResponseEntity.ok(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1));
+            return ResponseEntity.badRequest().body(new GenericResponse(ERROR_CODE_BAD_REQUEST));
         }
     }
 
@@ -119,7 +119,7 @@ public class QuestionController {
             return ResponseEntity.ok(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1));
+            return ResponseEntity.badRequest().body(new GenericResponse(ERROR_CODE_BAD_REQUEST));
         }
     }
 
@@ -134,7 +134,7 @@ public class QuestionController {
             return ResponseEntity.ok(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1));
+            return ResponseEntity.badRequest().body(new GenericResponse(ERROR_CODE_BAD_REQUEST));
         }
     }
 
@@ -145,7 +145,7 @@ public class QuestionController {
                     Integer.parseInt(createCommentRequest.getId()), getUserId()));
         } catch (Exception e) {
             LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1));
+            return ResponseEntity.badRequest().body(new GenericResponse(ERROR_CODE_BAD_REQUEST));
         }
     }
 
@@ -155,7 +155,7 @@ public class QuestionController {
             return ResponseEntity.ok(questionService.getTags());
         } catch (Exception e) {
             LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1));
+            return ResponseEntity.badRequest().body(new GenericResponse(ERROR_CODE_BAD_REQUEST));
         }
     }
 
@@ -167,7 +167,7 @@ public class QuestionController {
                     Boolean.parseBoolean(sortedByVotes)));
         } catch (Exception e) {
             LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1));
+            return ResponseEntity.badRequest().body(new GenericResponse(ERROR_CODE_BAD_REQUEST));
         }
     }
 

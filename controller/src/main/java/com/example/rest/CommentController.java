@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static com.example.rest.utils.Utils.getUserId;
-import static com.example.utils.Constants.NEUTRAL;
-import static com.example.utils.Constants.UP_VOTE;
+import static com.example.utils.Constants.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -33,7 +32,7 @@ public class CommentController {
             return ResponseEntity.ok(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1));
+            return ResponseEntity.badRequest().body(new GenericResponse(ERROR_CODE_BAD_REQUEST));
         }
     }
 
@@ -48,7 +47,7 @@ public class CommentController {
             return ResponseEntity.ok(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1));
+            return ResponseEntity.badRequest().body(new GenericResponse(ERROR_CODE_BAD_REQUEST));
         }
     }
 

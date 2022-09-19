@@ -56,7 +56,7 @@ public class AuthController {
             return ResponseEntity.ok().body(new GenericResponse(ERROR_CODE_INVALID_LOGIN));
         } catch (Exception e) {
             LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1));
+            return ResponseEntity.badRequest().body(new GenericResponse(ERROR_CODE_BAD_REQUEST));
         }
     }
 
@@ -79,7 +79,7 @@ public class AuthController {
             return ResponseEntity.ok(new GenericResponse(0));
         } catch (Exception e) {
             LOGGER.error(e);
-            return ResponseEntity.badRequest().body(new GenericResponse(1));
+            return ResponseEntity.badRequest().body(new GenericResponse(ERROR_CODE_BAD_REQUEST));
         }
     }
 }
