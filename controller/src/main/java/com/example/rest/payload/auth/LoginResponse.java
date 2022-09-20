@@ -4,8 +4,8 @@ import com.example.rest.payload.GenericResponse;
 
 public class LoginResponse extends GenericResponse {
 
-    String token;
-    int userId;
+    private String token;
+    private int userId;
 
     public LoginResponse(int code, String token, int userId) {
         super(code);
