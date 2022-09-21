@@ -1,4 +1,5 @@
 # Install MySQL Community Server 8.0.30
+
 Download the smaller file (mysql-installer-web-community-8.0.30.0.msi)  
 https://dev.mysql.com/downloads/windows/installer/8.0.html  
 During install, select "Developer Default"  
@@ -9,7 +10,7 @@ Run sql script in order located in resources/sql
 
 In IntelliJ, go to Project Structure and set JDK to JDK 18.  
 Create run configuration "clean install" and run it.  
-Run StackOverflowCloneApplication.  
+Run StackOverflowCloneApplication.
 
 Not required, but recommend.  
 Go to Settings -> Version Control -> Commit -> Uncheck "Use non-modal commit interface".  

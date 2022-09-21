@@ -5,7 +5,6 @@ import com.example.entity.User;
 import com.example.exceptions.ServiceException;
 
 public interface UserService {
-
     UserDTO getUserById(int id) throws ServiceException;
 
     boolean existsByUsername(String username);

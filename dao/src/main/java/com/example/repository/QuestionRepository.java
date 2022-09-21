@@ -10,5 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Integer> {
     Page<Question> findAllByUserId(int userId, Pageable pageable);
+
     Page<Question> findByTags(Tag tag, Pageable pageable);
 }

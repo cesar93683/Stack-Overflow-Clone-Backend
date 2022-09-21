@@ -5,9 +5,7 @@ import com.example.entity.Tag;
 public class TagDTO {
 
     private String tag;
-
     private String description;
-
     private int numQuestions;
 
     public TagDTO(Tag tag, boolean onlyTag) {
