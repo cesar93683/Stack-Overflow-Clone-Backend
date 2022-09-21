@@ -7,11 +7,11 @@ For the password, set it as "admin"
 
 Run sql script in order located in resources/sql
 
-In IntelliJ, go to Project Structure and set JDK to JDK 11.  
+In IntelliJ, go to Project Structure and set JDK to JDK 18.  
 Create run configuration "clean install" and run it.  
 Run StackOverflowCloneApplication.  
 
 Not required, but recommend.  
-Go to Settings -> Version Control -> Commit -> Uncheck "Use non-modal commit interface".
-Go to Settings -> Editor -> Inlay Hints -> Code Vision -> Uncheck "Code Author", Uncheck "Usages", Uncheck "Inheritors".
+Go to Settings -> Version Control -> Commit -> Uncheck "Use non-modal commit interface".  
+Go to Settings -> Editor -> Inlay Hints -> Code Vision -> Uncheck "Code Author", Uncheck "Usages", Uncheck "Inheritors".  
 Inside a file, press Ctrl + Alt + Shift + L -> Check "Optimize Imports"
