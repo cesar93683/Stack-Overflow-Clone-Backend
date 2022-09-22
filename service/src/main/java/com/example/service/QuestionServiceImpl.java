@@ -150,6 +150,10 @@ public class QuestionServiceImpl implements QuestionService {
         if (question.getUser().getId() != userId) {
             throw new ServiceException("User with id: " + userId + " did not create question with id: " + questionId);
         }
+        for (Tag tag : question.getTags()) {
+            tag.setNumQuestions(tag.getNumQuestions() - 1);
+        }
+        tagRepository.saveAll(question.getTags());
         questionRepository.delete(question);
     }
 
