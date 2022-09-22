@@ -193,7 +193,7 @@ public class QuestionServiceImpl implements QuestionService {
     public List<TagDTO> getTags() {
         List<TagDTO> tags = new ArrayList<>();
         for (Tag tag : tagRepository.findAll()) {
-            tags.add(new TagDTO(tag, true));
+            tags.add(new TagDTO(tag, false));
         }
         return tags;
     }
