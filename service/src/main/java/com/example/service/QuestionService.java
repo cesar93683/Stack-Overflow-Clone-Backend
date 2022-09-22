@@ -1,9 +1,6 @@
 package com.example.service;
 
-import com.example.dto.CommentDTO;
-import com.example.dto.QuestionDTO;
-import com.example.dto.QuestionsDTO;
-import com.example.dto.TagDTO;
+import com.example.dto.*;
 import com.example.exceptions.ServiceException;
 
 import java.util.List;
@@ -29,5 +26,5 @@ public interface QuestionService {
 
     List<TagDTO> getTags();
 
-    QuestionsDTO getQuestionByTag(String tag, int page, boolean sortedByVotes);
+    QuestionsAndTagDTO getQuestionByTag(String tag, int page, boolean sortedByVotes);
 }

@@ -203,7 +203,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public QuestionsDTO getQuestionByTag(String tagType, int page, boolean sortedByVotes) {
+    public QuestionsAndTagDTO getQuestionByTag(String tagType, int page, boolean sortedByVotes) {
         Tag tag = tagRepository.findByTag(tagType)
                 .orElseThrow(() -> new org.hibernate.service.spi.ServiceException("Tag not found with tag: " + tagType));
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sortedByVotes ? "votes" : "id").descending());
@@ -212,7 +212,9 @@ public class QuestionServiceImpl implements QuestionService {
                 .stream()
                 .map((Question question) -> new QuestionDTO(question, false))
                 .collect(Collectors.toList());
-        return new QuestionsDTO(pageQuestion.getTotalPages(), questions);
+        return new QuestionsAndTagDTO(
+                new QuestionsDTO(pageQuestion.getTotalPages(), questions),
+                new TagDTO(tag, false));
     }
 
     private void updatedQuestionWithCurrVote(QuestionDTO questionDTO, int userId) {
