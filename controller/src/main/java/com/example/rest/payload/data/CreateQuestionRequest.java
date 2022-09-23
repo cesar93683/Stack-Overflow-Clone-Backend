@@ -8,7 +8,7 @@ public class CreateQuestionRequest {
     @Size(min = 3, max = 50)
     private String title;
 
-    @Size(min = 3, max = 500)
+    @Size(min = 3, max = 5000)
     private String content;
 
     private List<String> tags;

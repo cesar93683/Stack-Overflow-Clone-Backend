@@ -22,7 +22,7 @@ CREATE TABLE `question` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
   `title` varchar(50),
-  `content` varchar(500) NOT NULL,
+  `content` varchar(5000) NOT NULL,
   `votes` int NOT NULL,
   `num_answers` int NOT NULL,
   `answered` int NOT NULL,
@@ -39,7 +39,7 @@ CREATE TABLE `answer` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
   `question_id` int NOT NULL,
-  `content` varchar(500) NOT NULL,
+  `content` varchar(5000) NOT NULL,
   `votes` int NOT NULL,
   `accepted` int NOT NULL,
   `created_at` DATETIME NOT NULL,
@@ -107,7 +107,7 @@ CREATE TABLE `vote` (
 CREATE TABLE `tag` (
   `id` int NOT NULL AUTO_INCREMENT,
   `tag` varchar(20) NOT NULL,
-  `description` varchar(500) NOT NULL,
+  `description` varchar(5000) NOT NULL,
   `num_questions` int NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;

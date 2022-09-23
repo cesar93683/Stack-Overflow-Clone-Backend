@@ -4,7 +4,7 @@ import javax.validation.constraints.Size;
 
 public class UpdateAnswerRequest {
 
-    @Size(min = 3, max = 500)
+    @Size(min = 3, max = 50000)
     private String content;
 
     public String getContent() {
