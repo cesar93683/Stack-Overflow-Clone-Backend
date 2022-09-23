@@ -5,7 +5,7 @@ import java.util.List;
 
 public class CreateQuestionRequest {
 
-    @Size(min = 3, max = 50)
+    @Size(min = 3, max = 200)
     private String title;
 
     @Size(min = 3, max = 5000)

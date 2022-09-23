@@ -21,7 +21,7 @@ CREATE TABLE `user` (
 CREATE TABLE `question` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
-  `title` varchar(50),
+  `title` varchar(200),
   `content` varchar(5000) NOT NULL,
   `votes` int NOT NULL,
   `num_answers` int NOT NULL,
