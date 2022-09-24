@@ -4,6 +4,9 @@ public class GenericResponse {
 
     private int code;
 
+    public GenericResponse() {
+    }
+
     public GenericResponse(int code) {
         this.code = code;
     }
