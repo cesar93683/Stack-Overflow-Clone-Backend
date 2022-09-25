@@ -33,10 +33,6 @@
         "accepted": 1,
         "comments": [
           {
-            "content": "so what happens to \"Fifi\" in the 1st example? Does it cease to exist, was it never created, or does it exist in the heap but without a reference variable in the stack?",
-            "votes": 7
-          },
-          {
             "content": "To me, saying that an object's reference is passed by value is the same as saying that the object is passed by reference. I'm a Java novice, but I presume that (in contrast) primitive data is pass by value.",
             "votes": 80
           }
