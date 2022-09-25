@@ -45,7 +45,7 @@ public class PopulateDatabase {
             int questionId = createQuestion(tokenForUserToCreateQuestion, question);
             question.setId(questionId);
 
-            upVoteQuestion(tokenForUserToCreateQuestion, question);
+            upVote(tokenForUserToCreateQuestion, question.getVotes() - 1, questionId, API_URI_QUESTIONS + "/vote");
             createComments(tokenForUserToCreateQuestion, question.getComments(), questionId);
         }
     }
@@ -73,46 +73,25 @@ public class PopulateDatabase {
             int commentId = response.getId();
             comment.setId(commentId);
 
-            upVoteComment(token, comment);
+            upVote(token, comment.getVotes() - 1, commentId, API_URI_COMMENTS + "/vote");
         }
     }
 
-    private void upVoteComment(String tokenForUserToCreateComment, Comment comment) {
-        int votesNeeded = comment.getVotes() - 1;
-        List<String> randomTokensExcluding = getRandomTokensExcluding(tokenForUserToCreateComment, votesNeeded);
+    private void upVote(String tokenUsedToCreate, int votesNeeded, int id, String apiUri) {
+        List<String> randomTokensExcluding = getRandomTokensExcluding(tokenUsedToCreate, votesNeeded);
         for (String token : randomTokensExcluding) {
             VoteRequest voteRequest = new VoteRequest();
             voteRequest.setVote("1");
-            voteRequest.setId(String.valueOf(comment.getId()));
+            voteRequest.setId(String.valueOf(id));
 
             HttpHeaders headers = new HttpHeaders();
             headers.setBearerAuth(token);
 
             HttpEntity<VoteRequest> requestEntity = new HttpEntity<>(voteRequest, headers);
 
-            GenericResponse response = REST_TEMPLATE.postForObject(API_URI_COMMENTS + "/vote", requestEntity, GenericResponse.class);
+            GenericResponse response = REST_TEMPLATE.postForObject(apiUri, requestEntity, GenericResponse.class);
             if (response == null || response.getCode() != 0) {
-                throw new RuntimeException("Error upVoting comment");
-            }
-        }
-    }
-
-    private void upVoteQuestion(String tokenForUserToCreateQuestion, Question question) {
-        int votesNeeded = question.getVotes() - 1;
-        List<String> randomTokensExcluding = getRandomTokensExcluding(tokenForUserToCreateQuestion, votesNeeded);
-        for (String token : randomTokensExcluding) {
-            VoteRequest voteRequest = new VoteRequest();
-            voteRequest.setVote("1");
-            voteRequest.setId(String.valueOf(question.getId()));
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(token);
-
-            HttpEntity<VoteRequest> requestEntity = new HttpEntity<>(voteRequest, headers);
-
-            GenericResponse response = REST_TEMPLATE.postForObject(API_URI_QUESTIONS + "/vote", requestEntity, GenericResponse.class);
-            if (response == null || response.getCode() != 0) {
-                throw new RuntimeException("Error upVoting question");
+                throw new RuntimeException("Error upVoting");
             }
         }
     }
