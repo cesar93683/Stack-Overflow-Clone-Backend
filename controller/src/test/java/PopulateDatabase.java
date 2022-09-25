@@ -1,5 +1,7 @@
+import com.example.dto.AnswerDTO;
 import com.example.dto.CommentDTO;
 import com.example.dto.QuestionDTO;
+import com.example.entity.Answer;
 import com.example.entity.Comment;
 import com.example.entity.Question;
 import com.example.entity.Tag;
@@ -7,6 +9,7 @@ import com.example.rest.payload.GenericResponse;
 import com.example.rest.payload.auth.LoginRequest;
 import com.example.rest.payload.auth.LoginResponse;
 import com.example.rest.payload.auth.SignUpRequest;
+import com.example.rest.payload.data.CreateAnswerRequest;
 import com.example.rest.payload.data.CreateCommentRequest;
 import com.example.rest.payload.data.CreateQuestionRequest;
 import com.example.rest.payload.data.VoteRequest;
@@ -26,6 +29,7 @@ public class PopulateDatabase {
 
     private static final String API_URI_AUTH = "http://localhost:8080/api/auth/";
     private static final String API_URI_QUESTIONS = "http://localhost:8080/api/questions/";
+    private static final String API_URI_ANSWERS = "http://localhost:8080/api/answers/";
     private static final String API_URI_COMMENTS = "http://localhost:8080/api/comments/";
     private static final RestTemplate REST_TEMPLATE = new RestTemplate();
     private static final List<String> tokens = new ArrayList<>();
@@ -43,34 +47,78 @@ public class PopulateDatabase {
             String tokenForUserToCreateQuestion = getRandomToken();
 
             int questionId = createQuestion(tokenForUserToCreateQuestion, question);
-            createComments(tokenForUserToCreateQuestion, question.getComments(), questionId);
+            createComments(tokenForUserToCreateQuestion, question.getComments(), questionId, API_URI_QUESTIONS);
+            createAnswers(tokenForUserToCreateQuestion, question.getAnswers(), questionId);
         }
     }
 
-    private void createComments(String tokenForUserToCreateQuestion, List<Comment> comments, int questionId) {
+    private void createAnswers(String tokenForUserToCreateQuestion, List<Answer> answers, int questionId) {
+        List<String> randomTokensExcluding = getRandomTokensExcluding(tokenForUserToCreateQuestion, answers.size());
+
+        for (int i = 0; i < answers.size(); i++) {
+            Answer answer = answers.get(i);
+            CreateAnswerRequest createAnswerRequest = new CreateAnswerRequest();
+            createAnswerRequest.setContent(answer.getContent());
+            createAnswerRequest.setQuestionId(String.valueOf(questionId));
+
+            String tokenForCreateAnswer = randomTokensExcluding.get(i);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(tokenForCreateAnswer);
+
+            HttpEntity<CreateAnswerRequest> requestEntity = new HttpEntity<>(createAnswerRequest, headers);
+
+            AnswerDTO response = REST_TEMPLATE.postForObject(API_URI_ANSWERS, requestEntity, AnswerDTO.class);
+            if (response == null) {
+                throw new RuntimeException("Error creating answer");
+            }
+
+            int answerId = response.getId();
+
+            upVote(tokenForCreateAnswer, answer.getVotes() - 1, answerId, API_URI_ANSWERS + "/vote");
+
+            if (answer.getAccepted() == 1) {
+                acceptAnswer(tokenForUserToCreateQuestion, answerId);
+            }
+
+            createComments(tokenForUserToCreateQuestion, answer.getComments(), answerId, API_URI_ANSWERS);
+        }
+    }
+
+    private static void acceptAnswer(String tokenForUserToCreateQuestion, int answerId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(tokenForUserToCreateQuestion);
+
+        HttpEntity<CreateAnswerRequest> requestEntity = new HttpEntity<>(null, headers);
+
+        GenericResponse response = REST_TEMPLATE.postForObject(API_URI_ANSWERS + "/accept/" + answerId, requestEntity, GenericResponse.class);
+        if (response == null || response.getCode() != 0) {
+            throw new RuntimeException("Error creating answer");
+        }
+    }
+
+    private void createComments(String tokenForUserToCreateQuestion, List<Comment> comments, int id, String apiUri) {
         List<String> randomTokensExcluding = getRandomTokensExcluding(tokenForUserToCreateQuestion, comments.size());
 
         for (int i = 0; i < comments.size(); i++) {
             Comment comment = comments.get(i);
             CreateCommentRequest createCommentRequest = new CreateCommentRequest();
             createCommentRequest.setContent(comment.getContent());
-            createCommentRequest.setId(String.valueOf(questionId));
+            createCommentRequest.setId(String.valueOf(id));
 
-            String token = randomTokensExcluding.get(i);
+            String tokenForCreateQuestion = randomTokensExcluding.get(i);
             HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(token);
+            headers.setBearerAuth(tokenForCreateQuestion);
 
             HttpEntity<CreateCommentRequest> requestEntity = new HttpEntity<>(createCommentRequest, headers);
 
-            CommentDTO response = REST_TEMPLATE.postForObject(API_URI_QUESTIONS + "/comments", requestEntity, CommentDTO.class);
+            CommentDTO response = REST_TEMPLATE.postForObject(apiUri + "/comments", requestEntity, CommentDTO.class);
             if (response == null) {
                 throw new RuntimeException("Error creating comment");
             }
 
             int commentId = response.getId();
-            comment.setId(commentId);
 
-            upVote(token, comment.getVotes() - 1, commentId, API_URI_COMMENTS + "/vote");
+            upVote(tokenForCreateQuestion, comment.getVotes() - 1, commentId, API_URI_COMMENTS + "/vote");
         }
     }
 
