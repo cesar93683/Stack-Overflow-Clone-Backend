@@ -19,6 +19,9 @@ public class AnswerDTO {
     private Date createdAt;
     private Date updatedAt;
 
+    public AnswerDTO() {
+    }
+
     public AnswerDTO(Answer answer, boolean includeComments) {
         id = answer.getId();
         content = answer.getContent();

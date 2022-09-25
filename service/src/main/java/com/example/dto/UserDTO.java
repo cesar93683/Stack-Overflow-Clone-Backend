@@ -8,6 +8,9 @@ public class UserDTO {
     private String username;
     private int reputation;
 
+    public UserDTO() {
+    }
+
     public UserDTO(User user) {
         id = user.getId();
         username = user.getUsername();

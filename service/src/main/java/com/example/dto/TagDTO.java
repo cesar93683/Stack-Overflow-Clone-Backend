@@ -8,6 +8,9 @@ public class TagDTO {
     private String description;
     private int numQuestions;
 
+    public TagDTO() {
+    }
+
     public TagDTO(Tag tag, boolean onlyTag) {
         this.tag = tag.getTag();
         if (!onlyTag) {

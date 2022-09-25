@@ -25,6 +25,9 @@ public class QuestionDTO {
     private Date createdAt;
     private Date updatedAt;
 
+    public QuestionDTO() {
+    }
+
     public QuestionDTO(Question question, boolean includeCommentsAndAnswers) {
         id = question.getId();
         title = question.getTitle();

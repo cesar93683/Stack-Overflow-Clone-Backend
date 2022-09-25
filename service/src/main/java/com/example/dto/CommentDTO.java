@@ -13,6 +13,9 @@ public class CommentDTO {
     private int currVote;
     private Date createdAt;
 
+    public CommentDTO() {
+    }
+
     public CommentDTO(Comment comment) {
         id = comment.getId();
         content = comment.getContent();
