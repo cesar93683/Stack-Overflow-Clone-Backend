@@ -6,6 +6,7 @@ import com.example.rest.payload.auth.LoginRequest;
 import com.example.rest.payload.auth.LoginResponse;
 import com.example.rest.payload.auth.SignUpRequest;
 import com.example.rest.payload.data.CreateQuestionRequest;
+import com.example.rest.payload.data.VoteRequest;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpEntity;
@@ -15,10 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PopulateDatabase {
@@ -26,25 +24,66 @@ public class PopulateDatabase {
     private static final String API_URI_AUTH = "http://localhost:8080/api/auth/";
     private static final String API_URI_QUESTIONS = "http://localhost:8080/api/questions/";
     private static final RestTemplate REST_TEMPLATE = new RestTemplate();
+    private static final List<String> tokens = new ArrayList<>();
 
     public static void main(String[] args) {
         new PopulateDatabase().run();
     }
 
     private void run() {
-        List<String> tokens = new ArrayList<>();
         for (String name : readFileToList("names.txt")) {
 //            signUpUser(name);
             tokens.add(loginUser(name));
         }
         for (Question question : getQuestions()) {
-            String tokenForUserToCreateQuestion = getRandomToken(tokens);
+            String tokenForUserToCreateQuestion = getRandomToken();
+
             int questionId = createQuestion(tokenForUserToCreateQuestion, question);
+            question.setId(questionId);
+
+            upVoteQuestion(tokenForUserToCreateQuestion, question);
         }
     }
 
+    private void upVoteQuestion(String tokenForUserToCreateQuestion, Question question) {
+        int votesNeeded = question.getVotes() - 1;
+        List<String> randomTokensExcluding = getRandomTokensExcluding(tokenForUserToCreateQuestion, votesNeeded);
+        for (String token : randomTokensExcluding) {
+            VoteRequest voteRequest = new VoteRequest();
+            voteRequest.setVote("1");
+            voteRequest.setId(String.valueOf(question.getId()));
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(token);
+
+            HttpEntity<VoteRequest> requestEntity = new HttpEntity<>(voteRequest, headers);
+
+            GenericResponse response = REST_TEMPLATE.postForObject(API_URI_QUESTIONS + "/vote", requestEntity, GenericResponse.class);
+            if (response == null || response.getCode() != 0) {
+                throw new RuntimeException("Error upVoting question");
+            }
+        }
+    }
+
+    private List<String> getRandomTokensExcluding(String tokenToExclude, int votesNeeded) {
+        if (votesNeeded > tokens.size() - 1) {
+            throw new RuntimeException("Votes needed is too high[" + votesNeeded + "], must be <=" + (tokens.size() - 1));
+        }
+
+        List<String> shuffledTokens = new ArrayList<>(tokens);
+        Collections.shuffle(shuffledTokens);
+
+        return shuffledTokens.stream()
+                .filter(token -> !token.equals(tokenToExclude))
+                .limit(votesNeeded)
+                .collect(Collectors.toList());
+    }
+
     private int createQuestion(String tokenForUserToCreateQuestion, Question question) {
-        CreateQuestionRequest createQuestionRequest = getCreatedQuestionRequest(question);
+        CreateQuestionRequest createQuestionRequest = new CreateQuestionRequest();
+        createQuestionRequest.setTitle(question.getTitle());
+        createQuestionRequest.setContent(question.getContent());
+        createQuestionRequest.setTags(getTags(question.getTags()));
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(tokenForUserToCreateQuestion);
@@ -58,17 +97,8 @@ public class PopulateDatabase {
         return response.getId();
     }
 
-    private CreateQuestionRequest getCreatedQuestionRequest(Question question) {
-        CreateQuestionRequest createQuestionRequest = new CreateQuestionRequest();
-        createQuestionRequest.setTitle(question.getTitle());
-        createQuestionRequest.setContent(question.getContent());
-        createQuestionRequest.setTags(getTags(question.getTags()));
-        return createQuestionRequest;
-    }
-
-    private String getRandomToken(List<String> tokens) {
-        Random randomizer = new Random();
-        return tokens.get(randomizer.nextInt(tokens.size()));
+    private String getRandomToken() {
+        return tokens.get(new Random().nextInt(tokens.size()));
     }
 
     private List<String> getTags(List<Tag> tags) {
