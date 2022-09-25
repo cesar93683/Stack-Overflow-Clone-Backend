@@ -1,8 +1,8 @@
 [
   {
-    "title": "question title 1",
-    "content": "question content 1",
-    "votes": 16,
+    "title": "Is Java \"pass-by-reference\" or \"pass-by-value\"?",
+    "content": "I always thought Java uses **pass-by-reference**.\n\nHowever, I've seen [a blog post][1] that claims that Java uses **pass-by-value**.\n\nI don't think I understand the distinction they're making.\n\nWhat is the explanation?\n\n  [1]: http://javadude.com/articles/passbyvalue.htm\n",
+    "votes": 97,
     "tags": [
       {
         "tag": "java"
@@ -10,97 +10,113 @@
     ],
     "comments": [
       {
-        "content": "question comment content 1",
+        "content": "We would more commonly say that a variable \"passed-by-reference\" can be mutated. The term appears in textbooks because language theorists needed a way to distinguish how you treat primitive data types (int, bool, byte) from complex and structured objects (array, streams, class) -- that is to say, those of possibly unbounded memory allocation.",
         "votes": 5
       },
       {
-        "content": "question comment content 2",
-        "votes": 5
+        "content": "I want to note that you do not have to think about this in most cases. I programmed java for many years until i learned c++. Until this point in time i had no clue what pass-by-reference and pass-by-value are. The intuitive solution always worked for me, which is why java is one of the best languages for beginners. So if you currently are worried, if your function needs a reference or a value, just pass it as it is and you will be fine.",
+        "votes": 4
+      },
+      {
+        "content": "Java pass the reference by value.",
+        "votes": 54
+      },
+      {
+        "content": "Putting it very concisely, this confusion arises because in Java all non-primitive data types are handled/accessed by references. However, passing is always be value. So for all non-primitive types reference is passed by its value. All primitive types are also passed by value.",
+        "votes": 15
       }
     ],
     "answers": [
       {
-        "content": "answer content 1",
-        "votes": 22,
+        "content": "The terms \"pass-by-value\" and \"pass-by-reference\" have special, [precisely defined](https://en.wikipedia.org/w/index.php?title=Pass-by-value) meanings in computer science. These meanings differ from the intuition many people have when first hearing the terms. Much of the confusion in this discussion seems to come from this fact.\n\nThe terms \"pass-by-value\" and \"pass-by-reference\" are talking about _variables._ Pass-by-value means that the _value_ of a variable is passed to a function/method. Pass-by-reference means that a _reference_ to that variable is passed to the function. The latter gives the function a way to change the contents of the variable. \n\nBy those definitions, Java is always **pass-by-value**.  Unfortunately, when we deal with variables holding objects we are really dealing with object-handles called _references_ which are passed-by-value as well.  This terminology and semantics easily confuse many beginners.\n\nIt goes like this:\n ```java\npublic static void main(String[] args) {\n    Dog aDog = new Dog(\"Max\");\n    Dog oldDog = aDog;\n\n    // we pass the object to foo\n    foo(aDog);\n    // aDog variable is still pointing to the \"Max\" dog when foo(...) returns\n    aDog.getName().equals(\"Max\"); // true\n    aDog.getName().equals(\"Fifi\"); // false\n    aDog == oldDog; // true\n}\n\npublic static void foo(Dog d) {\n    d.getName().equals(\"Max\"); // true\n    // change d inside of foo() to point to a new Dog instance \"Fifi\"\n    d = new Dog(\"Fifi\");\n    d.getName().equals(\"Fifi\"); // true\n}\n```\nIn the example above `aDog.getName()` will still return `\"Max\"`. The value `aDog` within `main` is not changed in the function `foo` with the `Dog` `\"Fifi\"` as the object reference is passed by value. If it were passed by reference, then the `aDog.getName()` in `main` would return `\"Fifi\"` after the call to `foo`.\n\nLikewise:\n```java\npublic static void main(String[] args) {\n    Dog aDog = new Dog(\"Max\");\n    Dog oldDog = aDog;\n\n    foo(aDog);\n    // when foo(...) returns, the name of the dog has been changed to \"Fifi\"\n    aDog.getName().equals(\"Fifi\"); // true\n    // but it is still the same dog:\n    aDog == oldDog; // true\n}\n\npublic static void foo(Dog d) {\n    d.getName().equals(\"Max\"); // true\n    // this changes the name of d to be \"Fifi\"\n    d.setName(\"Fifi\");\n}\n```\nIn the above example, `Fifi` is the dog's name after call to `foo(aDog)` because the object's name was set inside of `foo(...)`. Any operations that `foo` performs on `d` are such that, for all practical purposes, they are performed on `aDog`, but it is **not** possible to change the value of the variable `aDog` itself.\n\n  [1]: http://ideone.com/oUEPbg\n\nFor more information on pass by reference and pass by value, consult the following answer: https://stackoverflow.com/a/430958/6005228. This explains more thoroughly the semantics and history behind the two and also explains why Java and many other modern languages appear to do both in certain cases.",
+        "votes": 91,
         "accepted": 1,
         "comments": [
           {
-            "content": "answer 1 comment 1",
-            "votes": 3
+            "content": "so what happens to \"Fifi\" in the 1st example? Does it cease to exist, was it never created, or does it exist in the heap but without a reference variable in the stack?",
+            "votes": 7
           },
           {
-            "content": "answer 1 comment 2",
-            "votes": 2
+            "content": "To me, saying that an object's reference is passed by value is the same as saying that the object is passed by reference. I'm a Java novice, but I presume that (in contrast) primitive data is pass by value.",
+            "votes": 80
           }
         ]
       },
       {
-        "content": "answer content 2",
-        "votes": 4,
+        "content": "I just noticed you referenced [my article][1].\n\nThe Java Spec says that everything in Java is pass-by-value. There is no such thing as \"pass-by-reference\" in Java.\n\nThe key to understanding this is that something like\n```java\nDog myDog;\n```\n\nis _not_ a Dog; it's actually a _pointer_ to a Dog. The use of the term \"reference\" in Java is very misleading and is what causes most of the confusion here. What they call \"references\" act/feel more like what we'd call \"pointers\" in most other languages.\n\nWhat that means, is when you have\n```java\nDog myDog = new Dog(\"Rover\");\nfoo(myDog);\n```\nyou're essentially passing the _address_ of the created `Dog` object to the `foo` method.\n\n(I say essentially because Java pointers/references aren't direct addresses, but it's easiest to think of them that way.)\n\nSuppose the `Dog` object resides at memory address 42. This means we pass 42 to the method.\n\nif the Method were defined as\n```java\npublic void foo(Dog someDog) {\n    someDog.setName(\"Max\");     // AAA\n    someDog = new Dog(\"Fifi\");  // BBB\n    someDog.setName(\"Rowlf\");   // CCC\n}\n```\nlet's look at what's happening.\n\n   * the parameter `someDog` is set to the value 42\n   * at line \"AAA\"\n      * `someDog` is followed to the `Dog` it points to (the `Dog` object at address 42)\n      * that `Dog` (the one at address 42) is asked to change his name to Max\n   * at line \"BBB\"\n      * a new `Dog` is created. Let's say he's at address 74\n      * we assign the parameter `someDog` to 74 \n   * at line \"CCC\"\n      * someDog is followed to the `Dog` it points to (the `Dog` object at address 74)\n      * that `Dog` (the one at address 74) is asked to change his name to Rowlf\n   * then, we return\n\nNow let's think about what happens outside the method:\n\n*Did `myDog` change?*\n\nThere's the key.\n\nKeeping in mind that `myDog` is a *pointer*, and not an actual `Dog`, the answer is NO. `myDog` still has the value 42; it's still pointing to the original `Dog` (but note that because of line \"AAA\", its name is now \"Max\" - still the same Dog; `myDog`'s value has not changed.)\n\nIt's perfectly valid to *follow* an address and change what's at the end of it; that does not change the variable, however.\n\n\nJava works exactly like C. You can assign a pointer, pass the pointer to a method, follow the pointer in the method and change the data that was pointed to. However, the caller will not see any changes you make to where that pointer points. (In a language with pass-by-reference semantics, the method function _can_ change the pointer and the caller will see that change.)\n\nIn C++, Ada, Pascal and other languages that support pass-by-reference, you can actually change the variable that was passed.\n\nIf Java had pass-by-reference semantics, the `foo` method we defined above would have changed where `myDog` was pointing when it assigned `someDog` on line BBB.\n\nThink of reference parameters as being aliases for the variable passed in. When that alias is assigned, so is the variable that was passed in.\n\n## Update\nA discussion in the comments warrants some clarification...\n\nIn C, you can write\n\n```c\nvoid swap(int *x, int *y) {\n    int t = *x;\n    *x = *y;\n    *y = t;\n}\n\nint x = 1;\nint y = 2;\nswap(&x, &y);\n```\n\nThis is not a special case in C. Both languages use pass-by-value semantics. Here the call site is creating additional data structure to assist the function to access and manipulate data. \n\nThe function is being passed pointers to data, and follows those pointers to access and modify that data.\n\nA similar approach in Java, where the caller sets up assisting structure, might be:\n\n```java\nvoid swap(int[] x, int[] y) {\n    int temp = x[0];\n    x[0] = y[0];\n    y[0] = temp;\n}\n\nint[] x = {1};\nint[] y = {2};\nswap(x, y);\n```\n\n(or if you wanted both examples to demonstrate features the other language doesn't have, create a mutable IntWrapper class to use in place of the arrays)\n\nIn these cases, both C and Java are *simulating* pass-by-reference. They're still both passing values (pointers to ints or arrays), and following those pointers inside the called function to manipulate the data.\n\nPass-by-reference is all about the function *declaration/definition*, and how it handles its parameters. Reference semantics apply to *every* call to that function, and the call site only needs to pass variables, no additional data structure.\n\nThese simulations require the call site and the function to cooperate. No doubt it's useful, but it's still pass-by-value.\n\n  [1]: http://javadude.com/articles/passbyvalue.htm",
+        "votes": 89,
+        "accepted": 0,
+        "comments": []
+      },
+      {
+        "content": "Java is always pass by value, with no exceptions, **ever**.\n\nSo how is it that anyone can be at all confused by this, and believe that Java is pass by reference, or think they have an example of Java acting as pass by reference? The key point is that Java **never** provides direct access to the values of *objects themselves*, in *any* circumstances. The only access to objects is through a _reference_ to that object. Because Java objects are *always* accessed through a reference, rather than directly, it is common to talk about fields and variables *and method arguments* as being *objects*, when pedantically they are only *references to objects*. **The confusion stems from this (strictly speaking, incorrect) change in nomenclature.**\n\nSo, when calling a method\n\n* For primitive arguments (`int`, `long`, etc.), the pass by value is *the actual value* of the primitive (for example, 3).\n* For objects, the pass by value is the value of *the reference to the object*.\n\nSo if you have `doSomething(foo)` and `public void doSomething(Foo foo) { .. }` the two Foos have copied *references* that point to the same objects.\n\nNaturally, passing by value a reference to an object looks very much like (and is indistinguishable in practice from) passing an object by reference.",
+        "votes": 30,
         "accepted": 0,
         "comments": [
           {
-            "content": "answer 2 comment 1",
-            "votes": 3
-          },
+            "content": "Java always passes arguments by value, but what you are passing by value is a reference to an object, not a copy of the object. Simple eh?",
+            "votes": 57
+          }
+        ]
+      },
+      {
+        "content": "Java passes references by value.\n\nSo you can't change the reference that gets passed in.",
+        "votes": 30,
+        "accepted": 0,
+        "comments": [
           {
-            "content": "answer 2 comment 2",
-            "votes": 2
+            "content": "What a beautiful and concised explaination",
+            "votes": 5
           }
         ]
       }
     ]
   },
   {
-    "title": "question title 2",
-    "content": "question content 2",
-    "votes": 11,
+    "title": "Why is subtracting these two times (in 1927) giving a strange result?",
+    "content": "If I run the following program, which parses two date strings referencing times 1 second apart and compares them:\n```java\npublic static void main(String[] args) throws ParseException {\n\tSimpleDateFormat sf = new SimpleDateFormat(\"yyyy-MM-dd HH:mm:ss\");  \n\tString str3 = \"1927-12-31 23:54:07\";  \n\tString str4 = \"1927-12-31 23:54:08\";  \n\tDate sDt3 = sf.parse(str3);  \n\tDate sDt4 = sf.parse(str4);  \n\tlong ld3 = sDt3.getTime() /1000;  \n\tlong ld4 = sDt4.getTime() /1000;\n\tSystem.out.println(ld4-ld3);\n}\n```\n**The output is:**\n```java\n353\n```\nWhy is `ld4-ld3`, not `1` (as I would expect from the one-second difference in the times), but `353`?\n\nIf I change the dates to times 1 second later:\n```java\n    String str3 = \"1927-12-31 23:54:08\";  \n    String str4 = \"1927-12-31 23:54:09\";  \n```\nThen `ld4-ld3` will be `1`.\n\n----------\n\n**Java version:**\n\n```java\n    java version \"1.6.0_22\"\n    Java(TM) SE Runtime Environment (build 1.6.0_22-b04)\n    Dynamic Code Evolution Client VM (build 0.2-b02-internal, 19.0-b04-internal, mixed mode)\n```\n```java\nTimezone(`TimeZone.getDefault()`):\n\nsun.util.calendar.ZoneInfo[id=\"Asia/Shanghai\",\noffset=28800000,dstSavings=0,\nuseDaylight=false,\ntransitions=19,\nlastRule=null]\n\nLocale(Locale.getDefault()): zh_CN\n```/1000;  \n\t\tlong ld4 = sDt4.getTime() /1000;\n\t\tSystem.out.println(ld4-ld3);\n\t}\n\n**The output is:**\n\n    353\n\nWhy is `ld4-ld3`, not `1` (as I would expect from the one-second difference in the times), but `353`?\n\nIf I change the dates to times 1 second later:\n\n    String str3 = \"1927-12-31 23:54:08\";  \n    String str4 = \"1927-12-31 23:54:09\";  \n\nThen `ld4-ld3` will be `1`.\n\n----------\n\n**Java version:**\n\n<!-- language: lang-none -->\n\n    java version \"1.6.0_22\"\n    Java(TM) SE Runtime Environment (build 1.6.0_22-b04)\n    Dynamic Code Evolution Client VM (build 0.2-b02-internal, 19.0-b04-internal, mixed mode)\n\n```java\nTimezone(`TimeZone.getDefault()`):\n\nsun.util.calendar.ZoneInfo[id=\"Asia/Shanghai\",\noffset=28800000,dstSavings=0,\nuseDaylight=false,\ntransitions=19,\nlastRule=null]\n\nLocale(Locale.getDefault()): zh_CN\n```",
+    "votes": 98,
     "tags": [
       {
-        "tag": "javascript"
-      },
-      {
-        "tag": "python"
+        "tag": "java"
       }
     ],
     "comments": [
       {
-        "content": "question comment content 1",
-        "votes": 5
-      },
-      {
-        "content": "question comment content 2",
-        "votes": 5
+        "content": "The real answer is to always, always use seconds since an epoch for logging, like the Unix epoch, with 64 bit integer representation (signed, if you want to allow stamps before the epoch). Any real-world time system has some non-linear, non-monotonic behaviour like leap hours or daylight savings.",
+        "votes": 55
       }
     ],
     "answers": [
       {
-        "content": "answer content 1",
-        "votes": 9,
+        "content": "It's a time zone change on December 31st in Shanghai.\n\nSee [this page][1] for details of 1927 in Shanghai. Basically at midnight at the end of 1927, the clocks went back 5 minutes and 52 seconds. So \"1927-12-31 23:54:08\" actually happened twice, and it looks like Java is parsing it as the *later* possible instant for that local date/time - hence the difference.\n\nJust another episode in the often weird and wonderful world of time zones.\n\n**EDIT:** Stop press! History changes...\n\nThe original question would no longer demonstrate quite the same behaviour, if rebuilt with version 2013a of [TZDB][2]. In 2013a, the result would be 358 seconds, with a transition time of 23:54:03 instead of 23:54:08.\n\nI only noticed this because I'm collecting questions like this in Noda Time, in the form of [unit tests][3]... The test has now been changed, but it just goes to show - not even historical data is safe.\n\n**EDIT:** History has changed again...\n\nIn TZDB 2014f, the time of the change has moved to 1900-12-31, and it's now a mere 343 second change (so the time between `t` and `t+1` is 344 seconds, if you see what I mean).\n\n**EDIT:** To answer a question around a transition at 1900... it looks like the Java timezone implementation treats *all* time zones as simply being in their standard time for any instant before the start of 1900 UTC:\n```java\nimport java.util.TimeZone;\n\npublic class Test {\n    public static void main(String[] args) throws Exception {\n        long startOf1900Utc = -2208988800000L;\n        for (String id : TimeZone.getAvailableIDs()) {\n            TimeZone zone = TimeZone.getTimeZone(id);\n            if (zone.getRawOffset() != zone.getOffset(startOf1900Utc - 1)) {\n                 System.out.println(id);\n            }\n        }\n    }\n}\n```\nThe code above produces no output on my Windows machine. So any time zone which has any offset other than its standard one at the start of 1900 will count that as a transition. TZDB itself has some data going back earlier than that, and doesn't rely on any idea of a \"fixed\" standard time (which is what `getRawOffset` assumes to be a valid concept) so other libraries needn't introduce this artificial transition.\n\n\n  [1]: http://www.timeanddate.com/worldclock/clockchange.html?n=237&year=1927\n  [2]: https://github.com/nodatime/nodatime/blob/master/src/NodaTime.Demo/StackOverflowExamples.cs#L68\n  [3]: https://github.com/nodatime/nodatime/blob/master/src/NodaTime.Demo/StackOverflowExamples.cs#L68\n/time - hence the difference.\n\nJust another episode in the often weird and wonderful world of time zones.\n\n**EDIT:** Stop press! History changes...\n\nThe original question would no longer demonstrate quite the same behaviour, if rebuilt with version 2013a of [TZDB][2]. In 2013a, the result would be 358 seconds, with a transition time of 23:54:03 instead of 23:54:08.\n\nI only noticed this because I'm collecting questions like this in Noda Time, in the form of [unit tests][3]... The test has now been changed, but it just goes to show - not even historical data is safe.\n\n**EDIT:** History has changed again...\n\nIn TZDB 2014f, the time of the change has moved to 1900-12-31, and it's now a mere 343 second change (so the time between `t` and `t+1` is 344 seconds, if you see what I mean).\n\n**EDIT:** To answer a question around a transition at 1900... it looks like the Java timezone implementation treats *all* time zones as simply being in their standard time for any instant before the start of 1900 UTC:\n\n    import java.util.TimeZone;\n    \n    public class Test {\n        public static void main(String[] args) throws Exception {\n            long startOf1900Utc = -2208988800000L;\n            for (String id : TimeZone.getAvailableIDs()) {\n                TimeZone zone = TimeZone.getTimeZone(id);\n                if (zone.getRawOffset() != zone.getOffset(startOf1900Utc - 1)) {\n                    System.out.println(id);\n                }\n            }\n        }\n    }\n\nThe code above produces no output on my Windows machine. So any time zone which has any offset other than its standard one at the start of 1900 will count that as a transition. TZDB itself has some data going back earlier than that, and doesn't rely on any idea of a \"fixed\" standard time (which is what `getRawOffset` assumes to be a valid concept) so other libraries needn't introduce this artificial transition.\n\n\n  [1]: http://www.timeanddate.com/worldclock/clockchange.html?n=237&year=1927\n  [2]: https://github.com/nodatime/nodatime/blob/master/src/NodaTime.Demo/StackOverflowExamples.cs#L68\n  [3]: https://github.com/nodatime/nodatime/blob/master/src/NodaTime.Demo/StackOverflowExamples.cs#L68\n",
+        "votes": 77,
         "accepted": 1,
+        "comments": []
+      },
+      {
+        "content": "You've encountered a [local time discontinuity][1]:\n\n> When local standard time was about to reach Sunday, 1. January 1928,\n> 00:00:00 clocks were turned backward 0:05:52 hours to Saturday, 31.\n> December 1927, 23:54:08 local standard time instead\n\nThis is not particularly strange and has happened pretty much everywhere at one time or another as timezones were switched or changed due to political or administrative actions.\n\n\n  [1]: http://timeanddate.com/worldclock/clockchange.html?n=237&year=1927",
+        "votes": 13,
+        "accepted": 0,
         "comments": [
           {
-            "content": "answer 1 comment 1",
-            "votes": 3
+            "content": "It happens twice a year anywhere that observes DST.",
+            "votes": 11
           },
           {
-            "content": "answer 1 comment 2",
-            "votes": 2
+            "content": "This one is not DST, I think. It's only 10 minutes back, and only once. At the same time, DST related changes can happen twice a year... or 4 times a year (due to Ramadan). or even once a year in some setups. No rule there :)",
+            "votes": 5
           }
         ]
       },
       {
-        "content": "answer content 2",
-        "votes": 10,
+        "content": "The moral of this strangeness is:\n\n- Use dates and times in UTC wherever possible.\n- If you can not display a date or time in UTC, always indicate the time-zone.\n- If you can not require an input date/time in UTC, require an explicitly indicated time-zone.",
+        "votes": 13,
         "accepted": 0,
         "comments": [
           {
-            "content": "answer 2 comment 1",
+            "content": "None of these points would affect this result - it falls squarely under the third bullet point - and moreover, this is a time several decades before UTC was even defined, and thus can not really meaningfully be expressed in UTC.",
             "votes": 3
-          },
-          {
-            "content": "answer 2 comment 2",
-            "votes": 2
           }
         ]
       }
