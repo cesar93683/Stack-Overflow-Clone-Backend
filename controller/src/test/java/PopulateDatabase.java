@@ -1,10 +1,13 @@
+import com.example.dto.CommentDTO;
 import com.example.dto.QuestionDTO;
+import com.example.entity.Comment;
 import com.example.entity.Question;
 import com.example.entity.Tag;
 import com.example.rest.payload.GenericResponse;
 import com.example.rest.payload.auth.LoginRequest;
 import com.example.rest.payload.auth.LoginResponse;
 import com.example.rest.payload.auth.SignUpRequest;
+import com.example.rest.payload.data.CreateCommentRequest;
 import com.example.rest.payload.data.CreateQuestionRequest;
 import com.example.rest.payload.data.VoteRequest;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -23,6 +26,7 @@ public class PopulateDatabase {
 
     private static final String API_URI_AUTH = "http://localhost:8080/api/auth/";
     private static final String API_URI_QUESTIONS = "http://localhost:8080/api/questions/";
+    private static final String API_URI_COMMENTS = "http://localhost:8080/api/comments/";
     private static final RestTemplate REST_TEMPLATE = new RestTemplate();
     private static final List<String> tokens = new ArrayList<>();
 
@@ -42,6 +46,54 @@ public class PopulateDatabase {
             question.setId(questionId);
 
             upVoteQuestion(tokenForUserToCreateQuestion, question);
+            createComments(tokenForUserToCreateQuestion, question.getComments(), questionId);
+        }
+    }
+
+    private void createComments(String tokenForUserToCreateQuestion, List<Comment> comments, int questionId) {
+        List<String> randomTokensExcluding = getRandomTokensExcluding(tokenForUserToCreateQuestion, comments.size());
+
+        for (int i = 0; i < comments.size(); i++) {
+            Comment comment = comments.get(i);
+            CreateCommentRequest createCommentRequest = new CreateCommentRequest();
+            createCommentRequest.setContent(comment.getContent());
+            createCommentRequest.setId(String.valueOf(questionId));
+
+            String token = randomTokensExcluding.get(i);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(token);
+
+            HttpEntity<CreateCommentRequest> requestEntity = new HttpEntity<>(createCommentRequest, headers);
+
+            CommentDTO response = REST_TEMPLATE.postForObject(API_URI_QUESTIONS + "/comments", requestEntity, CommentDTO.class);
+            if (response == null) {
+                throw new RuntimeException("Error creating comment");
+            }
+
+            int commentId = response.getId();
+            comment.setId(commentId);
+
+            upVoteComment(token, comment);
+        }
+    }
+
+    private void upVoteComment(String tokenForUserToCreateComment, Comment comment) {
+        int votesNeeded = comment.getVotes() - 1;
+        List<String> randomTokensExcluding = getRandomTokensExcluding(tokenForUserToCreateComment, votesNeeded);
+        for (String token : randomTokensExcluding) {
+            VoteRequest voteRequest = new VoteRequest();
+            voteRequest.setVote("1");
+            voteRequest.setId(String.valueOf(comment.getId()));
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(token);
+
+            HttpEntity<VoteRequest> requestEntity = new HttpEntity<>(voteRequest, headers);
+
+            GenericResponse response = REST_TEMPLATE.postForObject(API_URI_COMMENTS + "/vote", requestEntity, GenericResponse.class);
+            if (response == null || response.getCode() != 0) {
+                throw new RuntimeException("Error upVoting comment");
+            }
         }
     }
 
@@ -65,9 +117,9 @@ public class PopulateDatabase {
         }
     }
 
-    private List<String> getRandomTokensExcluding(String tokenToExclude, int votesNeeded) {
-        if (votesNeeded > tokens.size() - 1) {
-            throw new RuntimeException("Votes needed is too high[" + votesNeeded + "], must be <=" + (tokens.size() - 1));
+    private List<String> getRandomTokensExcluding(String tokenToExclude, int needed) {
+        if (needed > tokens.size() - 1) {
+            throw new RuntimeException("Tokens needed is too high[" + needed + "], must be <=" + (tokens.size() - 1));
         }
 
         List<String> shuffledTokens = new ArrayList<>(tokens);
@@ -75,7 +127,7 @@ public class PopulateDatabase {
 
         return shuffledTokens.stream()
                 .filter(token -> !token.equals(tokenToExclude))
-                .limit(votesNeeded)
+                .limit(needed)
                 .collect(Collectors.toList());
     }
 
