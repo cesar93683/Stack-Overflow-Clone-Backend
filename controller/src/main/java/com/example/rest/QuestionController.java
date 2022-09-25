@@ -49,7 +49,13 @@ public class QuestionController {
         try {
             QuestionsDTO questions = questionService.getQuestionsByUserId(Integer.parseInt(userId),
                     page != null ? Integer.parseInt(page) : 0, Boolean.parseBoolean(sortedByVotes));
-            return getGetQuestionsByUserIdResponse(userId, questions);
+            if (questions.getQuestions().size() == 0) {
+                UserDTO user = userService.getUserById(Integer.parseInt(userId));
+                return ResponseEntity.ok(new GetQuestionsByUserIdResponse(0, user, questions));
+            } else {
+                return ResponseEntity.ok(new GetQuestionsByUserIdResponse(0, questions.getQuestions().get(0).getUser(),
+                        questions));
+            }
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(ERROR_CODE_BAD_REQUEST));
@@ -62,20 +68,11 @@ public class QuestionController {
         try {
             QuestionsDTO questions = questionService.getQuestionsAnsweredByUserId(Integer.parseInt(userId),
                     page != null ? Integer.parseInt(page) : 0, Boolean.parseBoolean(sortedByVotes));
-            return getGetQuestionsByUserIdResponse(userId, questions);
+            UserDTO user = userService.getUserById(Integer.parseInt(userId));
+            return ResponseEntity.ok(new GetQuestionsByUserIdResponse(0, user, questions));
         } catch (Exception e) {
             LOGGER.error(e);
             return ResponseEntity.badRequest().body(new GenericResponse(ERROR_CODE_BAD_REQUEST));
-        }
-    }
-
-    private ResponseEntity<GetQuestionsByUserIdResponse> getGetQuestionsByUserIdResponse(String userId, QuestionsDTO questions) throws ServiceException {
-        if (questions.getQuestions().size() == 0) {
-            UserDTO user = userService.getUserById(Integer.parseInt(userId));
-            return ResponseEntity.ok(new GetQuestionsByUserIdResponse(0, user, questions));
-        } else {
-            return ResponseEntity.ok(new GetQuestionsByUserIdResponse(0, questions.getQuestions().get(0).getUser(),
-                    questions));
         }
     }
 
