@@ -43,9 +43,6 @@ public class PopulateDatabase {
             String tokenForUserToCreateQuestion = getRandomToken();
 
             int questionId = createQuestion(tokenForUserToCreateQuestion, question);
-            question.setId(questionId);
-
-            upVote(tokenForUserToCreateQuestion, question.getVotes() - 1, questionId, API_URI_QUESTIONS + "/vote");
             createComments(tokenForUserToCreateQuestion, question.getComments(), questionId);
         }
     }
@@ -125,7 +122,11 @@ public class PopulateDatabase {
         if (response == null) {
             throw new RuntimeException("Error creating question");
         }
-        return response.getId();
+        int questionId = response.getId();
+
+        upVote(tokenForUserToCreateQuestion, question.getVotes() - 1, questionId, API_URI_QUESTIONS + "/vote");
+
+        return questionId;
     }
 
     private String getRandomToken() {
