@@ -1,0 +1,40 @@
+{
+  "title": "",
+  "content": "",
+  "votes": 1,
+  "tags": [
+    {
+      "tag": ""
+    }
+  ],
+  "comments": [
+    {
+      "content": "",
+      "votes": 1
+    }
+  ],
+  "answers": [
+    {
+      "content": "",
+      "votes": 1,
+      "accepted": 1,
+      "comments": [
+        {
+          "content": "",
+          "votes": 1
+        }
+      ]
+    },
+    {
+      "content": "",
+      "votes": 1,
+      "accepted": 0,
+      "comments": [
+        {
+          "content": "",
+          "votes": 1
+        }
+      ]
+    }
+  ]
+}
