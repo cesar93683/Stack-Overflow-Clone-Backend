@@ -7,7 +7,7 @@ public class CreateAnswerRequest {
     @Size(min = 1, max = 10)
     private String questionId;
 
-    @Size(min = 3, max = 5000)
+    @Size(min = 3, max = 10000)
     private String content;
 
     public String getContent() {

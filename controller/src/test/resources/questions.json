@@ -121,5 +121,45 @@
         ]
       }
     ]
+  },
+  {
+    "title": "How do I read / convert an InputStream into a String in Java?",
+    "content": "If you have a `java.io.InputStream` object, how should you process that object and produce a `String`?\n\n---\nSuppose I have an `InputStream` that contains text data, and I want to convert it to a `String`, so for example I can write that to a log file.\n\nWhat is the easiest way to take the `InputStream` and convert it to a `String`?\n```java\npublic String convertStreamToString(InputStream is) {\n// ???\n}\n```",
+    "votes": 74,
+    "tags": [
+      {
+        "tag": "java"
+      }
+    ],
+    "comments": [
+      {
+        "content": "Most of these answers were written pre-Java 9, but now you can get a byte array from the InputStream using .readAllBytes. So, simply \"new String(inputStream.readAllBytes())\" works using String's byte[] constructor.",
+        "votes": 3
+      }
+    ],
+    "answers": [
+      {
+        "content": "",
+        "votes": 1,
+        "accepted": 1,
+        "comments": [
+          {
+            "content": "",
+            "votes": 1
+          }
+        ]
+      },
+      {
+        "content": "",
+        "votes": 1,
+        "accepted": 0,
+        "comments": [
+          {
+            "content": "",
+            "votes": 1
+          }
+        ]
+      }
+    ]
   }
 ]

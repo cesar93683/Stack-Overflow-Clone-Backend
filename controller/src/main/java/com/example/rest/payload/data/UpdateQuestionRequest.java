@@ -5,7 +5,7 @@ import java.util.List;
 
 public class UpdateQuestionRequest {
 
-    @Size(min = 3, max = 5000)
+    @Size(min = 3, max = 10000)
     private String content;
 
     private List<String> tags;
