@@ -6,11 +6,12 @@ During install, select "Developer Default"
 Download the requirements MySQL needs. (I needed to download Python 3.9.10. I did not download Visual Studio 2019)  
 For the password, set it as "admin"
 
-Run sql script in order located in resources/sql
+Run sql script in order located in test/resources/sql
 
 In IntelliJ, go to Project Structure and set JDK to JDK 18.  
 Create run configuration "clean install" and run it.  
-Run StackOverflowCloneApplication.
+Run StackOverflowCloneApplication.  
+Run PopulateDatabase.
 
 Not required, but recommend.  
 Go to Settings -> Version Control -> Commit -> Uncheck "Use non-modal commit interface".  
