@@ -139,24 +139,81 @@
     ],
     "answers": [
       {
-        "content": "",
-        "votes": 1,
+        "content": "Here's a way using only the standard Java library (note that the stream is not closed, your mileage may vary).\n```java\nstatic String convertStreamToString(java.io.InputStream is) {\n    java.util.Scanner s = new java.util.Scanner(is).useDelimiter(\"\\\\A\");\n    return s.hasNext() ? s.next() : \"\";\n}\n```\nI learned this trick from [\"Stupid Scanner tricks\"][1] article. The reason it works is because [Scanner][2] iterates over tokens in the stream, and in this case we separate tokens using \"beginning of the input boundary\" (\\A), thus giving us only one token for the entire contents of the stream.\n\n**Note, if you need to be specific about the input stream's encoding, you can provide the second argument to `Scanner` constructor that indicates what character set to use (e.g. \"UTF-8\").**\n\nHat tip goes also to [Jacob][3], who once pointed me to the said article.\n\n  [1]: https://community.oracle.com/blogs/pat/2004/10/23/stupid-scanner-tricks\n  [2]: http://download.oracle.com/javase/8/docs/api/java/util/Scanner.html\n  [3]: https://stackoverflow.com/users/68127/jacob-gabrielson\n  [4]: https://stackoverflow.com/users/101272/patrick\n\n\n",
+        "votes": 15,
         "accepted": 1,
         "comments": [
           {
-            "content": "",
+            "content": "Shouldn't we close the scanner before returning the value?",
             "votes": 1
           }
         ]
       },
       {
-        "content": "",
-        "votes": 1,
+        "content": "Apache Commons allows:\n```java\nString myString = IOUtils.toString(myInputStream, \"UTF-8\");\n```\nOf course, you could choose other character encodings besides UTF-8.\n\nAlso see: ([documentation][1])\n\n  [1]: http://commons.apache.org/proper/commons-io/javadocs/api-2.4/org/apache/commons/io/IOUtils.html#toString%28java.io.InputStream,%20java.lang.String\n\n",
+        "votes": 8,
+        "accepted": 0,
+        "comments": []
+      },
+      {
+        "content": "Taking into account file one should first get a `java.io.Reader` instance. This can then be read and added to a `StringBuilder` (we don't need `StringBuffer` if we are not accessing it in multiple threads, and `StringBuilder` is faster). The trick here is that we work in blocks, and as such don't need other buffering streams. The block size is parameterized for run-time performance optimization.\n```java\npublic static String slurp(final InputStream is, final int bufferSize) {\n    final char[] buffer = new char[bufferSize];\n    final StringBuilder out = new StringBuilder();\n    try (Reader in = new InputStreamReader(is, \"UTF-8\")) {\n        for (;;) {\n            int rsz = in.read(buffer, 0, buffer.length);\n            if (rsz < 0)\n                break;\n            out.append(buffer, 0, rsz);\n        }\n    }\n    catch (UnsupportedEncodingException ex) {\n        /* ... */\n    }\n    catch (IOException ex) {\n        /* ... */\n    }\n    return out.toString();\n}\n```",
+        "votes": 11,
+        "accepted": 0,
+        "comments": []
+      },
+      {
+        "content": "For completeness here is **Java 9** solution:\n```java\npublic static String toString(InputStream input) throws IOException {\n    return new String(input.readAllBytes(), StandardCharsets.UTF_8);\n}\n```\nThis uses the [`readAllBytes`](https://docs.oracle.com/javase/9/docs/api/java/io/InputStream.html#readAllBytes--) method which was added to Java 9.",
+        "votes": 5,
+        "accepted": 0,
+        "comments": []
+      }
+    ]
+  },
+  {
+    "title": "Create ArrayList from array",
+    "content": "Given an array of type `Element[]`:\n```java\nElement[] array = {new Element(1), new Element(2), new Element(3)};\n```\nHow do I convert this array into an object of type [`ArrayList<Element>`][1]?\n```java\nArrayList<Element> arrayList = ???;\n```\n\n  [1]: https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/ArrayList.html",
+    "votes": 55,
+    "tags": [
+      {
+        "tag": "java"
+      }
+    ],
+    "comments": [
+    ],
+    "answers": [
+      {
+        "content": "```java\nnew ArrayList<>(Arrays.asList(array));\n```",
+        "votes": 57,
+        "accepted": 1,
+        "comments": [
+          {
+            "content": "Yep. And in the (most common) case where you just want a list, the new ArrayList call is unecessary as well.",
+            "votes": 44
+          },
+          {
+            "content": "Arrays.asList() is a horrible function, and you should never just use its return value as is. It breaks the List template, so always use it in the form indicated here, even if it does seem redundant. Good answer.",
+            "votes": 26
+          },
+          {
+            "content": "Please study the javadoc for java.util.List. The contract for add allows them to throw an UnsupportedOperationException. Admittedly, from an object-oriented perspective it is not very nice that many times you have to know the concrete implementation in order to use a collection - this was a pragmatic design choice in order to keep the framework simple.",
+            "votes": 36
+          }
+        ]
+      },
+      {
+        "content": "Given:\n```java\nElement[] array = new Element[] { new Element(1), new Element(2), new Element(3) };\n```\nThe simplest answer is to do:\n```java\nList<Element> list = Arrays.asList(array);\n```\nThis will work fine.  But some caveats:\n\n 1. The list returned from asList has **fixed size**.  So, if you want to be able to add or remove elements from the returned list in your code, you'll need to wrap it in a new `ArrayList`.  Otherwise you'll get an `UnsupportedOperationException`.\n 2. The list returned from `asList()` is backed by the original array.  If you modify the original array, the list will be modified as well.  This may be surprising. \n",
+        "votes": 34,
+        "accepted": 0,
+        "comments": []
+      },
+      {
+        "content": "# If You Can, Use Guava\n\nIt's worth pointing out the Guava way, which greatly simplifies these shenanigans:\n\n## Usage\n\n### For an Immutable List\n\nUse the [`ImmutableList`][1] class and its [`of()`][2] and [`copyOf()`][3] factory methods <sup>(elements can't be null)</sup>:\n```java\nList<String> il = ImmutableList.of(\"string\", \"elements\");  // from varargs\nList<String> il = ImmutableList.copyOf(aStringArray);      // from array\n```\n### For A Mutable List\n\nUse the [`Lists`][4] class and its [`newArrayList()`][5] factory methods:\n```java\nList<String> l1 = Lists.newArrayList(anotherListOrCollection);    // from collection\nList<String> l2 = Lists.newArrayList(aStringArray);               // from array\nList<String> l3 = Lists.newArrayList(\"or\", \"string\", \"elements\"); // from varargs\n```\nPlease also note the similar methods for other data structures in other classes, for instance in [`Sets`][6].\n\n## [Why Guava?][7]\n\nThe main attraction could be to reduce the clutter due to generics for type-safety, as the use of the Guava [factory methods][8] allow the types to be inferred most of the time. However, this argument holds less water since Java 7 arrived with the new diamond operator.\n\nBut it's not the only reason (and Java 7 isn't everywhere yet): the shorthand syntax is also very handy, and the methods initializers, as seen above, allow to write more expressive code. You do in one Guava call what takes 2 with the current Java Collections.\n\n-----\n\n# If You Can't...\n\n## For an Immutable List\n\nUse the JDK's [`Arrays`][9] class and its [`asList()`][10] factory method, wrapped with a [`Collections.unmodifiableList()`][11]:\n```java\nList<String> l1 = Collections.unmodifiableList(Arrays.asList(anArrayOfElements));\nList<String> l2 = Collections.unmodifiableList(Arrays.asList(\"element1\", \"element2\"));\n```\nNote that the returned type for `asList()` is a `List` using a concrete `ArrayList` implementation, but **it is NOT** `java.util.ArrayList`. It's an inner type, which emulates an `ArrayList` but actually directly references the passed array and makes it \"write through\" (modifications are reflected in the array).\n\nIt forbids modifications through some of the `List` API's methods by way of simply extending an `AbstractList` (so, adding or removing elements is unsupported), however it allows calls to `set()` to override elements. Thus this list isn't truly immutable and a call to `asList()` should be wrapped with `Collections.unmodifiableList()`.\n\nSee the next step if you need a mutable list.\n\n## For a Mutable List\n\nSame as above, but wrapped with an actual `java.util.ArrayList`:\n```java\nList<String> l1  = new ArrayList<String>(Arrays.asList(array));    // Java 1.5 to 1.6\nList<String> l1b = new ArrayList<>(Arrays.asList(array));          // Java 1.7+\nList<String> l2  = new ArrayList<String>(Arrays.asList(\"a\", \"b\")); // Java 1.5 to 1.6\nList<String> l2b = new ArrayList<>(Arrays.asList(\"a\", \"b\"));       // Java 1.7+\n```\n----\n\n# For Educational Purposes: The Good ol' Manual Way\n```java\n// for Java 1.5+\nstatic <T> List<T> arrayToList(final T[] array) {\nfinal List<T> l = new ArrayList<T>(array.length);\n\n  for (final T s : array) {\n    l.add(s);\n  }\n  return (l);\n}\n\n// for Java < 1.5 (no generics, no compile-time type-safety, boo!)\nstatic List arrayToList(final Object[] array) {\n  final List l = new ArrayList(array.length);\n   for (int i = 0; i < array.length; i++) {\n    l.add(array[i]);\n  }\n  return (l);\n}\n```\n\n   [1]: https://github.com/google/guava/blob/master/guava/src/com/google/common/collect/ImmutableList.java\n  [2]: https://github.com/google/guava/blob/master/guava/src/com/google/common/collect/ImmutableList.java#L108\n  [3]: https://github.com/google/guava/blob/master/guava/src/com/google/common/collect/ImmutableList.java#L235\n  [4]: https://github.com/google/guava/blob/master/guava/src/com/google/common/collect/Lists.java\n  [5]: https://github.com/google/guava/blob/master/guava/src/com/google/common/collect/Lists.java#L84\n  [6]: https://github.com/google/guava/blob/master/guava/src/com/google/common/collect/Sets.java\n  [7]: https://github.com/google/guava/wiki\n  [8]: https://github.com/google/guava/wiki/CollectionUtilitiesExplained#static-constructors\n  [9]: https://docs.oracle.com/en/java/javase/18/docs/api/java.base/java/util/Arrays.html\n  [10]: https://docs.oracle.com/en/java/javase/18/docs/api/java.base/java/util/Arrays.html#asList(T...)\n  [11]: https://docs.oracle.com/en/java/javase/18/docs/api/java.base/java/util/Collections.html#unmodifiableList(java.util.List)",
+        "votes": 41,
         "accepted": 0,
         "comments": [
           {
-            "content": "",
-            "votes": 1
+            "content": "But note that the List returned by Arrays.asList is mutable in that you can still set elements - it just isn't resizable. For immutable lists without Guava you might mention Collections.unmodifiableList",
+            "votes": 22
           }
         ]
       }
