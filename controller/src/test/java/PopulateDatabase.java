@@ -1,4 +1,6 @@
 import com.example.rest.payload.GenericResponse;
+import com.example.rest.payload.auth.LoginRequest;
+import com.example.rest.payload.auth.LoginResponse;
 import com.example.rest.payload.auth.SignUpRequest;
 import org.springframework.web.client.RestTemplate;
 
@@ -13,9 +15,12 @@ public class PopulateDatabase {
     static final RestTemplate REST_TEMPLATE = new RestTemplate();
 
     public static void main(String[] args) {
+        List<String> tokens = new ArrayList<>();
         for (String name : readFile("names.txt")) {
-            signUpUser(name);
+//            signUpUser(name);
+            tokens.add(loginUser(name));
         }
+        System.out.println(tokens);
     }
 
     private static void signUpUser(String name) {
@@ -24,10 +29,21 @@ public class PopulateDatabase {
         signUpRequest.setUsername(name);
         signUpRequest.setPassword(name);
 
-        GenericResponse result = REST_TEMPLATE.postForObject(API_URI_AUTH + "signup", signUpRequest, GenericResponse.class);
-        if (result == null || result.getCode() != 0) {
-            throw new RuntimeException("Error create user with name: " + name);
+        GenericResponse signUpResponse = REST_TEMPLATE.postForObject(API_URI_AUTH + "signup", signUpRequest, GenericResponse.class);
+        if (signUpResponse == null || signUpResponse.getCode() != 0) {
+            throw new RuntimeException("Error creating user with name: " + name);
         }
+    }
+
+    private static String loginUser(String name) {
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setUsername(name);
+        loginRequest.setPassword(name);
+        LoginResponse loginInResponse = REST_TEMPLATE.postForObject(API_URI_AUTH + "login", loginRequest, LoginResponse.class);
+        if (loginInResponse == null || loginInResponse.getCode() != 0) {
+            throw new RuntimeException("Error logging in user with name: " + name);
+        }
+        return loginInResponse.getToken();
     }
 
     private static List<String> readFile(String fileName) {
