@@ -39,10 +39,11 @@ public class PopulateDatabase {
     }
 
     private void run() {
-        for (String name : readFileToList("names.txt")) {
+//        for (String name : readFileToList("names.txt")) {
 //            signUpUser(name);
-            tokens.add(loginUser(name));
-        }
+//            tokens.add(loginUser(name));
+//        }
+        tokens.addAll(readFileToList("tokens.txt"));
         for (Question question : getQuestions()) {
             String tokenForUserToCreateQuestion = getRandomToken();
 
