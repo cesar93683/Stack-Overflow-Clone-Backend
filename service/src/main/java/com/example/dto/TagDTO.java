@@ -11,12 +11,10 @@ public class TagDTO {
     public TagDTO() {
     }
 
-    public TagDTO(Tag tag, boolean onlyTag) {
+    public TagDTO(Tag tag) {
         this.tag = tag.getTag();
-        if (!onlyTag) {
             this.description = tag.getDescription();
             this.numQuestions = tag.getNumQuestions();
-        }
     }
 
     public String getTag() {

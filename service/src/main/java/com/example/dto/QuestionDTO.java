@@ -20,7 +20,7 @@ public class QuestionDTO {
     private List<AnswerDTO> answers;
     private List<CommentDTO> comments;
     private UserDTO user;
-    private List<TagDTO> tags;
+    private List<String> tags;
     private int currVote;
     private Date createdAt;
     private Date updatedAt;
@@ -48,7 +48,7 @@ public class QuestionDTO {
         user = new UserDTO(question.getUser());
         tags = new ArrayList<>();
         for (Tag tag : question.getTags()) {
-            tags.add(new TagDTO(tag, true));
+            tags.add(tag.getTag());
         }
         currVote = 0;
         createdAt = question.getCreatedAt();
@@ -127,11 +127,11 @@ public class QuestionDTO {
         this.user = user;
     }
 
-    public List<TagDTO> getTags() {
+    public List<String> getTags() {
         return tags;
     }
 
-    public void setTags(List<TagDTO> tags) {
+    public void setTags(List<String> tags) {
         this.tags = tags;
     }
 

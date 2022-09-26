@@ -197,7 +197,7 @@ public class QuestionServiceImpl implements QuestionService {
     public List<TagDTO> getTags() {
         List<TagDTO> tags = new ArrayList<>();
         for (Tag tag : tagRepository.findAll()) {
-            tags.add(new TagDTO(tag, false));
+            tags.add(new TagDTO(tag));
         }
         return tags;
     }
@@ -214,7 +214,7 @@ public class QuestionServiceImpl implements QuestionService {
                 .collect(Collectors.toList());
         return new QuestionsAndTagDTO(
                 new QuestionsDTO(pageQuestion.getTotalPages(), questions),
-                new TagDTO(tag, false));
+                new TagDTO(tag));
     }
 
     private void updatedQuestionWithCurrVote(QuestionDTO questionDTO, int userId) {
