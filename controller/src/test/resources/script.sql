@@ -58,7 +58,7 @@ CREATE TABLE `answer` (
 CREATE TABLE `comment` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
-  `content` varchar(500) NOT NULL,
+  `content` varchar(1000) NOT NULL,
   `votes` int NOT NULL,
   `question_id` int,
   `answer_id` int,

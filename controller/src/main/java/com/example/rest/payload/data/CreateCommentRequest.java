@@ -4,7 +4,7 @@ import javax.validation.constraints.Size;
 
 public class CreateCommentRequest {
 
-    @Size(min = 3, max = 500)
+    @Size(min = 3, max = 1000)
     private String content;
 
     @Size(min = 1, max = 10)
