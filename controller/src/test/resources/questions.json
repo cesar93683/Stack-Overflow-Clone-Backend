@@ -4,9 +4,7 @@
     "content": "I always thought Java uses **pass-by-reference**.\n\nHowever, I've seen [a blog post][1] that claims that Java uses **pass-by-value**.\n\nI don't think I understand the distinction they're making.\n\nWhat is the explanation?\n\n  [1]: http://javadude.com/articles/passbyvalue.htm\n",
     "votes": 97,
     "tags": [
-      {
-        "tag": "java"
-      }
+      "java"
     ],
     "comments": [
       {
@@ -73,9 +71,7 @@
     "content": "If I run the following program, which parses two date strings referencing times 1 second apart and compares them:\n```java\npublic static void main(String[] args) throws ParseException {\n\tSimpleDateFormat sf = new SimpleDateFormat(\"yyyy-MM-dd HH:mm:ss\");  \n\tString str3 = \"1927-12-31 23:54:07\";  \n\tString str4 = \"1927-12-31 23:54:08\";  \n\tDate sDt3 = sf.parse(str3);  \n\tDate sDt4 = sf.parse(str4);  \n\tlong ld3 = sDt3.getTime() /1000;  \n\tlong ld4 = sDt4.getTime() /1000;\n\tSystem.out.println(ld4-ld3);\n}\n```\n**The output is:**\n```java\n353\n```\nWhy is `ld4-ld3`, not `1` (as I would expect from the one-second difference in the times), but `353`?\n\nIf I change the dates to times 1 second later:\n```java\nString str3 = \"1927-12-31 23:54:08\";  \nString str4 = \"1927-12-31 23:54:09\";  \n```\nThen `ld4-ld3` will be `1`.\n\n----------\n\n**Java version:**\n```java\njava version \"1.6.0_22\"\nJava(TM) SE Runtime Environment (build 1.6.0_22-b04)\nDynamic Code Evolution Client VM (build 0.2-b02-internal, 19.0-b04-internal, mixed mode)\n```\n```java\nTimezone(`TimeZone.getDefault()`):\n\nsun.util.calendar.ZoneInfo[id=\"Asia/Shanghai\",\noffset=28800000,dstSavings=0,\nuseDaylight=false,\ntransitions=19,\nlastRule=null]\n\nLocale(Locale.getDefault()): zh_CN\n```",
     "votes": 98,
     "tags": [
-      {
-        "tag": "java"
-      }
+      "java"
     ],
     "comments": [
       {
@@ -123,9 +119,7 @@
     "content": "If you have a `java.io.InputStream` object, how should you process that object and produce a `String`?\n\n---\nSuppose I have an `InputStream` that contains text data, and I want to convert it to a `String`, so for example I can write that to a log file.\n\nWhat is the easiest way to take the `InputStream` and convert it to a `String`?\n```java\npublic String convertStreamToString(InputStream is) {\n// ???\n}\n```",
     "votes": 74,
     "tags": [
-      {
-        "tag": "java"
-      }
+      "java"
     ],
     "comments": [
       {
@@ -170,9 +164,7 @@
     "content": "Given an array of type `Element[]`:\n```java\nElement[] array = {new Element(1), new Element(2), new Element(3)};\n```\nHow do I convert this array into an object of type [`ArrayList<Element>`][1]?\n```java\nArrayList<Element> arrayList = ???;\n```\n\n  [1]: https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/ArrayList.html",
     "votes": 55,
     "tags": [
-      {
-        "tag": "java"
-      }
+      "java"
     ],
     "comments": [
     ],
@@ -216,9 +208,7 @@
     "content": "I use `x != null` to avoid [`NullPointerException`][1]. Is there an alternative?\n\n```java\nif (x != null) {\n    // ...\n}\n``` \n\n[1]:https://docs.oracle.com/javase/9/docs/api/java/lang/NullPointerException.html",
     "votes": 45,
     "tags": [
-      {
-        "tag": "java"
-      }
+      "java"
     ],
     "comments": [
       {
@@ -279,9 +269,7 @@
     "content": "I was looking at the new APIs introduced in [Android 4.2][1].\nWhile looking at the [`UserManager`][2] class I came across the following method:\n> ```java\n> public boolean isUserAGoat()\n> ```\n> Used to determine whether the user making this call is subject to teleportations.\n>\n> Returns whether the user making this call is a goat.\n\nHow and when should this be used?\n\n\n  [1]: http://en.wikipedia.org/wiki/Android_version_history#Android_4.1.2F4.2_Jelly_Bean\n  [2]: http://developer.android.com/reference/android/os/UserManager.html",
     "votes": 36,
     "tags": [
-      {
-        "tag": "android"
-      }
+      "android"
     ],
     "comments": [
       {
@@ -329,9 +317,7 @@
     "content": "What is the difference between the units of measure \npx, dip, dp, and sp?",
     "votes": 72,
     "tags": [
-      {
-        "tag": "android"
-      }
+      "android"
     ],
     "comments": [],
     "answers": [
@@ -354,9 +340,7 @@
     "content": "I have an `EditText` and a `Button` in my layout.\n\nAfter writing in the edit field and clicking on the `Button`, I want to hide the virtual keyboard when touching it outside the keyboard. I assume that this is a simple piece of code, but where can I find an example of it?",
     "votes": 78,
     "tags": [
-      {
-        "tag": "android"
-      }
+      "android"
     ],
     "comments": [],
     "answers": [

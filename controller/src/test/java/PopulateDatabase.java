@@ -44,7 +44,7 @@ public class PopulateDatabase {
 //            tokens.add(loginUser(name));
 //        }
         tokens.addAll(readFileToList("tokens.txt"));
-        for (Question question : getQuestions()) {
+        for (QuestionDTO question : getQuestions()) {
             String tokenForUserToCreateQuestion = getRandomToken();
 
             int questionId = createQuestion(tokenForUserToCreateQuestion, question);
@@ -53,11 +53,11 @@ public class PopulateDatabase {
         }
     }
 
-    private void createAnswers(String tokenForUserToCreateQuestion, List<Answer> answers, int questionId) {
+    private void createAnswers(String tokenForUserToCreateQuestion, List<AnswerDTO> answers, int questionId) {
         List<String> randomTokensExcluding = getRandomTokensExcluding(tokenForUserToCreateQuestion, answers.size());
 
         for (int i = 0; i < answers.size(); i++) {
-            Answer answer = answers.get(i);
+            AnswerDTO answer = answers.get(i);
             CreateAnswerRequest createAnswerRequest = new CreateAnswerRequest();
             createAnswerRequest.setContent(answer.getContent());
             createAnswerRequest.setQuestionId(String.valueOf(questionId));
@@ -97,11 +97,11 @@ public class PopulateDatabase {
         }
     }
 
-    private void createComments(String tokenForUserToCreateQuestion, List<Comment> comments, int id, String apiUri) {
+    private void createComments(String tokenForUserToCreateQuestion, List<CommentDTO> comments, int id, String apiUri) {
         List<String> randomTokensExcluding = getRandomTokensExcluding(tokenForUserToCreateQuestion, comments.size());
 
         for (int i = 0; i < comments.size(); i++) {
-            Comment comment = comments.get(i);
+            CommentDTO comment = comments.get(i);
             CreateCommentRequest createCommentRequest = new CreateCommentRequest();
             createCommentRequest.setContent(comment.getContent());
             createCommentRequest.setId(String.valueOf(id));
@@ -156,11 +156,11 @@ public class PopulateDatabase {
                 .collect(Collectors.toList());
     }
 
-    private int createQuestion(String tokenForUserToCreateQuestion, Question question) {
+    private int createQuestion(String tokenForUserToCreateQuestion, QuestionDTO question) {
         CreateQuestionRequest createQuestionRequest = new CreateQuestionRequest();
         createQuestionRequest.setTitle(question.getTitle());
         createQuestionRequest.setContent(question.getContent());
-        createQuestionRequest.setTags(getTags(question.getTags()));
+        createQuestionRequest.setTags(question.getTags());
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(tokenForUserToCreateQuestion);
@@ -188,7 +188,7 @@ public class PopulateDatabase {
                 .collect(Collectors.toList());
     }
 
-    private List<Question> getQuestions() {
+    private List<QuestionDTO> getQuestions() {
         try {
             String json = readFileToString("questions.json");
             ObjectMapper mapper = new ObjectMapper();
