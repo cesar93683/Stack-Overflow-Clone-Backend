@@ -183,10 +183,6 @@
         "accepted": 1,
         "comments": [
           {
-            "content": "Yep. And in the (most common) case where you just want a list, the new ArrayList call is unecessary as well.",
-            "votes": 44
-          },
-          {
             "content": "Arrays.asList() is a horrible function, and you should never just use its return value as is. It breaks the List template, so always use it in the form indicated here, even if it does seem redundant. Good answer.",
             "votes": 26
           },
@@ -210,6 +206,69 @@
           {
             "content": "But note that the List returned by Arrays.asList is mutable in that you can still set elements - it just isn't resizable. For immutable lists without Guava you might mention Collections.unmodifiableList",
             "votes": 22
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Avoiding NullPointerException in Java",
+    "content": "I use `x != null` to avoid [`NullPointerException`][1]. Is there an alternative?\n\n```java\nif (x != null) {\n    // ...\n}\n``` \n\n[1]:https://docs.oracle.com/javase/9/docs/api/java/lang/NullPointerException.html",
+    "votes": 45,
+    "tags": [
+      {
+        "tag": "java"
+      }
+    ],
+    "comments": [
+      {
+        "content": "Not using null is superior to most other suggestions here. Throw exceptions, don't return or allow nulls. BTW - 'assert' keyword is useless, because it's disabled by default. Use an always-enabled failure mechanism",
+        "votes": 12
+      },
+      {
+        "content": "Nulls should be avoided in high-level code. Tony Hoare, who invented null references, calls them \"a billion-dollar mistake\".",
+        "votes": 3
+      }
+    ],
+    "answers": [
+      {
+        "content": "This to me sounds like a reasonably common problem that junior to intermediate developers tend to face at some point: they either don't know or don't trust the contracts they are participating in and defensively overcheck for nulls.  Additionally, when writing their own code, they tend to rely on returning nulls to indicate something thus requiring the caller to check for nulls.\n\nTo put this another way, there are two instances where null checking comes up:\n\n 1. Where null is a valid response in terms of the contract; and\n\n 2. Where it isn't a valid response.\n\n(2) is easy.  As of Java 1.7 you can use [`Objects.requireNonNull(foo)`](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Objects.html#requireNonNull(T)). (If you are stuck with a previous version then [`assert`ions](https://docs.oracle.com/javase/7/docs/technotes/guides/language/assert.html) may be a good alternative.)\n\n\"Proper\" usage of this method would be like below. The method returns the object passed into it and throws a `NullPointerException` if the object is null. This means that the returned value is always non-null. The method is primarily intended for validating parameters.\n```java\npublic Foo(Bar bar) {\n    this.bar = Objects.requireNonNull(bar);\n}\n```\nIt can also be used like an `assert`ion though since it throws an exception if the object is null. In both uses, a message can be added which will be shown in the exception. Below is using it like an assertion and providing a message.\n```java\nObjects.requireNonNull(someobject, \"if someobject is null then something is wrong\");\nsomeobject.doCalc();\n```\nGenerally throwing a specific exception like `NullPointerException` when a value is null but shouldn't be is favorable to throwing a more general exception like `AssertionError`. This is the approach the Java library takes; favoring `NullPointerException` over `IllegalArgumentException` when an argument is not allowed to be null.\n\n(1) is a little harder.  If you have no control over the code you're calling then you're stuck.  If null is a valid response, you have to check for it.\n\nIf it's code that you do control, however (and this is often the case), then it's a different story.  Avoid using nulls as a response.  With methods that return collections, it's easy: return empty collections (or arrays) instead of nulls pretty much all the time.\n\nWith non-collections it might be harder.  Consider this as an example: if you have these interfaces:\n```java\npublic interface Action {\n  void doSomething();\n}\n```\n```java    \npublic interface Parser {\n  Action findAction(String userInput);\n}\n```\nwhere Parser takes raw user input and finds something to do, perhaps if you're implementing a command line interface for something.  Now you might make the contract that it returns null if there's no appropriate action.  That leads the null checking you're talking about.\n\nAn alternative solution is to never return null and instead use the [Null Object pattern][1]:\n```java\npublic class MyParser implements Parser {\n  private static Action DO_NOTHING = new Action() {\n    public void doSomething() { /* do nothing */ }\n  };\n\n  public Action findAction(String userInput) {\n    // ...\n    if ( /* we can't find any actions */ ) {\n      return DO_NOTHING;\n    }\n  }\n}\n```\nCompare:\n```java\nParser parser = ParserFactory.getParser();\nif (parser == null) {\n  // now what?\n  // this would be an example of where null isn't (or shouldn't be) a valid response\n}\nAction action = parser.findAction(someInput);\nif (action == null) {\n  // do nothing\n} else {\n  action.doSomething();\n}\n```\nto\n```java\n    ParserFactory.getParser().findAction(someInput).doSomething();\n```\nwhich is a much better design because it leads to more concise code.\n\nThat said, perhaps it is entirely appropriate for the findAction() method to throw an Exception with a meaningful error message -- especially in this case where you are relying on user input.  It would be much better for the findAction method to throw an Exception than for the calling method to blow up with a simple NullPointerException with no explanation.\n```java\ntry {\n    ParserFactory.getParser().findAction(someInput).doSomething();\n} catch(ActionNotFoundException anfe) {\n    userConsole.err(anfe.getMessage());\n}\n```\nOr if you think the try/catch mechanism is too ugly, rather than Do Nothing your default action should provide feedback to the user.\n```java\npublic Action findAction(final String userInput) {\n    /* Code to return requested Action if found */\n    return new Action() {\n        public void doSomething() {\n            userConsole.err(\"Action not found: \" + userInput);\n        }\n    }\n}\n```\n  [1]: https://en.wikipedia.org/wiki/Null_Object_pattern",
+        "votes": 67,
+        "accepted": 1,
+        "comments": [
+          {
+            "content": "Nice answer, especially mentioning asserts. I came from C and use them constantly. As to Null Objects, they are NOT a silver bullet. I have often spent hours debugging code which turned out to be a Null Object being used, doing nothing (or returning its defaults) when a NPE would have been indicated the problem much more clearly. So then you'll have to do a \"Null Object check\" instead of a null check, and haven't won anything, actually lost clarity. Nowadays, if I can't avoid null, I just document it clearly and that's it.",
+            "votes": 2
+          }
+        ]
+      },
+      {
+        "content": "If you use (or planning to use) a Java IDE like [JetBrains IntelliJ IDEA][1], [Eclipse][2] or [Netbeans][3] or a tool like findbugs then you can use annotations to solve this problem.\n\nBasically, you've got `@Nullable` and `@NotNull`.\n\nYou can use in method and parameters, like this:\n```java\n@NotNull public static String helloWorld() {\n    return \"Hello World\";\n}\n```\nor\n```java\n@Nullable public static String helloWorld() {\n    return \"Hello World\";\n}\n```\nThe second example won't compile (in IntelliJ IDEA).\n\nWhen you use the first `helloWorld()` function in another piece of code:\n```java\npublic static void main(String[] args)\n{\n    String result = helloWorld();\n    if(result != null) {\n        System.out.println(result);\n    }\n}\n```\nNow the IntelliJ IDEA compiler will tell you that the check is useless, since the `helloWorld()` function won't return `null`, ever.\n\nUsing parameter\n```java\nvoid someMethod(@NotNull someParameter) { }\n```\nif you write something like:\n```java\nsomeMethod(null);\n```\nThis won't compile.\n\nLast example using `@Nullable`\n```java\n@Nullable iWantToDestroyEverything() { return null; }\n```\nDoing this\n```java\niWantToDestroyEverything().something();\n```\nAnd you can be sure that this won't happen. :)\n\nIt's a nice way to let the compiler check something more than it usually does and to enforce your contracts to be stronger. Unfortunately, it's not supported by all the compilers.\n\nIn IntelliJ IDEA 10.5 and on, they added support for any other `@Nullable` `@NotNull` implementations.\n\nSee blog post *[More flexible and configurable @Nullable/@NotNull annotations][4]*.\n\n\n  [1]: https://www.jetbrains.com/idea/\n  [2]: https://www.eclipse.org/\n  [3]: https://netbeans.org/\n  [4]: https://blog.jetbrains.com/idea/2011/03/more-flexible-and-configurable-nullublenotnull-annotations/",
+        "votes": 15,
+        "accepted": 0,
+        "comments": [
+          {
+            "content": "I find it strangely annoying that the @NotNull & @Nullable interfaces live in the package com.sun.istack.internal. (I guess I associate com.sun with warnings about using a proprietary API.)",
+            "votes": 12
+          },
+          {
+            "content": "The good thing about annotations, which @NotNull and @Nullable are is that they nicely degrade when the source code is built by a system that doesn't understand them. So, in effect, the argument that the code is not portable may be invalid - if you use a system that supports and understands these annotations, you get the added benefit of stricter error checking, otherwise you get less of it but your code should still build fine, and the quality of your running program is THE SAME, because these annotations were not enforced at runtime anyway. Besides, all compilers are custom ;-)",
+            "votes": 22
+          }
+        ]
+      },
+      {
+        "content": "## If null-values are not allowed ##\nIf your method is called externally, start with something like this:\n```java\npublic void method(Object object) {\n  if (object == null) {\n    throw new IllegalArgumentException(\"...\");\n  }\n```\nThen, in the rest of that method, you'll know that `object` is not null.\n\nIf it is an internal method (not part of an API), just document that it cannot be null, and that's it.\n\nExample:\n```java\npublic String getFirst3Chars(String text) {\n  return text.subString(0, 3);\n}\n```\nHowever, if your method just passes the value on, and the next method passes it on etc. it could get problematic. In that case you may want to check the argument as above.\n\n## If null is allowed ##\nThis really depends. If find that I often do something like this:\n```java\nif (object == null) {\n  // something\n} else {\n  // something else\n}\n```\nSo I branch, and do two completely different things. There is no ugly code snippet, because I really need to do two different things depending on the data. For example, should I work on the input, or should I calculate a good default value?\n\n----------\n\nIt's actually rare for me to use the idiom \"`if (object != null && ...`\".\n\nIt may be easier to give you examples, if you show examples of where you typically use the idiom.",
+        "votes": 37,
+        "accepted": 0,
+        "comments": [
+          {
+            "content": "What's the point in throwing IllegalArgumentException? I think NullPointerException would be clearer, and that would also be thrown if you don't do the null-check yourself. I'd either use assert or nothing at all.",
+            "votes": 28
+          },
+          {
+            "content": "It's unlikely that every other value than null is acceptable. You could have IllegalArgumentException, OutOfRageException etc etc. Sometimes this makes sense. Other times you end up creating a lot of exception classes that doesn't add any value, then you just use IllegalArgumentException. It doesn't makes sense to have one exception for null-input, and another one for everything else.",
+            "votes": 28
           }
         ]
       }
