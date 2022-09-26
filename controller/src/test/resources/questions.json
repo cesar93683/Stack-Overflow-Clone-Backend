@@ -280,9 +280,6 @@
     "votes": 36,
     "tags": [
       {
-        "tag": "java"
-      },
-      {
         "tag": "android"
       }
     ],
@@ -322,6 +319,62 @@
       {
         "content": "There's a funny named method/constant/whatever in each version of Android. \n\nThe only practical use I ever saw was in the Last Call for [Google I/O][1] Contest where they asked what it was for a particular version, to see if contestants read the API diff report for each release. The contest had programming problems too, but generally some trivia that could be graded automatically first to get the number of submissions down to reasonable amounts that would be easier to check.\n\n  [1]: http://en.wikipedia.org/wiki/Google_I/O\n",
         "votes": 19,
+        "accepted": 0,
+        "comments": []
+      }
+    ]
+  },
+  {
+    "title": "What is the difference between px, dip, dp, and sp?",
+    "content": "What is the difference between the units of measure \npx, dip, dp, and sp?",
+    "votes": 72,
+    "tags": [
+      {
+        "tag": "android"
+      }
+    ],
+    "comments": [],
+    "answers": [
+      {
+        "content": "Pretty much everything about this and how to achieve the best support for multiple screens of different sizes and densities is very well documented here:\n\n  - [Supporting Multiple Screens][1]\n\n> **Screen size**  \n> Actual physical size, measured as the screen's diagonal.\n> For simplicity, Android groups all actual screen sizes into four\n> generalized sizes: small, normal, large, and extra-large.\n> \n> **Screen density**  \n> The number of pixels within a physical area of the\n> screen; usually referred to as dpi (dots per inch). For example, a\n> \"low\" density screen has fewer pixels within a given physical area,\n> compared to a \"normal\" or \"high\" density screen. For simplicity,\n> Android groups all actual screen densities into six generalized\n> densities: low, medium, high, extra-high, extra-extra-high, and\n> extra-extra-extra-high.\n> \n> **Orientation**  \n> The orientation of the screen from the user's point of\n> view. This is either landscape or portrait, meaning that the screen's\n> aspect ratio is either wide or tall, respectively. Be aware that not\n> only do different devices operate in different orientations by\n> default, but the orientation can change at runtime when the user\n> rotates the device. \n\n> **Resolution**  \n> The total number of physical pixels on\n> a screen. When adding support for multiple screens, applications do\n> not work directly with resolution; applications should be concerned\n> only with screen size and density, as specified by the generalized\n> size and density groups. \n\n> **Density-independent pixel (dp)**  \n> A virtual\n> pixel unit that you should use when defining UI layout, to express\n> layout dimensions or position in a density-independent way. \n> The density-independent pixel is equivalent to one physical pixel on a 160\n> dpi screen, which is the baseline density assumed by the system for a\n> \"medium\" density screen. At runtime, the system transparently handles\n> any scaling of the dp units, as necessary, based on the actual density\n> of the screen in use. The conversion of dp units to screen pixels is\n> simple: \n> `px = dp * (dpi / 160)`. \n> For example, on a 240 dpi screen, 1 dp\n> equals 1.5 physical pixels. You should always use dp units when\n> defining your application's UI, to ensure proper display of your UI on\n> screens with different densities.\n\n\nIf you are at all serious about developing an Android app for more than one type of device, you should have read the screens support development document at least once. In addition to that, it is always a good thing to know the actual number of active devices that have a particular screen configuration.\n\n - [Screen Sizes and Densities][2]\n\n[1]: http://developer.android.com/guide/practices/screens_support.html\n[2]: http://developer.android.com/resources/dashboard/screens.html\n",
+        "votes": 56,
+        "accepted": 1,
+        "comments": []
+      },
+      {
+        "content": "I will elaborate more on how exactly does dp convert to px:\n\n - If running on an mdpi device, a `150 x 150 px` image will take up `150 * 150 dp` of screen space.\n - If running on an hdpi device, a `150 x 150 px` image will take up `100 * 100 dp` of screen space.\n - If running on an xhdpi device, a `150x150 px` image will take up `75 * 75 dp` of screen space.\n\nThe other way around: say, you want to add an image to your application and you need it to fill a `100 * 100 dp` control. You'll need to create different size images for supported screen sizes:\n\n - `100 * 100 px` image for mdpi\n - `150 * 150 px` image for hdpi\n - `200 * 200 px` image for xhdpi\n",
+        "votes": 35,
+        "accepted": 0,
+        "comments": []
+      }
+    ]
+  },
+  {
+    "title": "How to close/hide the Android soft keyboard programmatically?",
+    "content": "I have an `EditText` and a `Button` in my layout.\n\nAfter writing in the edit field and clicking on the `Button`, I want to hide the virtual keyboard when touching it outside the keyboard. I assume that this is a simple piece of code, but where can I find an example of it?",
+    "votes": 78,
+    "tags": [
+      {
+        "tag": "android"
+      }
+    ],
+    "comments": [],
+    "answers": [
+      {
+        "content": "You can force Android to hide the virtual keyboard using the [InputMethodManager][1], calling [`hideSoftInputFromWindow`][2], passing in the token of the window containing your focused view.\n\n```java\n// Check if no view has focus:\nView view = this.getCurrentFocus();\nif (view != null) {  \n    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);\n    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);\n}\n```\n\nThis will force the keyboard to be hidden in all situations. In some cases, you will want to pass in `InputMethodManager.HIDE_IMPLICIT_ONLY` as the second parameter to ensure you only hide the keyboard when the user didn't explicitly force it to appear (by holding down the menu).\n\n**Note:** If you want to do this in Kotlin, use:\n`context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager`\n\n\n\n\n**Kotlin Syntax**\n\n \n```kotlin\n// Only runs if there is a view that is currently focused\nthis.currentFocus?.let { view ->\n    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager\n    imm?.hideSoftInputFromWindow(view.windowToken, 0)\n}\n```\n\n  [1]: http://developer.android.com/reference/android/view/inputmethod/InputMethodManager.html\n  [2]: http://developer.android.com/reference/android/view/inputmethod/InputMethodManager.html#hideSoftInputFromWindow%28android.os.IBinder,%20int%29\n",
+        "votes": 27,
+        "accepted": 1,
+        "comments": []
+      },
+      {
+        "content": "To help clarify this madness, I'd like to begin by apologizing on behalf of all Android users for Google's downright ridiculous treatment of the soft keyboard. The reason there are so many answers, each different, for the same simple question is that this API, like many others in Android, is horribly designed. I can think of no polite way to state it.\n\nI want to hide the keyboard.  I expect to provide Android with the following statement: `Keyboard.hide()`. The end. Thank you very much.  But Android has a problem.  You must use the `InputMethodManager` to hide the keyboard. OK, fine, this is Android's API to the keyboard. BUT! You are required to have a `Context` in order to get access to the IMM. Now we have a problem.  I may want to hide the keyboard from a static or utility class that has no use or need for any `Context`. or And FAR worse, the IMM requires that you specify what `View` (or even worse, what `Window`) you want to hide the keyboard FROM.\n\nThis is what makes hiding the keyboard so challenging. Dear Google: When I'm looking up the recipe for a cake, there is no `RecipeProvider` on Earth that would refuse to provide me with the recipe unless I first answer WHO the cake will be eaten by AND where it will be eaten!! \n\nThis sad story ends with the ugly truth: to hide the Android keyboard, you will be required to provide 2 forms of identification: a `Context` and either a `View` or a `Window`.\n\nI have created a static utility method that can do the job VERY solidly, provided you call it from an `Activity`.\n```java\npublic static void hideKeyboard(Activity activity) {\n\tInputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);\n\t//Find the currently focused view, so we can grab the correct window token from it.\n\tView view = activity.getCurrentFocus();\n\t//If no view currently has focus, create a new one, just so we can grab a window token from it\n\tif (view == null) {\n\t\tview = new View(activity);\n\t}\n\timm.hideSoftInputFromWindow(view.getWindowToken(), 0);\n}\n```\n\nBe aware that this utility method ONLY works when called from an `Activity`! The above method calls `getCurrentFocus` of the target `Activity` to fetch the proper window token. \n\nBut suppose you want to hide the keyboard from an `EditText` hosted in a `DialogFragment`? You can't use the method above for that:\n```java\nhideKeyboard(getActivity()); //won't work\n```\nThis won't work because you'll be passing a reference to the `Fragment`'s host `Activity`, which will have no focused control while the `Fragment` is shown! Wow! So, for hiding the keyboard from fragments, I resort to the lower-level, more common, and uglier:\n```java\npublic static void hideKeyboardFrom(Context context, View view) {\n    InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);\n    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);\n}\n```\nBelow is some additional information gleaned from more time wasted chasing this solution:\n\n**About windowSoftInputMode**\n\nThere's yet another point of contention to be aware of. By default, Android will automatically assign initial focus to the first `EditText` or focusable control in your `Activity`.  It naturally follows that the InputMethod (typically the soft keyboard) will respond to the focus event by showing itself. The `windowSoftInputMode` attribute in `AndroidManifest.xml`, when set to `stateAlwaysHidden`, instructs the keyboard to ignore this automatically-assigned initial focus. \n```xml\n<activity\n    android:name=\".MyActivity\"\n    android:windowSoftInputMode=\"stateAlwaysHidden\"/>\n```\nAlmost unbelievably, it appears to do nothing to prevent the keyboard from opening when you touch the control (unless `focusable=\"false\"` and/or `focusableInTouchMode=\"false\"` are assigned to the control). Apparently, the windowSoftInputMode setting applies only to automatic focus events, not to focus events triggered by touch events.\n\nTherefore, `stateAlwaysHidden` is VERY poorly named indeed. It should perhaps be called `ignoreInitialFocus` instead. \n\n-------------------------------------------------\n**UPDATE: More ways to get a window token**\n\nIf there is no focused view (e.g. can happen if you just changed fragments), there are other views that will supply a useful window token.\n\nThese are alternatives for the above code `if (view == null)   view = new View(activity);`  These don't refer explicitly to your activity.\n\nInside a fragment class:\n```java\nview = getView().getRootView().getWindowToken();\n```\nGiven a fragment `fragment` as a parameter:\n```java\nview = fragment.getView().getRootView().getWindowToken();\n```\nStarting from your content body:\n```java\nview = findViewById(android.R.id.content).getRootView().getWindowToken();\n```\n\n-------------------------------------------------\n**UPDATE 2: Clear focus to avoid showing keyboard again if you open the app from the background**\n\nAdd this line to the end of the method:\n```java\nview.clearFocus();\n```",
+        "votes": 53,
+        "accepted": 0,
+        "comments": []
+      },
+      {
+        "content": "Also useful for hiding the soft-keyboard is:\n```java\ngetWindow().setSoftInputMode(\n    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN\n);\n```\nis can be used to suppress the soft-keyboard until the user actually touches the editText View.",
+        "votes": 43,
         "accepted": 0,
         "comments": []
       }
