@@ -273,5 +273,58 @@
         ]
       }
     ]
+  },
+  {
+    "title": "Proper use cases for Android UserManager.isUserAGoat()?",
+    "content": "I was looking at the new APIs introduced in [Android 4.2][1].\nWhile looking at the [`UserManager`][2] class I came across the following method:\n> ```java\n> public boolean isUserAGoat()\n> ```\n> Used to determine whether the user making this call is subject to teleportations.\n>\n> Returns whether the user making this call is a goat.\n\nHow and when should this be used?\n\n\n  [1]: http://en.wikipedia.org/wiki/Android_version_history#Android_4.1.2F4.2_Jelly_Bean\n  [2]: http://developer.android.com/reference/android/os/UserManager.html",
+    "votes": 36,
+    "tags": [
+      {
+        "tag": "java"
+      },
+      {
+        "tag": "android"
+      }
+    ],
+    "comments": [
+      {
+        "content": "If can be used to avoid some Java warning, as an easter egg, and as a test to see who read the API. And it's a reference to an easter egg in Chrome.",
+        "votes": 8
+      }
+    ],
+    "answers": [
+      {
+        "content": "### Android R Update:\n\nFrom Android R, this method always returns false. Google says that this is done \"to protect goat privacy\":\n```java\n/**\n * Used to determine whether the user making this call is subject to\n * teleportations.\n *\n * <p>As of {@link android.os.Build.VERSION_CODES#LOLLIPOP}, this method can\n * now automatically identify goats using advanced goat recognition technology.</p>\n *\n * <p>As of {@link android.os.Build.VERSION_CODES#R}, this method always returns\n * {@code false} in order to protect goat privacy.</p>\n *\n * @return Returns whether the user making this call is a goat.\n */\npublic boolean isUserAGoat() {\n    if (mContext.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.R) {\n        return false;\n    }\n    return mContext.getPackageManager()\n            .isPackageAvailable(\"com.coffeestainstudios.goatsimulator\");\n}\n```\n------\n### Previous answer:\n\nFrom their **[source][1]**, the method used to return `false` until it was changed in API 21.\n```java\n/**\n * Used to determine whether the user making this call is subject to\n * teleportations.\n * @return whether the user making this call is a goat \n */\npublic boolean isUserAGoat() {\n    return false;\n}\n```\nIt looks like the method has no real use for us as developers. Someone has previously stated that it might be an **[Easter egg][2]**.\n\n\nIn API 21 the implementation was changed to check if there is an installed app with the package `com.coffeestainstudios.goatsimulator`\n```java\n/**\n * Used to determine whether the user making this call is subject to\n * teleportations.\n *\n * <p>As of {@link android.os.Build.VERSION_CODES#LOLLIPOP}, this method can\n * now automatically identify goats using advanced goat recognition technology.</p>\n *\n * @return Returns true if the user making this call is a goat.\n */\npublic boolean isUserAGoat() {\n    return mContext.getPackageManager()\n            .isPackageAvailable(\"com.coffeestainstudios.goatsimulator\");\n}\n```\nHere is the [source][3] and the [change][4].\n\n\n  [1]: https://android.googlesource.com/platform/frameworks/base/+/android-5.0.0_r6/core/java/android/os/UserManager.java#433\n  [2]: http://en.wikipedia.org/wiki/Easter_egg_(media)\n  [3]: https://android.googlesource.com/platform/frameworks/base/+/android-5.0.0_r6/core/java/android/os/UserManager.java#442\n  [4]: https://android.googlesource.com/platform/frameworks/base/+/e4ab16ad98b183afbf7a21ad7314372de41a8b57%5E%21/#F1",
+        "votes": 19,
+        "accepted": 1,
+        "comments": [
+          {
+            "content": "Theory: Goats are found in all kinds of precarious places, like sheer cliffs, possibly bucking location trends they get from regular non-goat users. Might explain \"teleportations\", which could be goats appearing to wildly relocate as the software tries to determine their location with algos designed for non-goats.",
+            "votes": 22
+          },
+          {
+            "content": "This is a history lesson, not an answer. Even if it is an Easter egg, is there a valid use case for it? Being an Easter egg doesn't preclude it from being useful, and you've not shown whether it is or is not useful.",
+            "votes": 4
+          }
+        ]
+      },
+      {
+        "content": "I don't know if this was \"the\" official use case, but the following produces a warning in Java (that can further produce compile errors if mixed with `return` statements, leading to unreachable code):\n```java\nwhile (1 == 2) { // Note that \"if\" is treated differently\n    System.out.println(\"Unreachable code\");\n}\n```\nHowever this is legal:\n```java\nwhile (isUserAGoat()) {\n    System.out.println(\"Unreachable but determined at runtime, not at compile time\");\n}\n```\nSo I often find myself writing a silly utility method for the quickest way to dummy out a code block, then in completing debugging find all calls to it, so provided the implementation doesn't change this can be used for that.\n\n[JLS](http://docs.oracle.com/javase/specs/jls/se7/html/jls-14.html#jls-14.21) points out `if (false)` does not trigger \"unreachable code\" for the specific reason that this would break support for debug flags, i.e., basically this use case (h/t @auselen). (`static final boolean DEBUG = false;` for instance).\n\nI replaced `while` for `if`, producing a more obscure use case. I *believe* you can trip up your IDE, like Eclipse, with this behavior, but this edit is 4 years into the future, and I don't have an Eclipse environment to play with.\n\n",
+        "votes": 16,
+        "accepted": 0,
+        "comments": [
+          {
+            "content": "\"provided the implementation doesn't change\" - and there's the problem. This is a disastrous way to implement a warning-free \"if (false)\" because the implementation can and does change. See my answer to this question: as of API21 isUserAGoat() returns true if a user has a specific app installed. Good luck diagnosing that when your code suddenly starts behaving oddly on \"random\" devices!",
+            "votes": 26
+          }
+        ]
+      },
+      {
+        "content": "There's a funny named method/constant/whatever in each version of Android. \n\nThe only practical use I ever saw was in the Last Call for [Google I/O][1] Contest where they asked what it was for a particular version, to see if contestants read the API diff report for each release. The contest had programming problems too, but generally some trivia that could be graded automatically first to get the number of submissions down to reasonable amounts that would be easier to check.\n\n  [1]: http://en.wikipedia.org/wiki/Google_I/O\n",
+        "votes": 19,
+        "accepted": 0,
+        "comments": []
+      }
+    ]
   }
 ]
