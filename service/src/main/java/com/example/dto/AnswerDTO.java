@@ -16,6 +16,7 @@ public class AnswerDTO {
     private List<CommentDTO> comments;
     private UserDTO user;
     private int currVote;
+    private int questionId;
     private Date createdAt;
     private Date updatedAt;
 
@@ -35,6 +36,7 @@ public class AnswerDTO {
         }
         user = new UserDTO(answer.getUser());
         currVote = 0;
+        questionId = answer.getQuestion().getId();
         createdAt = answer.getCreatedAt();
         updatedAt = answer.getUpdatedAt();
     }
@@ -93,6 +95,14 @@ public class AnswerDTO {
 
     public void setCurrVote(int currVote) {
         this.currVote = currVote;
+    }
+
+    public int getQuestionId() {
+        return questionId;
+    }
+
+    public void setQuestionId(int questionId) {
+        this.questionId = questionId;
     }
 
     public Date getCreatedAt() {
