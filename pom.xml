@@ -21,6 +21,7 @@
         <version.jjwt>0.11.5</version.jjwt>
         <version.mysql>8.0.30</version.mysql>
         <version.spring.boot>2.7.3</version.spring.boot>
+        <version.springdoc-openapi-ui>1.6.11</version.springdoc-openapi-ui>
     </properties>
 
     <dependencyManagement>
@@ -76,6 +77,11 @@
                 <groupId>jakarta.xml.bind</groupId>
                 <artifactId>jakarta.xml.bind-api</artifactId>
                 <version>${version.jakarta.xml-bind}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-ui</artifactId>
+                <version>${version.springdoc-openapi-ui}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
