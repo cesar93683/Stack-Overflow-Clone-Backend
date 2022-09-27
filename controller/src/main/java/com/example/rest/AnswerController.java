@@ -39,6 +39,16 @@ public class AnswerController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getAnswer(@PathVariable String id) {
+        try {
+            return ResponseEntity.ok(answerService.getAnswer(Integer.parseInt(id)));
+        } catch (Exception e) {
+            LOGGER.error(e);
+            return ResponseEntity.badRequest().body(new GenericResponse(ERROR_CODE_BAD_REQUEST));
+        }
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<?> updateAnswer(@Valid @RequestBody UpdateAnswerRequest updateAnswerRequest, @PathVariable String id) {
         try {

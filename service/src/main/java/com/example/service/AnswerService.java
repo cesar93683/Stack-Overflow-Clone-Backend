@@ -7,6 +7,8 @@ import com.example.exceptions.ServiceException;
 public interface AnswerService {
     AnswerDTO createAnswer(String content, int userId, int questionId) throws ServiceException;
 
+    AnswerDTO getAnswer(int id) throws ServiceException;
+
     void updateAnswer(int answerId, String content, int userId) throws ServiceException;
 
     void deleteAnswer(int answerId, int userId) throws ServiceException;

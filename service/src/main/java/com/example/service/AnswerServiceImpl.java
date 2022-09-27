@@ -44,7 +44,13 @@ public class AnswerServiceImpl implements AnswerService {
         AnswerDTO answerDTO = new AnswerDTO(answer, false);
         answerDTO.setCurrVote(UP_VOTE);
         return answerDTO;
+    }
 
+    @Override
+    public AnswerDTO getAnswer(int id) throws ServiceException {
+        Answer answer = answerRepository.findById(id)
+                .orElseThrow(() -> new ServiceException("Answer not found with id: " + id));
+        return new AnswerDTO(answer, false);
     }
 
     @Override
