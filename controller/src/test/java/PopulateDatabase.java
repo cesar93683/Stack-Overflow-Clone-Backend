@@ -1,9 +1,7 @@
 import com.example.dto.AnswerDTO;
 import com.example.dto.CommentDTO;
 import com.example.dto.QuestionDTO;
-import com.example.entity.Answer;
-import com.example.entity.Comment;
-import com.example.entity.Question;
+import com.example.dto.QuestionsDTO;
 import com.example.entity.Tag;
 import com.example.rest.payload.GenericResponse;
 import com.example.rest.payload.auth.LoginRequest;
@@ -44,13 +42,41 @@ public class PopulateDatabase {
 //            tokens.add(loginUser(name));
 //        }
         tokens.addAll(readFileToList("tokens.txt"));
-        for (QuestionDTO question : getQuestions()) {
+
+        List<QuestionDTO> questionsInDb = getQuestionInDb();
+
+        for (QuestionDTO question : getQuestionsFromJson()) {
+            boolean existInDb = questionsInDb.stream()
+                    .anyMatch(questionInDb -> questionInDb.getTitle().equals(question.getTitle()));
+            if (existInDb) {
+                continue;
+            }
+
             String tokenForUserToCreateQuestion = getRandomToken();
 
             int questionId = createQuestion(tokenForUserToCreateQuestion, question);
             createComments(tokenForUserToCreateQuestion, question.getComments(), questionId, API_URI_QUESTIONS);
             createAnswers(tokenForUserToCreateQuestion, question.getAnswers(), questionId);
         }
+    }
+
+    private List<QuestionDTO> getQuestionInDb() {
+        List<QuestionsDTO> questionsDTOs = new ArrayList<>();
+        int page = 0;
+        while (true) {
+            QuestionsDTO questionsDTO = REST_TEMPLATE.getForObject(API_URI_QUESTIONS + "?page=" + page, QuestionsDTO.class);
+            if (questionsDTO == null) {
+                throw new RuntimeException("Error upVoting");
+            }
+            questionsDTOs.add(questionsDTO);
+            if (questionsDTO.getTotalPages() == page) {
+                break;
+            }
+            page++;
+        }
+        return questionsDTOs.stream()
+                .flatMap(questionsDTO -> questionsDTO.getQuestions().stream())
+                .collect(Collectors.toList());
     }
 
     private void createAnswers(String tokenForUserToCreateQuestion, List<AnswerDTO> answers, int questionId) {
@@ -188,7 +214,7 @@ public class PopulateDatabase {
                 .collect(Collectors.toList());
     }
 
-    private List<QuestionDTO> getQuestions() {
+    private List<QuestionDTO> getQuestionsFromJson() {
         try {
             String json = readFileToString("questions.json");
             ObjectMapper mapper = new ObjectMapper();

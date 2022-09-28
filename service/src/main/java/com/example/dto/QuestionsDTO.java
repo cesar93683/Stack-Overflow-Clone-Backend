@@ -7,6 +7,9 @@ public class QuestionsDTO {
     private int totalPages;
     private List<QuestionDTO> questions;
 
+    public QuestionsDTO() {
+    }
+
     public QuestionsDTO(int totalPages, List<QuestionDTO> questions) {
         this.questions = questions;
         this.totalPages = totalPages;
