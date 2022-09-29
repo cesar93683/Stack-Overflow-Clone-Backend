@@ -86,7 +86,7 @@ public class QuestionController {
         }
     }
 
-    @PutMapping("/")
+    @PostMapping("/")
     public ResponseEntity<?> createQuestion(@Valid @RequestBody CreateQuestionRequest createQuestionRequest) {
         try {
             return ResponseEntity.ok(questionService.createQuestion(createQuestionRequest.getTitle(),
@@ -97,7 +97,7 @@ public class QuestionController {
         }
     }
 
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateQuestion(@Valid @RequestBody UpdateQuestionRequest updateQuestionRequest, @PathVariable String id) {
         try {
             questionService.updateQuestion(Integer.parseInt(id), updateQuestionRequest.getContent(),
@@ -135,7 +135,7 @@ public class QuestionController {
         }
     }
 
-    @PutMapping("/comments")
+    @PostMapping("/comments")
     public ResponseEntity<?> createComment(@Valid @RequestBody CreateCommentRequest createCommentRequest) {
         try {
             return ResponseEntity.ok(questionService.createComment(createCommentRequest.getContent(),

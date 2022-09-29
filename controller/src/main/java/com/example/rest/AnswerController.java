@@ -28,7 +28,7 @@ public class AnswerController {
     @Autowired
     private AnswerService answerService;
 
-    @PutMapping("/")
+    @PostMapping("/")
     public ResponseEntity<?> createAnswer(@Valid @RequestBody CreateAnswerRequest createAnswerRequest) {
         try {
             return ResponseEntity.ok(answerService.createAnswer(createAnswerRequest.getContent(), getUserId(),
@@ -49,7 +49,7 @@ public class AnswerController {
         }
     }
 
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateAnswer(@Valid @RequestBody UpdateAnswerRequest updateAnswerRequest, @PathVariable String id) {
         try {
             answerService.updateAnswer(Integer.parseInt(id), updateAnswerRequest.getContent(), getUserId());
@@ -97,7 +97,7 @@ public class AnswerController {
         }
     }
 
-    @PutMapping("/comments")
+    @PostMapping("/comments")
     public ResponseEntity<?> createComment(@Valid @RequestBody CreateCommentRequest createCommentRequest) {
         try {
             return ResponseEntity.ok(answerService.createComment(createCommentRequest.getContent(),
