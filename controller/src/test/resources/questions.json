@@ -363,5 +363,58 @@
         "comments": []
       }
     ]
+  },
+  {
+    "title": "How can I remove a specific item from an array?",
+    "content": "How do I remove a specific value from an array? Something like:\n\n```javascript\narray.remove(value);  // removes all elements with value\n```\n\nI have to use *core* JavaScript. Frameworks are not allowed.\n",
+    "votes": 46,
+    "tags": [
+      "javascript"
+    ],
+    "comments": [
+      {
+        "content": "array.remove(index) or array.pull(index) would make a lot of sense. splice is very useful, but a remove() or pull() method would be welcome... Search the internet, you will find a lot of \"What is the opposite of push() in JavaScript?\" questions. Would be great if the answare could be as simples as plain english: Pull!",
+        "votes": 7
+      },
+      {
+        "content": "array.filter((_, index) => index != number);",
+        "votes": 2
+      }
+    ],
+    "answers": [
+      {
+        "content": "Find the `index` of the array element you want to remove using [`indexOf`][2], and then remove that index with [`splice`][1].\n\n> The splice() method changes the contents of an array by removing\n> existing elements and/or adding new elements.\n\n```javascript\nconst array = [2, 5, 9];\n\nconsole.log(array);\n\nconst index = array.indexOf(5);\nif (index > -1) { // only splice array when item is found\n  array.splice(index, 1); // 2nd parameter means remove one item only\n}\n\n// array = [2, 9]\nconsole.log(array); \n```\n\nThe second parameter of `splice` is the number of elements to remove. Note that `splice` modifies the array in place and returns a new array containing the elements that have been removed.\n___\nFor the reason of completeness, here are functions. The first function removes only a single occurrence (i.e. removing the first match of `5` from `[2,5,9,1,5,8,5]`), while the second function removes all occurrences:\n\n```javascript\nfunction removeItemOnce(arr, value) {\n  var index = arr.indexOf(value);\n  if (index > -1) {\n    arr.splice(index, 1);\n  }\n  return arr;\n}\n\nfunction removeItemAll(arr, value) {\n  var i = 0;\n  while (i < arr.length) {\n    if (arr[i] === value) {\n      arr.splice(i, 1);\n    } else {\n      ++i;\n    }\n  }\n  return arr;\n}\n// Usage\nconsole.log(removeItemOnce([2,5,9,1,5,8,5], 5))\nconsole.log(removeItemAll([2,5,9,1,5,8,5], 5))\n```\n\nIn TypeScript, these functions can stay type-safe with a type parameter:\n\n```typescript\nfunction removeItem<T>(arr: Array<T>, value: T): Array<T> { \n  const index = arr.indexOf(value);\n  if (index > -1) {\n    arr.splice(index, 1);\n  }\n  return arr;\n}\n```\n\n  [1]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice\n  [2]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf\n\n",
+        "votes": 39,
+        "accepted": 1,
+        "comments": [
+          {
+            "content": "Serious question: why doesn't JavaScript allow the simple and intuitive method of removing an element at an index? A simple, elegant, myArray.remove(index); seems to be the best solution and is implemented in many other languages (a lot of them older than JavaScript.)",
+            "votes": 19
+          },
+          {
+            "content": "\nYou can simplify this solution by counting down instead of up: for ( var i = ary.length - 1; i >= 0; i-- ) { if ( ary[i] === value ) { ary.remove(i)} }",
+            "votes": 7
+          }
+        ]
+      },
+      {
+        "content": "**Edited on 2016 October**\n\n\n- Do it simple, intuitive and explicit ([Occam's razor][1])\n- Do it immutable (original array stays unchanged)\n- Do it with standard JavaScript functions, if your browser doesn't support them - **use polyfill**\n\nIn this code example I use **`array.filter(...)`** function to remove unwanted items from an array. This function doesn't change the original array and creates a new one. If your browser doesn't support this function (e.g. Internet Explorer before version 9, or Firefox before version 1.5), consider [**polyfilling with `core-js`**][2].\n\nRemoving item (ECMA-262 Edition 5 code AKA old style JavaScript)\n-\n```javascript\nvar value = 3\n\nvar arr = [1, 2, 3, 4, 5, 3]\n\narr = arr.filter(function(item) {\n    return item !== value\n})\n\nconsole.log(arr)\n// [ 1, 2, 4, 5 ]\n```\nRemoving item (ECMAScript 6 code)\n-\n```javascript\nlet value = 3\n\nlet arr = [1, 2, 3, 4, 5, 3]\n\narr = arr.filter(item => item !== value)\n\nconsole.log(arr)\n// [ 1, 2, 4, 5 ]\n```\n**IMPORTANT** ECMAScript 6 `() => {}` arrow function syntax is not supported in Internet Explorer at all, Chrome before version 45, Firefox before version 22, and Safari before version 10. To use ECMAScript 6 syntax in old browsers you can use [BabelJS][3].\n\n---\n\nRemoving multiple items (ECMAScript&nbsp;7 code)\n-\n\nAn additional advantage of this method is that you can remove multiple items\n```javascript\nlet forDeletion = [2, 3, 5]\n\nlet arr = [1, 2, 3, 4, 5, 3]\n\narr = arr.filter(item => !forDeletion.includes(item))\n// !!! Read below about array.includes(...) support !!!\n\nconsole.log(arr)\n// [ 1, 4 ]\n```\n**IMPORTANT** `array.includes(...)` function is not supported in Internet Explorer at all, Chrome before version 47, Firefox before version 43, Safari before version 9, and Edge before version 14 but you can [**polyfill with `core-js`**][2].\n\nRemoving multiple items (in the future, maybe)\n-\n\nIf the [\"This-Binding Syntax\"][4] proposal is ever accepted, you'll be able to do this:\n```javascript\n// array-lib.js\n\nexport function remove(...forDeletion) {\n    return this.filter(item => !forDeletion.includes(item))\n}\n\n// main.js\n\nimport { remove } from './array-lib.js'\n\nlet arr = [1, 2, 3, 4, 5, 3]\n\n// :: This-Binding Syntax Proposal\n// using \"remove\" function as \"virtual method\"\n// without extending Array.prototype\narr = arr::remove(2, 3, 5)\n\nconsole.log(arr)\n// [ 1, 4 ]\n```\n[**Try it yourself in BabelJS :)**][5]\n\n**Reference**\n\n - [Array.prototype.includes][6]\n - [Functional composition][7]\n\n\n  [1]: https://en.wikipedia.org/wiki/Occam%27s_razor\n  [2]: https://github.com/zloirock/core-js#ecmascript-array\n  [3]: https://babeljs.io/\n  [4]: https://github.com/tc39/proposal-bind-operator\n  [5]: https://babeljs.io/repl/#?browsers=chrome%20%3E%2050&build=&builtIns=false&corejs=3.21&spec=false&loose=false&code_lz=AQ4MwVwOwYwFwJYHsrAE4FMC2SBuGAKAOhLCTQBEMAbDRFASmAG8AoUD9OiNVOACwQBnImATU4GNAQSSswALwA-YAEIylGnWRQiCWNQgATDEJlyGDdqAC-rayFpxgAQzRpFwANoBGADTAAEwBAMwBACwBAKyhALr2HAD0icAAXKnAACqCQgC0AEL6RvoA5sAAygCeUHAuAB7AAApoSAAOSEIu1A7AycAQQqVcOPjg0PA6rkLAAES4CGhwEF3AWHT8SEYzPW4eCq7u6ZgjhMHAYcBRVj0wKEJItETUSCUEu1ZJKV7A_sDhwLEgA&debug=false&forceAllTransforms=false&shippedProposals=false&circleciRepo=&evaluate=true&fileSize=false&timeTravel=false&sourceType=module&lineWrap=false&presets=es2015%2Creact%2Cstage-0%2Cstage-2&prettier=false&targets=&version=7.17.9&externalPlugins=&assumptions=%7B%7D\n  [6]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes\n  [7]: https://vanslaars.io/articles/create-pipe-function\n\n",
+        "votes": 27,
+        "accepted": 0,
+        "comments": []
+      },
+      {
+        "content": "I don't know how you are expecting `array.remove(int)` to behave. There are three possibilities I can think of that you might want.\n\nTo remove an element of an array at an index `i`:\n\n```javascript\narray.splice(i, 1);\n```\n\nIf you want to remove every element with value `number` from the array:\n\n```javascript\nfor (var i = array.length - 1; i >= 0; i--) {\n if (array[i] === number) {\n  array.splice(i, 1);\n }\n}\n```\n\nIf you just want to make the element at index `i` no longer exist, but you don't want the indexes of the other elements to change:\n\n```javascript\ndelete array[i];\n```\n",
+        "votes": 19,
+        "accepted": 0,
+        "comments": []
+      },
+      {
+        "content": "It depends on whether you want to keep an empty spot or not.\n\nIf you **do** want an empty slot:\n```javascript\narray[index] = undefined;\n```\nIf you **don't** want an empty slot:\n```javascript\n//To keep the original:\n//oldArray = [...array];\n\n//This modifies the array.\narray.splice(index, 1);\n```\nAnd if you need the value of that item, you can just store the returned array's element:\n```javascript\nvar value = array.splice(index, 1)[0];\n```\nIf you want to remove at either end of the array, you can use `array.pop()` for the last one or `array.shift()` for the first one (both return the value of the item as well).\n\nIf you don't know the index of the item, you can use `array.indexOf(item)` to get it (in a `if()` to get one item or in a `while()` to get all of them). `array.indexOf(item)` returns either the index or `-1` if not found.&nbsp;\n\n  [1]: https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/splice\n",
+        "votes": 8,
+        "accepted": 0,
+        "comments": []
+      }
+    ]
   }
 ]
