@@ -19,7 +19,6 @@
     <properties>
         <version.jakarta.xml-bind>2.3.2</version.jakarta.xml-bind>
         <version.jjwt>0.11.5</version.jjwt>
-        <version.junit-jupiter-api>5.9.1</version.junit-jupiter-api>
         <version.mysql>8.0.30</version.mysql>
         <version.spring.boot>2.7.3</version.spring.boot>
         <version.springdoc-openapi-ui>1.6.11</version.springdoc-openapi-ui>
@@ -83,12 +82,6 @@
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-ui</artifactId>
                 <version>${version.springdoc-openapi-ui}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-api</artifactId>
-                <version>${version.junit-jupiter-api}</version>
-                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
