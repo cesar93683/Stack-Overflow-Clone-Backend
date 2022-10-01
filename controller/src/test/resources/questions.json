@@ -416,5 +416,33 @@
         "comments": []
       }
     ]
+  },
+  {
+    "title": "var functionName = function() {} vs function functionName() {}",
+    "content": "I've recently started maintaining someone else's JavaScript code. I'm fixing bugs, adding features and also trying to tidy up the code and make it more consistent.\n\nThe previous developer used two ways of declaring functions and I can't work out if there is a reason behind it or not.\n\nThe two ways are:\n```javascript\nvar functionOne = function() {\n    // Some code\n};\n```\n```javascript\nfunction functionTwo() {\n    // Some code\n}\n```\nWhat are the reasons for using these two different methods and what are the pros and cons of each? Is there anything that can be done with one method that can't be done with the other?\n",
+    "votes": 42,
+    "tags": [
+      "javascript"
+    ],
+    "comments": [],
+    "answers": [
+      {
+        "content": "The difference is that `functionOne` is a function expression and so only defined when that line is reached, whereas `functionTwo` is a function declaration and is defined as soon as its surrounding function or script is executed (due to [hoisting][1]).  \n\nFor example, a function expression:\n\n```javascript\n// TypeError: functionOne is not a function\nfunctionOne();\n\nvar functionOne = function() {\n  console.log(\"Hello!\");\n};\n```\n\nAnd, a function declaration:   \n```javascript\n// Outputs: \"Hello!\"\nfunctionTwo();\n\nfunction functionTwo() {\n  console.log(\"Hello!\");\n}\n```\n\nHistorically, function declarations defined within blocks were handled inconsistently between browsers. Strict mode (introduced in ES5) resolved this by scoping function declarations to their enclosing block.\n\n```javascript\n'use strict';    \n{ // note this block!\n  function functionThree() {\n    console.log(\"Hello!\");\n  }\n}\nfunctionThree(); // ReferenceError\n```\n\n  [1]: http://adripofjavascript.com/blog/drips/variable-and-function-hoisting.html",
+        "votes": 34,
+        "accepted": 1,
+        "comments": [
+          {
+            "content": "The sentence \"due to hoisting\" might give a wrong impression that only the named function gets hoisted. In fact, both var functionOne as well as function functionTwo get hoisted to some degree - it's just that functionOne is set to undefined (you could call it half-hoisting, variables always get hoisted only to that degree) whereas function functionTwo is fully hoisted in that it's defined and declared. Invoking something that's undefined will of course then throw a typeError.",
+            "votes": 19
+          }
+        ]
+      },
+      {
+        "content": "First I want to correct Greg: `function abc(){}` is scoped too &mdash; the name `abc` is defined in the scope where this definition is encountered. Example:\n```javascript\nfunction xyz(){\n  function abc(){};\n  // abc is defined here...\n}\n// ...but not here\n```\nSecondly, it is possible to combine both styles:\n```javascript\nvar xyz = function abc(){};\n```\n`xyz` is going to be defined as usual, `abc` is undefined in all browsers but Internet&nbsp;Explorer &mdash; do not rely on it being defined. But it will be defined inside its body:\n```javascript\nvar xyz = function abc(){\n  // xyz is visible here\n  // abc is visible here\n}\n// xyz is visible here\n// abc is undefined here\n```\nIf you want to alias functions on all browsers, use this kind of declaration:\n```javascript\nfunction abc(){};\nvar xyz = abc;\n```\nIn this case, both `xyz` and `abc` are aliases of the same object:\n```javascript\nconsole.log(xyz === abc); // prints \"true\"\n```\nOne compelling reason to use the combined style is the \"name\" attribute of function objects (**not supported by Internet&nbsp;Explorer**). Basically when you define a function like\n```javascript\nfunction abc(){};\nconsole.log(abc.name); // prints \"abc\"\n```\nits name is automatically assigned. But when you define it like\n```javascript\nvar abc = function(){};\nconsole.log(abc.name); // prints \"\"\n```\nits name is empty &mdash; we created an anonymous function and assigned it to some variable.\n\nAnother good reason to use the combined style is to use a short internal name to refer to itself, while providing a long non-conflicting name for external users:\n```javascript\n// Assume really.long.external.scoped is {}\nreally.long.external.scoped.name = function shortcut(n){\n  // Let it call itself recursively:\n  shortcut(n - 1);\n  // ...\n  // Let it pass itself as a callback:\n  someFunction(shortcut);\n  // ...\n}\n```\nIn the example above we can do the same with an external name, but it'll be too unwieldy (and slower).\n\n*(Another way to refer to itself is to use ``arguments.callee``, which is still relatively long, and not supported in the strict mode.)*\n\nDeep down, JavaScript treats both statements differently. This is a function declaration:\n```javascript\nfunction abc(){}\n```\n`abc` here is defined everywhere in the current scope:\n```javascript\n// We can call it here\nabc(); // Works\n\n// Yet, it is defined down there.\nfunction abc(){}\n\n// We can call it again\nabc(); // Works\n```\nAlso, it hoisted through a `return` statement:\n```javascript\n// We can call it here\nabc(); // Works\nreturn;\nfunction abc(){}\n```\nThis is a function expression:\n```javascript\nvar xyz = function(){};\n```\n`xyz` here is defined from the point of assignment:\n```javascript\n// We can't call it here\nxyz(); // UNDEFINED!!!\n\n// Now it is defined\nxyz = function(){}\n\n// We can call it here\nxyz(); // works\n```\nFunction declaration vs. function expression is the real reason why there is a difference demonstrated by Greg.\n\nFun fact:\n```javascript\nvar xyz = function abc(){};\nconsole.log(xyz.name); // Prints \"abc\"\n```\nPersonally, I prefer the \"function expression\" declaration because this way I can control the visibility. When I define the function like\n```javascript\nvar abc = function(){};\n```\nI know that I defined the function locally. When I define the function like\n```javascript\nabc = function(){};\n```\nI know that I defined it globally providing that I didn't define `abc` anywhere in the chain of scopes. This style of definition is resilient even when used inside `eval()`. While the definition\n```javascript\nfunction abc(){};\n```\ndepends on the context and may leave you guessing where it is actually defined, especially in the case of `eval()` &mdash; the answer is: It depends on the browser.\n",
+        "votes": 22,
+        "accepted": 0,
+        "comments": []
+      }
+    ]
   }
 ]
