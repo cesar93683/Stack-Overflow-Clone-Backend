@@ -3,6 +3,7 @@ package com.example.dto;
 import com.example.entity.Comment;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class CommentDTO {
 
@@ -73,4 +74,16 @@ public class CommentDTO {
         this.createdAt = createdAt;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CommentDTO that = (CommentDTO) o;
+        return id == that.id && votes == that.votes && currVote == that.currVote && Objects.equals(content, that.content) && Objects.equals(user, that.user) && Objects.equals(createdAt, that.createdAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, content, votes, user, currVote, createdAt);
+    }
 }

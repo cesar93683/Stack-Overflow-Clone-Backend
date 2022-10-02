@@ -6,6 +6,7 @@ import com.example.entity.Comment;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class AnswerDTO {
 
@@ -119,5 +120,18 @@ public class AnswerDTO {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AnswerDTO answerDTO = (AnswerDTO) o;
+        return id == answerDTO.id && votes == answerDTO.votes && accepted == answerDTO.accepted && currVote == answerDTO.currVote && questionId == answerDTO.questionId && Objects.equals(content, answerDTO.content) && Objects.equals(comments, answerDTO.comments) && Objects.equals(user, answerDTO.user) && Objects.equals(createdAt, answerDTO.createdAt) && Objects.equals(updatedAt, answerDTO.updatedAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, content, votes, accepted, comments, user, currVote, questionId, createdAt, updatedAt);
     }
 }

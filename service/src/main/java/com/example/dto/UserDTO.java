@@ -2,6 +2,8 @@ package com.example.dto;
 
 import com.example.entity.User;
 
+import java.util.Objects;
+
 public class UserDTO {
 
     private int id;
@@ -39,5 +41,18 @@ public class UserDTO {
 
     public void setReputation(int reputation) {
         this.reputation = reputation;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDTO userDTO = (UserDTO) o;
+        return id == userDTO.id && reputation == userDTO.reputation && Objects.equals(username, userDTO.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, reputation);
     }
 }
