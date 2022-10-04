@@ -78,4 +78,20 @@ class AnswerServiceImplTest {
         assertThat(answerDTO).usingRecursiveComparison().isEqualTo(expectedAnswerDTO);
     }
 
+    @Test
+    public void createAnswerShouldThrowAnExceptionIfTheUserIsNotFound() {
+        String content = "the content";
+        int userId = 1;
+        int questionId = 5;
+
+        Mockito.when(mockUserRepository.findById(userId)).thenReturn(Optional.empty());
+
+        ServiceException exception = assertThrows(
+                ServiceException.class,
+                () -> answerService.createAnswer(content, userId, questionId)
+        );
+
+        assertEquals("User not found with id: 1", exception.getMessage());
+    }
+
 }
