@@ -27,7 +27,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -136,8 +135,8 @@ class AnswerServiceImplTest {
 
         AnswerDTO answerDTOActual = answerService.createAnswer(content, userId, questionId);
 
-        verify(mockQuestionRepository, times(1)).save(question);
-        verify(mockVoteRepository, times(1)).save(new Vote(user, null, answer, null, UP_VOTE));
+        verify(mockQuestionRepository).save(question);
+        verify(mockVoteRepository).save(new Vote(user, null, answer, null, UP_VOTE));
         assertEquals(numAnswers + 1, question.getNumAnswers());
         assertEquals(answerDTOExpected, answerDTOActual);
     }
