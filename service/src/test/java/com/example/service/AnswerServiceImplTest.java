@@ -24,8 +24,7 @@ import java.util.Optional;
 import static com.example.service.Utils.*;
 import static com.example.utils.Constants.UP_VOTE;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
@@ -167,6 +166,61 @@ class AnswerServiceImplTest {
         expectedAnswerDTO.setComments(new ArrayList<>());
 
         assertThat(answerDTO).usingRecursiveComparison().isEqualTo(expectedAnswerDTO);
+    }
+
+    @Test
+    public void updateAnswerShouldThrowAnExceptionIfTheAnswerIsNotFound() {
+        int answerId = 1;
+        String content = "content";
+        int userId = 2;
+
+        Mockito.when(mockAnswerRepository.findById(answerId)).thenReturn(Optional.empty());
+
+        ServiceException exception = assertThrows(
+                ServiceException.class,
+                () -> answerService.updateAnswer(answerId, content, userId)
+        );
+
+        assertEquals("Answer not found with id: " + answerId, exception.getMessage());
+    }
+
+    @Test
+    public void updateAnswerShouldThrowAnExceptionIfAUserTriesToUpdateAnAnswerTheyDidNotCreate() {
+        int answerId = 1;
+        String content = "content";
+        int userId = 2;
+        Answer answer = new Answer();
+        User user = new User();
+        user.setId(1);
+        answer.setUser(user);
+
+        Mockito.when(mockAnswerRepository.findById(answerId)).thenReturn(Optional.of(answer));
+
+        ServiceException exception = assertThrows(
+                ServiceException.class,
+                () -> answerService.updateAnswer(answerId, content, userId)
+        );
+
+        assertEquals("User with id: " + userId + " did not create answer with id: " + answerId, exception.getMessage());
+    }
+
+    @Test
+    public void updateAnswerHappyPath() throws ServiceException {
+        int answerId = 1;
+        String content = "content";
+        int userId = 2;
+        Answer answer = new Answer();
+        User user = new User();
+        user.setId(userId);
+        answer.setUser(user);
+
+        Mockito.when(mockAnswerRepository.findById(answerId)).thenReturn(Optional.of(answer));
+
+        answerService.updateAnswer(answerId, content, userId);
+
+        assertEquals(content, answer.getContent());
+        assertNotNull(answer.getUpdatedAt());
+        verify(mockAnswerRepository).save(answer);
     }
 
 }
