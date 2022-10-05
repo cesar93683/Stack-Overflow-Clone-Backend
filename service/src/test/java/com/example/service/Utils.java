@@ -167,7 +167,7 @@ public class Utils {
         return vote;
     }
 
-    private static User getUser() {
+    public static User getUser() {
         User user = new User();
         user.setId(ID);
         user.setEmail("email");

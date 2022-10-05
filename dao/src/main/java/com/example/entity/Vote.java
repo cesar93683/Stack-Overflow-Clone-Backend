@@ -1,6 +1,7 @@
 package com.example.entity;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "vote")
@@ -88,5 +89,18 @@ public class Vote {
 
     public void setComment(Comment comment) {
         this.comment = comment;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vote vote1 = (Vote) o;
+        return id == vote1.id && vote == vote1.vote && Objects.equals(user, vote1.user) && Objects.equals(question, vote1.question) && Objects.equals(answer, vote1.answer) && Objects.equals(comment, vote1.comment);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, vote, user, question, answer, comment);
     }
 }
