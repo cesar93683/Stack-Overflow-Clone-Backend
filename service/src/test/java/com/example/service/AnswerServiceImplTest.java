@@ -62,7 +62,7 @@ class AnswerServiceImplTest {
     public void createAnswerShouldThrowAnExceptionIfTheUserIsNotFound() {
         String content = "the content";
         int userId = 1;
-        int questionId = 5;
+        int questionId = 2;
 
         Mockito.when(mockUserRepository.findById(userId)).thenReturn(Optional.empty());
 
@@ -78,7 +78,7 @@ class AnswerServiceImplTest {
     public void createAnswerShouldThrowAnExceptionIfTheQuestionIsNotFound() {
         String content = "the content";
         int userId = 1;
-        int questionId = 5;
+        int questionId = 2;
         User user = new User();
 
         Mockito.when(mockUserRepository.findById(userId)).thenReturn(Optional.of(user));
@@ -96,7 +96,7 @@ class AnswerServiceImplTest {
     public void createAnswerShouldThrowAnExceptionIfTheUserHasAlreadyRespondedToTheQuestion() {
         String content = "the content";
         int userId = 1;
-        int questionId = 5;
+        int questionId = 2;
 
         User user = getUser();
         Question question = new Question();
@@ -118,7 +118,7 @@ class AnswerServiceImplTest {
     public void createAnswerHappyPath() throws ServiceException {
         String content = "the content";
         int userId = 1;
-        int questionId = 5;
+        int questionId = 2;
 
         User user = getUser();
         Question question = getQuestion();
@@ -143,7 +143,7 @@ class AnswerServiceImplTest {
     }
 
     @Test
-    public void getAnswerShouldThrowExceptionIfAnswerNotFound() {
+    public void getAnswerShouldThrowAnExceptionIfTheAnswerIsNotFound() {
         int id = 1;
 
         Mockito.when(mockAnswerRepository.findById(id)).thenReturn(Optional.empty());
