@@ -71,7 +71,7 @@ class AnswerServiceImplTest {
                 () -> answerService.createAnswer(content, userId, questionId)
         );
 
-        assertEquals("User not found with id: 1", exception.getMessage());
+        assertEquals("User not found with id: " + userId, exception.getMessage());
     }
 
     @Test
@@ -89,7 +89,7 @@ class AnswerServiceImplTest {
                 () -> answerService.createAnswer(content, userId, questionId)
         );
 
-        assertEquals("Question not found with id: 5", exception.getMessage());
+        assertEquals("Question not found with id: " + questionId, exception.getMessage());
     }
 
     @Test
@@ -111,7 +111,7 @@ class AnswerServiceImplTest {
                 () -> answerService.createAnswer(content, userId, questionId)
         );
 
-        assertEquals("User with id 1 has already answer question with id: 5", exception.getMessage());
+        assertEquals("User with id 1 has already answer question with id: " + questionId, exception.getMessage());
     }
 
     @Test
@@ -153,7 +153,7 @@ class AnswerServiceImplTest {
                 () -> answerService.getAnswer(id)
         );
 
-        assertEquals("Answer not found with id: 1", exception.getMessage());
+        assertEquals("Answer not found with id: " + id, exception.getMessage());
     }
 
     @Test
