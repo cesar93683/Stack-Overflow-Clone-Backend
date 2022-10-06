@@ -223,4 +223,59 @@ class AnswerServiceImplTest {
         verify(mockAnswerRepository).save(answer);
     }
 
+    @Test
+    public void deleteAnswerShouldThrowAnExceptionIfTheAnswerIsNotFound() {
+        int answerId = 1;
+        int userId = 2;
+
+        Mockito.when(mockAnswerRepository.findById(answerId)).thenReturn(Optional.empty());
+
+        ServiceException exception = assertThrows(
+                ServiceException.class,
+                () -> answerService.deleteAnswer(answerId, userId)
+        );
+
+        assertEquals("Answer not found with id: " + answerId, exception.getMessage());
+    }
+
+    @Test
+    public void deleteAnswerShouldThrowAnExceptionIfAUserTriesToUpdateAnAnswerTheyDidNotCreate() {
+        int answerId = 1;
+        int userId = 2;
+        Answer answer = new Answer();
+        User user = new User();
+        user.setId(1);
+        answer.setUser(user);
+
+        Mockito.when(mockAnswerRepository.findById(answerId)).thenReturn(Optional.of(answer));
+
+        ServiceException exception = assertThrows(
+                ServiceException.class,
+                () -> answerService.deleteAnswer(answerId, userId)
+        );
+
+        assertEquals("User with id: " + userId + " did not create answer with id: " + answerId, exception.getMessage());
+    }
+
+    @Test
+    public void deleteAnswerHappyPath() throws ServiceException {
+        int answerId = 1;
+        int userId = 2;
+        Answer answer = new Answer();
+        User user = new User();
+        user.setId(userId);
+        answer.setUser(user);
+        Question question = new Question();
+        question.setNumAnswers(5);
+        answer.setQuestion(question);
+
+        Mockito.when(mockAnswerRepository.findById(answerId)).thenReturn(Optional.of(answer));
+
+        answerService.deleteAnswer(answerId, userId);
+
+        assertEquals(4, question.getNumAnswers());
+        verify(mockQuestionRepository).save(question);
+        verify(mockAnswerRepository).delete(answer);
+    }
+
 }
