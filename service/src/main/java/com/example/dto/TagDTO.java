@@ -13,8 +13,8 @@ public class TagDTO {
 
     public TagDTO(Tag tag) {
         this.tag = tag.getTag();
-            this.description = tag.getDescription();
-            this.numQuestions = tag.getNumQuestions();
+        this.description = tag.getDescription();
+        this.numQuestions = tag.getNumQuestions();
     }
 
     public String getTag() {
