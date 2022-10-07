@@ -127,7 +127,7 @@ public class Utils {
         return answers;
     }
 
-    public static Answer getAnswerAccepted() {
+    private static Answer getAnswerAccepted() {
         Answer answer = new Answer();
         answer.setId(ID);
         answer.setContent(CONTENT);
@@ -147,7 +147,7 @@ public class Utils {
         return answer;
     }
 
-    public static Answer getAnswerNotAccepted() {
+    private static Answer getAnswerNotAccepted() {
         Answer answer = getAnswerAccepted();
         answer.setAccepted(0);
         return answer;
@@ -167,7 +167,7 @@ public class Utils {
         return vote;
     }
 
-    public static User getUser() {
+    private static User getUser() {
         User user = new User();
         user.setId(ID);
         user.setEmail("email");
@@ -214,7 +214,7 @@ public class Utils {
         return comment;
     }
 
-    public static Date getDate() {
+    private static Date getDate() {
         return new Date(0);
     }
 

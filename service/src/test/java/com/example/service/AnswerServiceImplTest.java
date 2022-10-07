@@ -21,7 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.service.Utils.*;
+import static com.example.service.Utils.getQuestion;
+import static com.example.service.Utils.getQuestionDTO;
 import static com.example.utils.Constants.UP_VOTE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -96,9 +97,10 @@ class AnswerServiceImplTest {
         int userId = 1;
         int questionId = 2;
 
-        User user = getUser();
+        User user = new User();
+        user.setId(userId);
         Question question = new Question();
-        Answer answer = new Answer(content, user, new Question());
+        Answer answer = new Answer(content, user, question);
 
         Mockito.when(mockUserRepository.findById(userId)).thenReturn(Optional.of(user));
         Mockito.when(mockQuestionRepository.findById(questionId)).thenReturn(Optional.of(question));
@@ -117,12 +119,14 @@ class AnswerServiceImplTest {
         String content = "the content";
         int userId = 1;
         int questionId = 2;
+        int numAnswers = 3;
 
-        User user = getUser();
-        Question question = getQuestion();
+        User user = new User();
+        user.setId(userId);
+        Question question = new Question();
+        question.setId(questionId);
+        question.setNumAnswers(numAnswers);
         Answer answer = new Answer(content, user, question);
-
-        int numAnswers = question.getNumAnswers();
 
         AnswerDTO answerDTOExpected = new AnswerDTO(answer, false);
         answerDTOExpected.setCurrVote(UP_VOTE);
@@ -156,14 +160,15 @@ class AnswerServiceImplTest {
 
     @Test
     public void getAnswerShouldReturnTheAnswerIfFound() throws ServiceException {
-        int id = 1;
-
-        Mockito.when(mockAnswerRepository.findById(id)).thenReturn(Optional.of(getQuestion().getAnswers().get(0)));
-
-        AnswerDTO answerDTO = answerService.getAnswer(id);
+        Answer answer = getQuestion().getAnswers().get(0);
+        int answerId = answer.getId();
 
         AnswerDTO expectedAnswerDTO = getQuestionDTO().getAnswers().get(0);
         expectedAnswerDTO.setComments(new ArrayList<>());
+
+        Mockito.when(mockAnswerRepository.findById(answerId)).thenReturn(Optional.of(answer));
+
+        AnswerDTO answerDTO = answerService.getAnswer(answerId);
 
         assertThat(answerDTO).usingRecursiveComparison().isEqualTo(expectedAnswerDTO);
     }
