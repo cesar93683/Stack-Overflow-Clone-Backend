@@ -283,4 +283,19 @@ class AnswerServiceImplTest {
         verify(mockAnswerRepository).delete(answer);
     }
 
+    @Test
+    public void acceptAnswerShouldThrowAnExceptionIfTheAnswerDoesNotExist() {
+        int answerId = 1;
+        int userId = 2;
+
+        Mockito.when(mockAnswerRepository.findById(answerId)).thenReturn(Optional.empty());
+
+        ServiceException exception = assertThrows(
+                ServiceException.class,
+                () -> answerService.acceptAnswer(answerId, userId)
+        );
+
+        assertEquals("Answer not found with id: " + answerId, exception.getMessage());
+    }
+
 }
