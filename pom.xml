@@ -17,6 +17,9 @@
     <description>Demo project for Spring Boot</description>
 
     <properties>
+        <maven.compiler.source>18</maven.compiler.source>
+        <maven.compiler.target>18</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.jakarta.xml-bind>2.3.2</version.jakarta.xml-bind>
         <version.jjwt>0.11.5</version.jjwt>
         <version.mysql>8.0.30</version.mysql>
