@@ -8,6 +8,9 @@ Run sql script in order located in test/resources/sql
 In IntelliJ, go to Project Structure and set JDK to JDK 18.  
 Create run configuration `clean install` and run it.  
 Run StackOverflowCloneApplication.  
+An error will occur.  
+Go to `Run` -> `Edit Configurations` -> Add the following to `Environment variables`  
+`DB_URL=jdbc:postgresql://localhost:5432/stack_clone; DB_USER_NAME=postgres; DB_USER_PASSWORD=admin`  
 Run PopulateDatabase.  
 To send requests from swagger, go to `http://localhost:8080/swagger-ui/index.html`
 
