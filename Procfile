@@ -1,1 +1,0 @@
-web: java -jar controller/target/controller-0.0.1-SNAPSHOT.jar
