@@ -208,12 +208,6 @@ public class PopulateDatabase {
         return tokens.get(new Random().nextInt(tokens.size()));
     }
 
-    private List<String> getTags(List<Tag> tags) {
-        return tags.stream()
-                .map(Tag::getTag)
-                .collect(Collectors.toList());
-    }
-
     private List<QuestionDTO> getQuestionsFromJson() {
         try {
             String json = readFileToString("questions.json");

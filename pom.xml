@@ -22,7 +22,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.jakarta.xml-bind>2.3.2</version.jakarta.xml-bind>
         <version.jjwt>0.11.5</version.jjwt>
-        <version.mysql>8.0.30</version.mysql>
+        <version.postgres>42.5.0</version.postgres>
         <version.spring.boot>2.7.3</version.spring.boot>
         <version.springdoc-openapi-ui>1.6.11</version.springdoc-openapi-ui>
     </properties>
@@ -56,10 +56,10 @@
                 <version>${version.spring.boot}</version>
             </dependency>
             <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
                 <scope>runtime</scope>
-                <version>${version.mysql}</version>
+                <version>${version.postgres}</version>
             </dependency>
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
