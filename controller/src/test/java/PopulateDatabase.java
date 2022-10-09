@@ -2,7 +2,6 @@ import com.example.dto.AnswerDTO;
 import com.example.dto.CommentDTO;
 import com.example.dto.QuestionDTO;
 import com.example.dto.QuestionsDTO;
-import com.example.entity.Tag;
 import com.example.rest.payload.GenericResponse;
 import com.example.rest.payload.auth.LoginRequest;
 import com.example.rest.payload.auth.LoginResponse;
@@ -25,10 +24,11 @@ import java.util.stream.Collectors;
 
 public class PopulateDatabase {
 
-    private static final String API_URI_AUTH = "http://localhost:8080/api/auth/";
-    private static final String API_URI_QUESTIONS = "http://localhost:8080/api/questions/";
-    private static final String API_URI_ANSWERS = "http://localhost:8080/api/answers/";
-    private static final String API_URI_COMMENTS = "http://localhost:8080/api/comments/";
+    private static final String API_URI = "http://localhost:8080/";
+    private static final String API_URI_AUTH = API_URI + "api/auth/";
+    private static final String API_URI_QUESTIONS = API_URI + "api/questions/";
+    private static final String API_URI_ANSWERS = API_URI + "api/answers/";
+    private static final String API_URI_COMMENTS = API_URI + "api/comments/";
     private static final RestTemplate REST_TEMPLATE = new RestTemplate();
     private static final List<String> tokens = new ArrayList<>();
 
