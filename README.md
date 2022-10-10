@@ -1,9 +1,9 @@
 Download PostgreSQL  
 https://www.enterprisedb.com/downloads/postgres-postgresql-downloads  
 Set password to `admin`  
-Create database called `stack_clone`
-
-Run sql script in order located in test/resources/sql
+Open pgAdmin 4
+Create database called `stack_clone`  
+Run sql script in order located in test/resources/sql on `stack_clone` database
 
 In IntelliJ, go to Project Structure and set JDK to JDK 18.  
 Create run configuration `clean install` and run it.  
